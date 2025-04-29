@@ -74,7 +74,7 @@
                                 </td>
                                 <td>{{ $department->code }}</td>
                                 <td>{{ $department->name }}</td>
-                                <td></td>
+                                <td>{{ optional($department->dept_head)->name }}</td>
                                 <td>
                                     @if($department->status)
                                         <span class="label label-danger">Inactive</span>

@@ -4,7 +4,7 @@
             <div class="modal-header">
                 <h5 class="modal-title">{{ $title }}</h5>
             </div>
-            <form action="{{ $url }}" method="post" @if(isset($has_enctype)) enctype="multipart/form-data" @endif onsubmit="show()">
+            <form action="{{ isset($url) ? $url : '' }}" method="post" @if(isset($has_enctype)) enctype="multipart/form-data" @endif onsubmit="show()">
                 @csrf
                 
                 <div class="modal-body">
@@ -12,7 +12,9 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    @if(!isset($is_view))
                     <button type="submit" class="btn btn-primary">Save</button>
+                    @endif
                 </div>
             </form>
         </div>

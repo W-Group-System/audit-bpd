@@ -12,7 +12,7 @@
                     <h5>CAR </h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">0</h1>
+                    <h1 class="no-margins">{{ count($corrective_action_requests) }}</h1>
                 </div>
             </div>
         </div>
@@ -20,6 +20,16 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Open</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">0</h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>In Progress</h5>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">0</h1>
@@ -42,7 +52,11 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Corrective Action Request <button class="btn btn-success" data-target="#new" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New CAR</button></h5>
+                    <h5>Corrective Action Request 
+                        @if(auth()->user()->role->name == 'Auditor' || auth()->user()->role->name == 'Administrator')
+                            <button class="btn btn-success" data-target="#new" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New CAR</button>
+                        @endif
+                    </h5>
                 </div>
                 <div class="ibox-content">
                     @include('components.error')
@@ -52,10 +66,10 @@
                                 <tr>
                                     <th>Action</th>
                                     <th>CAR #</th>
-                                    <th>Standard and Clause</th>
-                                    <th>Classification of Nonconformity</th>
-                                    <th>Nature of Nonconformity</th>
-                                    <th>Type of Nonconformity</th>
+                                    {{-- <th>Standard and Clause</th> --}}
+                                    {{-- <th>Classification of Nonconformity</th> --}}
+                                    {{-- <th>Nature of Nonconformity</th> --}}
+                                    {{-- <th>Type of Nonconformity</th> --}}
                                     <th>Issued By</th>
                                     <th>Issued To</th>
                                     <th>Issued Date</th>
@@ -65,19 +79,28 @@
                                 @foreach ($corrective_action_requests as $car)
                                     <tr>
                                         <td>
-                                            <button type="button" class="btn btn-warning btn-sm">
-                                                <i class="fa fa-pencil-square-o"></i>
+                                            <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#view{{ $car->id }}">
+                                                <i class="fa fa-eye"></i>
                                             </button>
+
+                                            @if(auth()->user()->role->name == 'Auditee')
+                                                <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#edit{{ $car->id }}">
+                                                    <i class="fa fa-pencil-square-o"></i>
+                                                </button>
+                                            @endif
                                         </td>
                                         <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
-                                        <td>{!! nl2br(e($car->standard_and_clause)) !!}</td>
+                                        {{-- <td>{!! nl2br(e($car->standard_and_clause)) !!}</td>
                                         <td>{{ $car->classification_of_nonconformity }}</td>
                                         <td>{{ $car->nature_of_nonconformity }}</td>
-                                        <td>{{ $car->type_of_nonconformity }}</td>
+                                        <td>{{ $car->type_of_nonconformity }}</td> --}}
                                         <td>{{ $car->auditor->name }}</td>
                                         <td>{{ $car->auditee->name }}</td>
                                         <td>{{ date('M d Y', strtotime($car->created_at)) }}</td>
                                     </tr>
+
+                                    @include('car.view')
+                                    @include('car.edit')
                                 @endforeach
                             </tbody>
                         </table>
