@@ -87,21 +87,19 @@
                         <a href="{{url('/home')}}"><i class="fa fa-th-large"></i> <span
                                 class="nav-label " >Dashboard </span></a>
                     </li>
-                    <li class="" data-toggle="tooltip" data-placement="right" title="Corrective Action Request">
-                        <a href="{{url('/home')}}"><i class="fa fa-th-large"></i> <span
+                    <li class="{{ Request::is('corrective-action-request') ? 'active' : '' }} shownext" data-toggle="tooltip" data-placement="right" title="Corrective Action Request">
+                        <a href="{{url('/corrective-action-request')}}"><i class="fa fa-file"></i> <span
                                 class="nav-label " >Corrective Action Request </span></a>
                     </li>
-                    {{-- <li class="{{ Route::current()->getName() == 'settings' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Settings">
-                        <a href="#"><i class="fa fa-gavel"></i> <span class="nav-label">Settings</span><span
+                    <li class="{{ Route::current()->getName() == 'settings' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Settings">
+                        <a href="#"><i class="fa fa-cog"></i> <span class="nav-label">Settings</span><span
                                 class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse">
                             <li ><a href="{{url('/companies')}}"></i>Companies</a></li>
                             <li><a href="{{url('/departments')}}"></i>Departments</a></li>
                             <li><a href="{{url('/users')}}"></i>Users</a></li>
-                            <li><a href="{{url('/dco')}}"></i>DCO</a></li>
                         </ul>
                     </li>
-                    --}}
                 </ul>
             </div>
         </nav>

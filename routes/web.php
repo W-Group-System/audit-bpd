@@ -19,3 +19,13 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+// Users
+Route::get('users', 'UserController@index');
+Route::post('store_user', 'UserController@store');
+Route::post('update_user/{id}', 'UserController@update');
+Route::post('deactivate_user', 'UserController@deactivate');
+Route::post('activate_user', 'UserController@activate');
+
+// CAR
+Route::get('corrective-action-request', 'CorrectiveActionRequestController@index');
