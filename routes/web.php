@@ -27,5 +27,11 @@ Route::post('update_user/{id}', 'UserController@update');
 Route::post('deactivate_user', 'UserController@deactivate');
 Route::post('activate_user', 'UserController@activate');
 
+// Company
+Route::get('companies', 'CompanyController@index');
+
+// Department
+Route::get('departments', 'DepartmentController@index');
+
 // CAR
 Route::get('corrective-action-request', 'CorrectiveActionRequestController@index');

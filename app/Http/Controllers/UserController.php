@@ -18,7 +18,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::get();
+        $users = User::with('company', 'department', 'role')->get();
         $companies = Company::whereNull('status')->get();
         $departments = Department::whereNull('status')->get();
         $roles = Role::whereNull('status')->get();

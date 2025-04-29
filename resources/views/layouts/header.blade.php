@@ -149,7 +149,6 @@
 
     <script src="{{ asset('login_css/js/inspinia.js')}}"></script>
     <script src="{{ asset('login_css/js/plugins/pace/pace.min.js')}}"></script>
-    @yield('js')
     <script>
         function show() {
             document.getElementById("loader").style.display = "block";
@@ -160,6 +159,7 @@
             document.getElementById('logout-form').submit();
         }
     </script>
+    @yield('js')
 
 </body>
 </html>
