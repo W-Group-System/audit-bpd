@@ -54,6 +54,7 @@ class CorrectiveActionRequestController extends Controller
         $car->auditee_id = $request->auditee;
         $car->reference_document = $request->reference_document;
         $car->description_of_nonconformity = $request->description_of_nonconformity;
+        $car->status = 'Open';
         $car->save();
 
         Alert::success('Successfully Saved')->persistent('Dismiss');
@@ -100,6 +101,7 @@ class CorrectiveActionRequestController extends Controller
         $car->corrective_action = $request->corrective_action;
         $car->action_date_corrective_action = $request->action_date_corrective_action;
         $car->verification_corrective_action = $request->verification_corrective_action;
+        $car->status = 'In Progress';
         $car->save();
 
         $files = $request->file('attachment');

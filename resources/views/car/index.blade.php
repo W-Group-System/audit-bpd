@@ -73,6 +73,7 @@
                                     <th>Issued By</th>
                                     <th>Issued To</th>
                                     <th>Issued Date</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -97,6 +98,17 @@
                                         <td>{{ $car->auditor->name }}</td>
                                         <td>{{ $car->auditee->name }}</td>
                                         <td>{{ date('M d Y', strtotime($car->created_at)) }}</td>
+                                        <td>
+                                            @if($car->status == 'Open')
+                                            <span class="label label-primary">
+                                            @elseif($car->status == 'In Progress')
+                                            <span class="label label-warning">
+                                            @elseif($car->status == 'Closed')
+                                            <span class="label label-danger">
+                                            @endif                                            
+                                                {{ $car->status }}
+                                            </span>
+                                        </td>
                                     </tr>
 
                                     @include('car.view')

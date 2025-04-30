@@ -48,7 +48,7 @@
         </div>
         <div class="col-md-6">
             Issued To :
-            <select data-placeholder="Select type of auditor" name="auditee" class="cat form-control" required>
+            <select data-placeholder="Select type of auditee" name="auditee" class="cat form-control" required>
                 <option value=""></option>
                 @foreach ($users->where('role_id', 2) as $auditee)
                     <option value="{{ $auditee->id }}">{{ $auditee->name }}</option>
