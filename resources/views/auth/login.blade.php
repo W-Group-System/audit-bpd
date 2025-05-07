@@ -52,7 +52,7 @@
                 
             </form>
 
-            <div class="login100-more" style="background-image: url('login_design/images/WGROUP.png');">
+            <div class="login100-more" style="background-image: url('images/wfa.jpg');">
             </div>
         </div>
     </div>

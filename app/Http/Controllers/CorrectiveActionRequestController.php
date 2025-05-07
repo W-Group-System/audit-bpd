@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\CorrectiveActionRequest;
 use App\CorrectiveActionRequestAttachment;
+use App\Department;
 use App\User;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -18,13 +19,14 @@ class CorrectiveActionRequestController extends Controller
     public function index()
     {
         $users = User::whereNull('status')->get();
+        $departments = Department::whereNull('status')->get();
         $corrective_action_requests = CorrectiveActionRequest::get();
         if(auth()->user()->role->name == 'Auditee')
         {
             $corrective_action_requests = CorrectiveActionRequest::where('auditee_id', auth()->user()->id)->get();
         }
 
-        return view('car.index', compact('users', 'corrective_action_requests'));
+        return view('car.index', compact('users', 'corrective_action_requests', 'departments'));
     }
 
     /**
@@ -45,6 +47,7 @@ class CorrectiveActionRequestController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $car = new CorrectiveActionRequest;
         $car->standard_and_clause = $request->standard_and_clause;
         $car->classification_of_nonconformity = $request->classification_of_nonconformity;
@@ -55,6 +58,7 @@ class CorrectiveActionRequestController extends Controller
         $car->reference_document = $request->reference_document;
         $car->description_of_nonconformity = $request->description_of_nonconformity;
         $car->status = 'Open';
+        $car->department_id = $request->department;
         $car->save();
 
         Alert::success('Successfully Saved')->persistent('Dismiss');
@@ -132,5 +136,18 @@ class CorrectiveActionRequestController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function refreshDeptHead(Request $request)
+    {
+        // dd($request->all());
+        $department_data = Department::where('id', $request->department_id)->first();
+        $user = User::where('id', $department_data->user_id)->first();
+        
+        if ($user)
+        {
+            return "<option value='".$user->id."'>".$user->name."</option>";
+        }
+        
     }
 }

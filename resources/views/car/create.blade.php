@@ -10,6 +10,15 @@
             <textarea name="standard_and_clause" class="form-control" cols="30" rows="10" required></textarea>
         </div>
         <div class="col-md-6">
+            Department :
+            <select data-placeholder="Select department" name="department" class="cat form-control" required onchange="refreshDeptHead(this)">
+                <option value=""></option>
+                @foreach ($departments as $department)
+                    <option value="{{ $department->id }}">{{ $department->code .' - '.$department->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-md-6">
             Classification of Nonconformity :
             <select data-placeholder="Select classification of nonconformity" name="classification_of_nonconformity" class="cat form-control" required>
                 <option value=""></option>
@@ -48,11 +57,11 @@
         </div>
         <div class="col-md-6">
             Issued To :
-            <select data-placeholder="Select type of auditee" name="auditee" class="cat form-control" required>
-                <option value=""></option>
-                @foreach ($users->where('role_id', 2) as $auditee)
+            <select name="auditee" class="form-control" id="auditee" required>
+                <option value="">Select type of auditor</option>
+                {{-- @foreach ($users->where('role_id', 2) as $auditee)
                     <option value="{{ $auditee->id }}">{{ $auditee->name }}</option>
-                @endforeach
+                @endforeach --}}
             </select>
         </div>
         <div class="col-md-12">

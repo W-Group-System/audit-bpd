@@ -66,6 +66,7 @@
                                 <tr>
                                     <th>Action</th>
                                     <th>CAR #</th>
+                                    <th>Department</th>
                                     {{-- <th>Standard and Clause</th> --}}
                                     {{-- <th>Classification of Nonconformity</th> --}}
                                     {{-- <th>Nature of Nonconformity</th> --}}
@@ -90,6 +91,7 @@
                                                 </button>
                                             @endif
                                         </td>
+                                        <td>{{ $car->department->name }}</td>
                                         <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
                                         {{-- <td>{!! nl2br(e($car->standard_and_clause)) !!}</td>
                                         <td>{{ $car->classification_of_nonconformity }}</td>
@@ -130,6 +132,28 @@
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
 <script src="{{ asset('login_css/js/plugins/chosen/chosen.jquery.js') }}"></script>
 <script>
+    function refreshDeptHead(element)
+    {
+        var deptId = element.value
+        
+        $.ajax({
+            type: "POST",
+            url: "{{ url('refresh_dept_head') }}",
+            data: {
+                department_id: deptId
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(res)
+            {
+                console.log(res);
+                // document.getElementById('auditee').innerHTML = res
+                $("#auditee").html(res)
+            }
+        })
+    }
+
     $(document).ready(function() {
         $('.cat').chosen({width:"100%"});
 
