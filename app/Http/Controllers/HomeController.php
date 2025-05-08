@@ -27,8 +27,12 @@ class HomeController extends Controller
     public function index()
     {
         $cars = CorrectiveActionRequest::get();
-        
         $departments = Department::get();
+        if (auth()->user()->role->name == 'Auditee')
+        {
+            $cars = CorrectiveActionRequest::where('department_id', auth()->user()->department_id)->get();
+            $departments = Department::where('id', auth()->user()->department_id)->get();
+        }
         $car_per_dept_array = [];
         foreach($departments as $department)
         {
