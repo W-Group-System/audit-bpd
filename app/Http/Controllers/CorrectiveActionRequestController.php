@@ -22,10 +22,10 @@ class CorrectiveActionRequestController extends Controller
     {
         $users = User::whereNull('status')->get();
         $departments = Department::whereNull('status')->get();
-        $corrective_action_requests = CorrectiveActionRequest::get();
+        $corrective_action_requests = CorrectiveActionRequest::with('auditor','auditee','department','correctiveAction','approver')->get();
         if(auth()->user()->role->name == 'Auditee')
         {
-            $corrective_action_requests = CorrectiveActionRequest::where('auditee_id', auth()->user()->id)->get();
+            $corrective_action_requests = CorrectiveActionRequest::with('auditor','auditee','department','correctiveAction','approver')->where('auditee_id', auth()->user()->id)->get();
         }
 
         return view('car.index', compact('users', 'corrective_action_requests', 'departments'));
@@ -138,11 +138,9 @@ class CorrectiveActionRequestController extends Controller
 
         $audit_head = User::where('role_id',4)->first();
         $approver_array = [
+            $car->auditee_id,
             $car->auditor_id,
             $audit_head->id,
-            // $car->auditee_id,
-            // $car->auditor_id,
-            // $audit_head->id,
         ];
         $users = User::whereIn('id', $approver_array)->get();
         foreach($users as $key=>$user)
@@ -152,6 +150,10 @@ class CorrectiveActionRequestController extends Controller
             $corrective_action_request_approver->corrective_action_request_id = $id;
             $corrective_action_request_approver->level = $key+1;
             if ($key == 0)
+            {
+                $corrective_action_request_approver->status = 'Submitted';
+            }
+            elseif($key==1)
             {
                 $corrective_action_request_approver->status = 'Pending';
             }

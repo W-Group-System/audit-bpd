@@ -144,5 +144,49 @@
             </div>
         </div>
     </div>
+    <hr>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Approvers
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                            <b>Name</b>
+                        </div>
+                        <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                            <b>Status</b>
+                        </div>
+                        <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                            <b>Action Date</b>
+                        </div>
+                        <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                            <b>Remarks</b>
+                        </div>
+                    </div>
+                    @foreach ($car->approver as $approver)
+                        <div class="row">
+                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                                {{ $approver->user->name }}
+                            </div>
+                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                                {{ $approver->status }}
+                            </div>
+                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                                {{-- {{ $corrective_action->status }} --}}
+                            </div>
+                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                                {{-- {{ $corrective_action->remarks }} --}}
+                            </div>
+                        </div>
+                    @endforeach
+                    {{-- @dd($car->correctiveAction) --}}
+                </div>
+            </div>
+        </div>
+    </div>
     @endif
 @endcomponent

@@ -22,4 +22,8 @@ class CorrectiveActionRequest extends Model
     {
         return $this->hasMany(CorrectiveAction::class);
     }
+    public function approver()
+    {
+        return $this->hasMany(CorrectiveActionRequestApprover::class);
+    }
 }

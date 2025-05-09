@@ -22,7 +22,7 @@
                     <h5>Open</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">0</h1>
+                    <h1 class="no-margins">{{ count($corrective_action_requests->where('status','Open')) }}</h1>
                 </div>
             </div>
         </div>
@@ -32,7 +32,7 @@
                     <h5>In Progress</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">0</h1>
+                    <h1 class="no-margins">{{ count($corrective_action_requests->where('status','In Progress')) }}</h1>
                 </div>
             </div>
         </div>
@@ -42,7 +42,7 @@
                     <h5>Closed</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">0</h1>
+                    <h1 class="no-margins">{{ count($corrective_action_requests->where('status','Closed')) }}</h1>
                 </div>
             </div>
         </div>
@@ -81,14 +81,19 @@
                                 @foreach ($corrective_action_requests as $car)
                                     <tr>
                                         <td>
+                                            @php
+                                                $approver = ($car->approver)->where('user_id', $car->auditee_id)->where('status','Submitted')
+                                            @endphp
                                             <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#view{{ $car->id }}">
                                                 <i class="fa fa-eye"></i>
                                             </button>
 
                                             @if(auth()->user()->role->name == 'Auditee')
+                                                @if(count($approver) == 0)
                                                 <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#edit{{ $car->id }}">
                                                     <i class="fa fa-pencil-square-o"></i>
                                                 </button>
+                                                @endif
                                             @endif
                                         </td>
                                         <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>

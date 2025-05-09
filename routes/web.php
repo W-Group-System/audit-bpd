@@ -38,3 +38,6 @@ Route::get('corrective-action-request', 'CorrectiveActionRequestController@index
 Route::post('store_car', 'CorrectiveActionRequestController@store');
 Route::post('update_car/{id}', 'CorrectiveActionRequestController@update');
 Route::post('refresh_dept_head', 'CorrectiveActionRequestController@refreshDeptHead');
+
+// For Review
+Route::get('for-approval', 'ForReviewController@index');

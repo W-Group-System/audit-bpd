@@ -91,8 +91,8 @@
                         <a href="{{url('/corrective-action-request')}}"><i class="fa fa-file"></i> <span
                                 class="nav-label " >Corrective Action Request </span></a>
                     </li>
-                    <li class="{{ Request::is('') ? 'active' : '' }} shownext" data-toggle="tooltip" data-placement="right" title="For Approval">
-                        <a href="{{url('/')}}"><i class="fa fa-check"></i> <span
+                    <li class="{{ Request::is('for-approval') ? 'active' : 'for-approval' }} shownext" data-toggle="tooltip" data-placement="right" title="For Approval">
+                        <a href="{{url('/for-approval')}}"><i class="fa fa-check"></i> <span
                                 class="nav-label " >For Approval </span></a>
                     </li>
                     <li class="{{ Route::current()->getName() == 'settings' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Settings">
