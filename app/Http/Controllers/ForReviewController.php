@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\CorrectiveActionRequestApprover;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class ForReviewController extends Controller
 {
@@ -37,7 +38,68 @@ class ForReviewController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request->all());
+        
+        if($request->action == 'Approved')
+        {
+            $approver_data = CorrectiveActionRequestApprover::where('corrective_action_request_id', $request->car_id)
+                ->where('status', 'Pending')
+                ->where('user_id', auth()->user()->id)
+                ->orderBy('level', 'asc')
+                ->first();
+            $approver_data->status = 'Approved';
+            $approver_data->remarks = $request->remarks;
+            $approver_data->save();
+
+            $approvers = CorrectiveActionRequestApprover::where('corrective_action_request_id', $request->car_id)->where('status', 'Waiting')->orderBy('level', 'asc')->get();
+            
+            foreach($approvers as $key=>$approver)
+            {
+                if ($key == 0)
+                {
+                    $approver->status = 'Pending';
+                }
+                else
+                {
+                    $approver->status = 'Waiting';
+                }
+
+                $approver->save();
+            }
+
+            Alert::success('Successfully Approved')->persistent('Dismiss');
+        }
+        elseif($request->action == 'Returned')
+        {
+            $approver_data = CorrectiveActionRequestApprover::where('corrective_action_request_id', $request->car_id)
+                ->where('status', 'Pending')
+                ->where('user_id', auth()->user()->id)
+                ->orderBy('level', 'asc')
+                ->first();
+
+            // $approver_data->status = 'Returned';
+            $approver_data->remarks = $request->remarks;
+            $approver_data->save();
+
+            $approvers = CorrectiveActionRequestApprover::where('corrective_action_request_id', $request->car_id)->orderBy('level', 'asc')->get();
+
+            foreach($approvers as $key=>$approver)
+            {
+                if ($key == 0)
+                {
+                    $approver->status = 'Pending';
+                }
+                else
+                {
+                    $approver->status = 'Waiting';
+                }
+                $approver->save();
+            }
+
+            Alert::success('Successfully Returned')->persistent('Dismiss');
+        }
+        
+        return back();
     }
 
     /**
@@ -71,7 +133,6 @@ class ForReviewController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
     }
 
     /**

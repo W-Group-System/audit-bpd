@@ -41,3 +41,4 @@ Route::post('refresh_dept_head', 'CorrectiveActionRequestController@refreshDeptH
 
 // For Review
 Route::get('for-approval', 'ForReviewController@index');
+Route::post('car_action', 'ForReviewController@store');

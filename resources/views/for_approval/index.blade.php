@@ -72,7 +72,7 @@
                                         <td>{!! nl2br(e($car->description_of_nonconformity)) !!}</td>
                                     </tr>
 
-                                    @include('car.view')
+                                    @include('for_approval.for_approval')
                                 @endforeach
                             </tbody>
                         </table>

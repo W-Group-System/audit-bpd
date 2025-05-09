@@ -136,32 +136,59 @@ class CorrectiveActionRequestController extends Controller
             $corrective_action->save();
         }
 
-        $audit_head = User::where('role_id',4)->first();
-        $approver_array = [
-            $car->auditee_id,
-            $car->auditor_id,
-            $audit_head->id,
-        ];
-        $users = User::whereIn('id', $approver_array)->get();
-        foreach($users as $key=>$user)
+        $corrective_action_request_approver = CorrectiveActionRequestApprover::where('corrective_action_request_id', $id)->get();
+        if ($corrective_action_request_approver->isEmpty())
         {
-            $corrective_action_request_approver = new CorrectiveActionRequestApprover;
-            $corrective_action_request_approver->user_id = $user->id;
-            $corrective_action_request_approver->corrective_action_request_id = $id;
-            $corrective_action_request_approver->level = $key+1;
-            if ($key == 0)
+            $audit_head = User::where('role_id',4)->first();
+            $approver_array = [
+                $car->auditee_id,
+                $car->auditor_id,
+                $audit_head->id,
+            ];
+            $users = User::whereIn('id', $approver_array)->get();
+            foreach($users as $key=>$user)
             {
-                $corrective_action_request_approver->status = 'Submitted';
+                $corrective_action_request_approver = new CorrectiveActionRequestApprover;
+                $corrective_action_request_approver->user_id = $user->id;
+                $corrective_action_request_approver->corrective_action_request_id = $id;
+                $corrective_action_request_approver->level = $key+1;
+                if ($key == 0)
+                {
+                    $corrective_action_request_approver->status = 'Submitted';
+                }
+                elseif($key==1)
+                {
+                    $corrective_action_request_approver->status = 'Pending';
+                }
+                else
+                {
+                    $corrective_action_request_approver->status = 'Waiting';
+                }
+                $corrective_action_request_approver->save();
             }
-            elseif($key==1)
+        }
+        else
+        {
+            foreach($corrective_action_request_approver as $key=>$approver)
             {
-                $corrective_action_request_approver->status = 'Pending';
+                // $corrective_action_request_approver = new CorrectiveActionRequestApprover;
+                // $corrective_action_request_approver->user_id = $user->id;
+                // $corrective_action_request_approver->corrective_action_request_id = $id;
+                // $corrective_action_request_approver->level = $key+1;
+                if ($key == 0)
+                {
+                    $approver->status = 'Submitted';
+                }
+                elseif($key==1)
+                {
+                    $approver->status = 'Pending';
+                }
+                else
+                {
+                    $approver->status = 'Waiting';
+                }
+                $approver->save();
             }
-            else
-            {
-                $corrective_action_request_approver->status = 'Waiting';
-            }
-            $corrective_action_request_approver->save();
         }
 
         // $corrective_action_request_approver = CorrectiveActionRequestApprover::where('')

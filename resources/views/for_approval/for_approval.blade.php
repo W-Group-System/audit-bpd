@@ -2,9 +2,10 @@
     'id' => 'view'.$car->id,
     'size' => 'modal-lg',
     'title' => 'View CAR',
-    'is_view' => true
-    // 'url' => url('store_car')
+    // 'is_view' => true
+    'url' => url('car_action')
 ])
+    <input type="hidden" name="car_id" value="{{ $car->id }}">
     <div class="row">
         <div class="col-lg-6">
             <b>Standard and Clause :</b>
@@ -186,6 +187,21 @@
                     {{-- @dd($car->correctiveAction) --}}
                 </div>
             </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-6">
+            Action :
+            <select data-placeholder="Select Action" name="action" class="cat form-control" required>
+                <option value=""></option>
+                <option value="Approved">Approved</option>
+                <option value="Returned">Returned</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            Remarks :
+            <textarea name="remarks" class="form-control" cols="30" required></textarea>
         </div>
     </div>
     @endif
