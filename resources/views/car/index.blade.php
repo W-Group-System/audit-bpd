@@ -70,7 +70,7 @@
                                     {{-- <th>Standard and Clause</th> --}}
                                     {{-- <th>Classification of Nonconformity</th> --}}
                                     {{-- <th>Nature of Nonconformity</th> --}}
-                                    {{-- <th>Type of Nonconformity</th> --}}
+                                    <th>Description of Nonconformity</th>
                                     <th>Issued By</th>
                                     <th>Issued To</th>
                                     <th>Issued Date</th>
@@ -91,12 +91,13 @@
                                                 </button>
                                             @endif
                                         </td>
-                                        <td>{{ $car->department->name }}</td>
                                         <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
+                                        <td>{{ $car->department->name }}</td>
                                         {{-- <td>{!! nl2br(e($car->standard_and_clause)) !!}</td>
                                         <td>{{ $car->classification_of_nonconformity }}</td>
                                         <td>{{ $car->nature_of_nonconformity }}</td>
                                         <td>{{ $car->type_of_nonconformity }}</td> --}}
+                                        <td>{!! nl2br(e($car->description_of_nonconformity)) !!}</td>
                                         <td>{{ $car->auditor->name }}</td>
                                         <td>{{ $car->auditee->name }}</td>
                                         <td>{{ date('M d Y', strtotime($car->created_at)) }}</td>
@@ -114,7 +115,6 @@
                                     </tr>
 
                                     @include('car.view')
-                                    @include('car.edit')
                                 @endforeach
                             </tbody>
                         </table>
@@ -125,7 +125,10 @@
     </div>
 </div>
 
-@include('car.create')
+@include('car.create')'
+@foreach ($corrective_action_requests as $car)
+@include('car.edit')
+@endforeach
 @endsection
 
 @section('js')
@@ -180,6 +183,48 @@
                 }
             ]
         });
+
+        $("#evidence").on('change', function() {
+            if ($(this).val() == 'Yes')
+            {
+                $("#uploadEvidence").removeAttr('hidden')
+                $("[name='upload_evidence']").prop('required', true)
+            }
+            else
+            {
+                $("#uploadEvidence").prop('hidden', true)
+                $("[name='upload_evidence']").removeAttr('required')
+            }
+        })
+
+        $(document).on('click', '#addBtn', function() {
+            var id = $("#correctiveActionContainer").children().last().attr('id');
+            var lastId = id.split('_');
+            var displayNum = parseInt(lastId[1]) + 1;
+
+            var newRow = `
+                <div class="row" id="caNum_${displayNum}">
+                    <div class="col-md-1">
+                        ${displayNum}
+                    </div>
+                    <div class="col-md-6">
+                        <textarea name="corrective_action[]" class="form-control" cols="30" required></textarea>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="date" name="action_date[]" class="form-control input-sm" >
+                    </div>
+                </div>
+            `
+
+            $("#correctiveActionContainer").append(newRow)
+        })
+
+        $("#removeBtn").on('click', function() {
+            if ($("#correctiveActionContainer").children().length > 1);
+            {
+                $("#correctiveActionContainer").children().last().remove();
+            }
+        })
     })
 </script>
 @endsection

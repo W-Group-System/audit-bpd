@@ -18,4 +18,8 @@ class CorrectiveActionRequest extends Model
     {
         return $this->belongsTo(Department::class);
     }
+    public function correctiveAction()
+    {
+        return $this->hasMany(CorrectiveAction::class);
+    }
 }

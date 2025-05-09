@@ -91,6 +91,10 @@
                         <a href="{{url('/corrective-action-request')}}"><i class="fa fa-file"></i> <span
                                 class="nav-label " >Corrective Action Request </span></a>
                     </li>
+                    <li class="{{ Request::is('') ? 'active' : '' }} shownext" data-toggle="tooltip" data-placement="right" title="For Approval">
+                        <a href="{{url('/')}}"><i class="fa fa-check"></i> <span
+                                class="nav-label " >For Approval </span></a>
+                    </li>
                     <li class="{{ Route::current()->getName() == 'settings' ? 'active' : '' }}" data-toggle="tooltip" data-placement="right" title="Settings">
                         <a href="#"><i class="fa fa-cog"></i> <span class="nav-label">Settings</span><span
                                 class="fa arrow"></span></a>
@@ -157,6 +161,27 @@
         function logout() {
             event.preventDefault();
             document.getElementById('logout-form').submit();
+        }
+
+        function addRow()
+        {
+            var id = $("#correctiveActionContainer").children().last().attr('id')
+            var lastId = id.split('_') 
+            var displayNum = parseInt(lastId[1]) + 1
+
+            $("#correctiveActionContainer").append(`
+                <div class="row" id="caNum_${displayNum}">
+                    <div class="col-md-1">
+                        ${displayNum}
+                    </div>
+                    <div class="col-md-6">
+                        <textarea name="corrective_action[]" class="form-control" cols="30" required></textarea>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="date" name="action_date[]" class="form-control input-sm" required>
+                    </div>
+                </div>
+            `)
         }
     </script>
     @yield('js')

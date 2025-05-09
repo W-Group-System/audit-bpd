@@ -2,12 +2,13 @@
     'id' => 'new',
     'size' => 'modal-lg',
     'title' => 'Add new CAR',
-    'url' => url('store_car')
+    'url' => url('store_car'),
+    'has_enctype' => true
 ])
     <div class="row">
         <div class="col-md-12">
             Standard and Clause :
-            <textarea name="standard_and_clause" class="form-control" cols="30" rows="10" required></textarea>
+            <textarea name="standard_and_clause" class="form-control" cols="30" required></textarea>
         </div>
         <div class="col-md-6">
             Department :
@@ -64,10 +65,22 @@
                 @endforeach --}}
             </select>
         </div>
-        <div class="col-md-12">
+        <div class="col-md-6">
+            Evidence :
+            <select data-placeholder="If has evidence" id="evidence" name="evidence" class="form-control cat" required>
+                <option value=""></option>
+                <option value="Yes">Yes</option>
+                <option value="N/A">N/A</option>
+            </select>
+        </div>
+        <div class="col-md-6" id="uploadEvidence" hidden>
+            Upload Evidence :
+            <input type="file" name="upload_evidence" class="form-control">
+        </div>
+        {{-- <div class="col-md-12">
             Reference document, if any
             <textarea name="reference_document" class="form-control" cols="30" rows="10" required></textarea>
-        </div>
+        </div> --}}
         <div class="col-md-12">
             Description of Nonconformity
             <textarea name="description_of_nonconformity" class="form-control" cols="30" rows="10" required></textarea>
