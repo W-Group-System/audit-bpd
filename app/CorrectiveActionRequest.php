@@ -26,4 +26,8 @@ class CorrectiveActionRequest extends Model
     {
         return $this->hasMany(CorrectiveActionRequestApprover::class);
     }
+    public function verify()
+    {
+        return $this->hasMany(CorrectiveActionRequestVerifier::class);
+    }
 }

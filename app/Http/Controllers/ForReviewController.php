@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\CorrectiveAction;
+use App\CorrectiveActionRequest;
 use App\CorrectiveActionRequestApprover;
+use App\CorrectiveActionRequestVerifier;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -16,8 +19,9 @@ class ForReviewController extends Controller
     public function index()
     {
         $approvers = CorrectiveActionRequestApprover::with('correctiveActionRequest')->where('user_id', auth()->user()->id)->where('status', 'Pending')->get();
+        $verifiers = CorrectiveActionRequestVerifier::with('correctiveActionRequest')->where('user_id', auth()->user()->id)->where('status','Pending')->get();
         
-        return view('for_approval.index', compact('approvers'));
+        return view('for_approval.index', compact('approvers', 'verifiers'));
     }
 
     /**
@@ -110,7 +114,9 @@ class ForReviewController extends Controller
      */
     public function show($id)
     {
-        //
+        $car = CorrectiveActionRequest::with('verify')->findOrFail($id);
+
+        return view('for_approval.show', compact('car'));
     }
 
     /**
@@ -144,5 +150,10 @@ class ForReviewController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function verifyAction(Request $request)
+    {
+        dd($request->all());
     }
 }

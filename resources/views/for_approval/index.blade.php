@@ -96,13 +96,27 @@
                                 <th>Description</th>
                             </tr>
                         </thead>
+                        <tbody>
+                            @foreach ($verifiers as $verify)
+                                @php
+                                    $car = $verify->correctiveActionRequest;
+                                @endphp
+                                <tr>
+                                    <td>
+                                        <a href="{{ url('show_verification/'.$car->id) }}" class="btn btn-info btn-sm">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    </td>
+                                    <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
+                                    <td>{!! nl2br(e($car->description_of_nonconformity)) !!}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
                         </table>
                     </div>
-
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 @endsection

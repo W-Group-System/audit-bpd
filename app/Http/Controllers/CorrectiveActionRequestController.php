@@ -6,6 +6,7 @@ use App\CorrectiveAction;
 use App\CorrectiveActionRequest;
 use App\CorrectiveActionRequestApprover;
 use App\CorrectiveActionRequestAttachment;
+use App\CorrectiveActionRequestVerifier;
 use App\Department;
 use App\User;
 use Illuminate\Http\Request;
@@ -22,10 +23,10 @@ class CorrectiveActionRequestController extends Controller
     {
         $users = User::whereNull('status')->get();
         $departments = Department::whereNull('status')->get();
-        $corrective_action_requests = CorrectiveActionRequest::with('auditor','auditee','department','correctiveAction','approver')->get();
+        $corrective_action_requests = CorrectiveActionRequest::with('auditor','auditee','department','correctiveAction','approver','verify')->get();
         if(auth()->user()->role->name == 'Auditee')
         {
-            $corrective_action_requests = CorrectiveActionRequest::with('auditor','auditee','department','correctiveAction','approver')->where('auditee_id', auth()->user()->id)->get();
+            $corrective_action_requests = CorrectiveActionRequest::with('auditor','auditee','department','correctiveAction','approver','verify')->where('auditee_id', auth()->user()->id)->get();
         }
 
         return view('car.index', compact('users', 'corrective_action_requests', 'departments'));
@@ -234,5 +235,47 @@ class CorrectiveActionRequestController extends Controller
             return "<option value='".$user->id."'>".$user->name."</option>";
         }
         
+    }
+
+    public function verify(Request $request, $id)
+    {
+        // dd($request->all(), $id);
+        $car = CorrectiveActionRequest::findOrFail($id);
+        
+        $audit_head = User::whereNull('status')->where('role_id', 4)->first();
+        $auditor = $car->auditor_id;
+
+        $verifier_array = [
+            $car->auditee_id,
+            $auditor,
+            $audit_head->id
+        ];
+
+        $users = User::whereIn('id', $verifier_array)->get();
+        foreach($users as $key=>$user)
+        {
+            $corrective_action_request_verifier = new CorrectiveActionRequestVerifier;
+            $corrective_action_request_verifier->corrective_action_request_id = $id;
+            $corrective_action_request_verifier->user_id = $user->id;
+            $corrective_action_request_verifier->level = $key+1;
+
+            if ($key == 0)
+            {
+                $corrective_action_request_verifier->status = 'Submitted';
+            }
+            elseif($key==1)
+            {
+                $corrective_action_request_verifier->status = 'Pending';
+            }
+            else
+            {
+                $corrective_action_request_verifier->status = 'Waiting';
+            }
+
+            $corrective_action_request_verifier->save();
+        }
+
+        Alert::success('Successfully Saved')->persistent('Dismiss');
+        return back();
     }
 }
