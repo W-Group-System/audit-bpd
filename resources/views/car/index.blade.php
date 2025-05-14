@@ -212,15 +212,20 @@
                                                         return true;
                                                     }
                                                 });
+
+                                                $if_pending = $car->verify->where('status', 'Pending')->where('user_id', auth()->user()->id)->first();
                                             @endphp
+                                            
                                             <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#view{{ $car->id }}">
                                                 <i class="fa fa-eye"></i>
                                             </button>
 
-                                            @if($approver_data)
+                                            @if($approver_data && auth()->user()->role->name == 'Auditee')
+                                                @if($if_pending)
                                                 <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#verify{{ $car->id }}">
                                                     <i class="fa fa-check"></i>
                                                 </button>
+                                                @endif
                                             @endif
 
                                             @if(auth()->user()->role->name == 'Auditee')

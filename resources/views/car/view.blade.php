@@ -39,7 +39,7 @@
         </div>
     </div>
     
-    @if($car->status == 'In Progress')
+    @if($car->status == 'In Progress' || $car->status == 'Closed')
     <div class="row">
         <div class="col-md-4">
             <b>Action Date :</b>
@@ -110,32 +110,38 @@
                 </div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
                             <b>Corrective Action</b>
                         </div>
-                        <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
                             <b>Action Date</b>
                         </div>
-                        <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
                             <b>Status</b>
                         </div>
-                        <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
                             <b>Remarks</b>
                         </div>
                     </div>
                     @foreach ($car->correctiveAction as $corrective_action)
                         <div class="row">
-                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
-                                {{ $corrective_action->corrective_action }}
+                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                {!! nl2br(e($corrective_action->corrective_action)) !!}
                             </div>
-                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
                                 {{ date('M d, Y', strtotime($corrective_action->action_date)) }}
                             </div>
-                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
                                 {{ $corrective_action->status }}
+                                @if(empty($corrective_action->status))
+                                &nbsp;
+                                @endif
                             </div>
-                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
                                 {{ $corrective_action->remarks }}
+                                @if(empty($corrective_action->remarks))
+                                &nbsp;
+                                @endif
                             </div>
                         </div>
                     @endforeach
@@ -154,32 +160,75 @@
                 </div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
                             <b>Name</b>
                         </div>
-                        <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
                             <b>Status</b>
                         </div>
-                        <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
                             <b>Action Date</b>
                         </div>
-                        <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
                             <b>Remarks</b>
                         </div>
                     </div>
                     @foreach ($car->approver as $approver)
                         <div class="row">
-                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
                                 {{ $approver->user->name }}
                             </div>
-                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
                                 {{ $approver->status }}
                             </div>
-                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
-                                {{ date('M d Y', strtotime($corrective_action->updated_at )) }}
+                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                {{ date('M d Y', strtotime($approver->updated_at )) }}
                             </div>
-                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
                                 {{ $approver->remarks }}
+                            </div>
+                        </div>
+                    @endforeach
+                    {{-- @dd($car->correctiveAction) --}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Verifiers
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                            <b>Name</b>
+                        </div>
+                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                            <b>Status</b>
+                        </div>
+                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                            <b>Action Date</b>
+                        </div>
+                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                            <b>Remarks</b>
+                        </div>
+                    </div>
+                    @foreach ($car->verify as $verify)
+                        <div class="row">
+                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                {{ $verify->user->name }}
+                            </div>
+                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                {{ $verify->status }}
+                            </div>
+                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                {{ date('M d Y', strtotime($verify->updated_at )) }}
+                            </div>
+                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                {{ $verify->remarks }}
                             </div>
                         </div>
                     @endforeach

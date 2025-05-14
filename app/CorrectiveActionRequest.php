@@ -30,4 +30,8 @@ class CorrectiveActionRequest extends Model
     {
         return $this->hasMany(CorrectiveActionRequestVerifier::class);
     }
+    public function remarksHistory()
+    {
+        return $this->hasMany(RemarksHistory::class);
+    }
 }

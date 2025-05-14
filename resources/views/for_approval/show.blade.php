@@ -19,6 +19,7 @@
                 <div class="ibox-content">
                     <form method="POST" action="{{ url('verify_action') }}" onsubmit="show()">
                         @csrf 
+                        <input type="hidden" name="car_id" value="{{ $car->id }}">
 
                         <div class="row">
                             <div class="col-lg-6">
@@ -116,6 +117,8 @@
                                             </div>
                                         </div>
                                         @foreach ($car->correctiveAction as $corrective_action)
+                                            <input type="hidden" name="corrective_action_id[]" value="{{ $corrective_action->id }}">
+
                                             <div class="row">
                                                 <div class="col-md-3 border border-1 border-top-bottom border-right-left">
                                                     {{ $corrective_action->corrective_action }}
@@ -210,7 +213,16 @@
                     <h5>History</h5>
                 </div>
                 <div class="ibox-content">
-                    <p>No History Remarks</p>
+                    @if($car->remarksHistory->isNotEmpty())
+                        @foreach ($car->remarksHistory as $history)
+                            <h3 class="text-dark">{{ $history->correctiveAction->corrective_action }} @if($history->status == 'Pending') <span class="label label-warning">{{ $history->status }}</span> @else <span class="label label-primary">{{ $history->status }}</span> @endif</h3>
+                            <small>Date: {{ date('M d Y', strtotime($history->created_at)) }}</small> <br>
+                            <small>Remarks : {!! nl2br(e($history->remarks)) !!}</small>
+                            <hr class="hr-line-dashed">
+                        @endforeach
+                    @else
+                        <p>No History Remarks</p>
+                    @endif
                 </div>
             </div>
         </div>

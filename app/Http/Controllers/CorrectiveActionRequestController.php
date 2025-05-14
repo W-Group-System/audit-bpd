@@ -251,31 +251,58 @@ class CorrectiveActionRequestController extends Controller
             $audit_head->id
         ];
 
-        $users = User::whereIn('id', $verifier_array)->get();
-        foreach($users as $key=>$user)
+        $verify = CorrectiveActionRequestVerifier::where('corrective_action_request_id', $id)->orderBy('level','asc')->get();
+        if ($verify->isNotEmpty())
         {
-            $corrective_action_request_verifier = new CorrectiveActionRequestVerifier;
-            $corrective_action_request_verifier->corrective_action_request_id = $id;
-            $corrective_action_request_verifier->user_id = $user->id;
-            $corrective_action_request_verifier->level = $key+1;
-
-            if ($key == 0)
+            foreach($verify as $key=>$verifier)
             {
-                $corrective_action_request_verifier->status = 'Submitted';
+                if ($key == 0)
+                {
+                    $verifier->status = 'Submitted';
+                }
+                elseif($key==1)
+                {
+                    $verifier->status = 'Pending';
+                }
+                else
+                {
+                    $verifier->status = 'Waiting';
+                }
+    
+                $verifier->save();
             }
-            elseif($key==1)
-            {
-                $corrective_action_request_verifier->status = 'Pending';
-            }
-            else
-            {
-                $corrective_action_request_verifier->status = 'Waiting';
-            }
-
-            $corrective_action_request_verifier->save();
+    
+            Alert::success('Successfully Saved')->persistent('Dismiss');
+            return back();
         }
-
-        Alert::success('Successfully Saved')->persistent('Dismiss');
-        return back();
+        else
+        {
+            $users = User::whereIn('id', $verifier_array)->get();
+            foreach($users as $key=>$user)
+            {
+                $corrective_action_request_verifier = new CorrectiveActionRequestVerifier;
+                $corrective_action_request_verifier->corrective_action_request_id = $id;
+                $corrective_action_request_verifier->user_id = $user->id;
+                $corrective_action_request_verifier->level = $key+1;
+    
+                if ($key == 0)
+                {
+                    $corrective_action_request_verifier->status = 'Submitted';
+                }
+                elseif($key==1)
+                {
+                    $corrective_action_request_verifier->status = 'Pending';
+                }
+                else
+                {
+                    $corrective_action_request_verifier->status = 'Waiting';
+                }
+    
+                $corrective_action_request_verifier->save();
+            }
+    
+            Alert::success('Successfully Saved')->persistent('Dismiss');
+            return back();
+        }
     }
 }
