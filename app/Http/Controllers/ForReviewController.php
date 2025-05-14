@@ -171,7 +171,7 @@ class ForReviewController extends Controller
 
         if ($request->action == 'Approved')
         {
-            $verifiers = CorrectiveActionRequestVerifier::where('status', 'Waiting')->orderBy('level','asc')->get();
+            $verifiers = CorrectiveActionRequestVerifier::where('corrective_action_request_id', $request->car_id)->where('status', 'Waiting')->orderBy('level','asc')->get();
             if ($verifiers->isNotEmpty())
             {
                 foreach($verifiers as $key => $verifier)
@@ -198,7 +198,7 @@ class ForReviewController extends Controller
         }
         else
         {
-            $verifiers = CorrectiveActionRequestVerifier::orderBy('level','asc')->get();
+            $verifiers = CorrectiveActionRequestVerifier::where('corrective_action_request_id', $request->car_id)->orderBy('level','asc')->get();
             foreach($verifiers as $key => $verifier)
             {
                 if ($key == 0)

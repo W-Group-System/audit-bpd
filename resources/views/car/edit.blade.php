@@ -62,11 +62,11 @@
     <div class="row">
         <div class="col-md-12">
             Corrective Action : 
-            <button type="button" class="btn btn-xs btn-primary" id="addBtn"><i class="fa fa-plus"></i></button>
-            <button type="button" class="btn btn-xs btn-danger" id="removeBtn"><i class="fa fa-minus"></i></button>
+            <button type="button" class="btn btn-xs btn-primary" onclick="addRowBtn({{ $car->id }})"><i class="fa fa-plus"></i></button>
+            <button type="button" class="btn btn-xs btn-danger" onclick="removeRowBtn({{ $car->id }})"><i class="fa fa-minus"></i></button>
 
             @if($car->correctiveAction->isNotEmpty())
-                <div id="correctiveActionContainer">
+                <div id="correctiveActionContainer{{ $car->id }}">
                     @foreach ($car->correctiveAction as $key=>$ca)
                     <div class="row" id="caNum_{{ $key+1 }}">
                         <div class="col-md-1">
@@ -82,7 +82,7 @@
                     @endforeach
                 </div>
             @else
-            <div id="correctiveActionContainer">
+            <div id="correctiveActionContainer{{ $car->id }}">
                 <div class="row" id="caNum_1">
                     <div class="col-md-1">
                         1

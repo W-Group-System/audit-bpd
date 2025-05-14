@@ -220,12 +220,15 @@
                                                 <i class="fa fa-eye"></i>
                                             </button>
 
-                                            @if($approver_data && auth()->user()->role->name == 'Auditee')
-                                                @if($if_pending)
+                                            @if($approver_data && auth()->user()->role->name == 'Auditee' && $if_pending)
                                                 <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#verify{{ $car->id }}">
                                                     <i class="fa fa-check"></i>
                                                 </button>
-                                                @endif
+                                                {{-- @if($if_pending)
+                                                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#verify{{ $car->id }}">
+                                                    <i class="fa fa-check"></i>
+                                                </button>
+                                                @endif --}}
                                             @endif
 
                                             @if(auth()->user()->role->name == 'Auditee')
@@ -304,6 +307,38 @@
         })
     }
 
+    function addRowBtn(carId)
+    {
+        var id = $("#correctiveActionContainer"+carId).children().last().attr('id');
+        var lastId = id.split('_');
+        var displayNum = parseInt(lastId[1]) + 1;
+        
+        var newRow = `
+            <div class="row" id="caNum_${displayNum}">
+                <div class="col-md-1">
+                    ${displayNum}
+                </div>
+                <div class="col-md-6">
+                    <textarea name="corrective_action[]" class="form-control" cols="30" required></textarea>
+                </div>
+                <div class="col-md-5">
+                    <input type="date" name="action_date[]" class="form-control input-sm" min="{{ date('Y-m-d') }}">
+                </div>
+            </div>
+        `
+            console.log(newRow);
+            
+        $("#correctiveActionContainer"+carId).append(newRow)
+    }
+
+    function removeRowBtn(carId)
+    {
+        if ($("#correctiveActionContainer"+carId).children().length > 1);
+        {
+            $("#correctiveActionContainer"+carId).children().last().remove();
+        }
+    }
+
     $(document).ready(function() {
         $('.cat').chosen({width:"100%"});
 
@@ -341,35 +376,6 @@
             {
                 $("#uploadEvidence").prop('hidden', true)
                 $("[name='upload_evidence']").removeAttr('required')
-            }
-        })
-
-        $(document).on('click', '#addBtn', function() {
-            var id = $("#correctiveActionContainer").children().last().attr('id');
-            var lastId = id.split('_');
-            var displayNum = parseInt(lastId[1]) + 1;
-
-            var newRow = `
-                <div class="row" id="caNum_${displayNum}">
-                    <div class="col-md-1">
-                        ${displayNum}
-                    </div>
-                    <div class="col-md-6">
-                        <textarea name="corrective_action[]" class="form-control" cols="30" required></textarea>
-                    </div>
-                    <div class="col-md-5">
-                        <input type="date" name="action_date[]" class="form-control input-sm" >
-                    </div>
-                </div>
-            `
-
-            $("#correctiveActionContainer").append(newRow)
-        })
-
-        $("#removeBtn").on('click', function() {
-            if ($("#correctiveActionContainer").children().length > 1);
-            {
-                $("#correctiveActionContainer").children().last().remove();
             }
         })
     })

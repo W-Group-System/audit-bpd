@@ -146,7 +146,7 @@ class CorrectiveActionRequestController extends Controller
                 $car->auditor_id,
                 $audit_head->id,
             ];
-            $users = User::whereIn('id', $approver_array)->get();
+            $users = User::whereIn('id', $approver_array)->orderBy('level','asc')->get();
             foreach($users as $key=>$user)
             {
                 $corrective_action_request_approver = new CorrectiveActionRequestApprover;
@@ -277,7 +277,7 @@ class CorrectiveActionRequestController extends Controller
         }
         else
         {
-            $users = User::whereIn('id', $verifier_array)->get();
+            $users = User::whereIn('id', $verifier_array)->orderBy('level','asc')->get();
             foreach($users as $key=>$user)
             {
                 $corrective_action_request_verifier = new CorrectiveActionRequestVerifier;
