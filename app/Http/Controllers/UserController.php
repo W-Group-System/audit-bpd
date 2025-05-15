@@ -55,6 +55,21 @@ class UserController extends Controller
         $users->department_id = $request->department;
         $users->role_id = $request->role;
         $users->password = bcrypt('abc123');
+        if ($request->role == 1)
+        {
+            // Auditor
+            $users->level = 2;
+        }
+        elseif($request->role == 2)
+        {
+            // Auditee
+            $users->level = 1;
+        }
+        elseif($request->role == 4)
+        {
+            // Audit Heads
+            $users->level = 3;
+        }
         $users->save();
 
         Alert::success('Successfully Saved')->persistent('Dismiss');

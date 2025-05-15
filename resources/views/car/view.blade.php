@@ -22,6 +22,14 @@
             <b>Type of Nonconformity :</b>
             {!! nl2br(e($car->type_of_nonconformity)) !!}
         </div>
+        <div class="col-lg-6">
+            <b>Evidence :</b>
+            @if($car->evidence_attachment)
+            <a href="{{ url($car->evidence_attachment) }}" target="_blank">
+                <i class="fa fa-file-pdf-o"></i>
+            </a>
+            @endif
+        </div>
         {{-- <div class="col-lg-12">
             <b>Reference Document </b> <i>(if any) :</i>
             {!! nl2br(e($car->reference_document)) !!}

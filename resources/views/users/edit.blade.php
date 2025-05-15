@@ -27,7 +27,7 @@
             <select data-placeholder="Select department" name="department" class="form-control cat">
                 <option value=""></option>
                 @foreach ($departments as $department)
-                    <option value="{{ $department->id }}" @if($department->id == $user->department_id) selected @endif>{{ $department->name }}</option>
+                    <option value="{{ $department->id }}" @if($department->id == $user->department_id) selected @endif>{{$department->code.' - '. $department->name }}</option>
                 @endforeach
             </select>
         </div>
