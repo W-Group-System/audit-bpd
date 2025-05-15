@@ -1,9 +1,13 @@
+@php
+    $is_disabled = count($car->verify->where('user_id', auth()->user()->id)->where('status','Submitted'));
+@endphp
 @component('components.modal', [
     'id' => 'verify'.$car->id,
     'size' => 'modal-lg',
     'title' => 'Verify CAR',
     // 'is_view' => true
-    'url' => url('verify_car/'.$car->id)
+    'url' => url('verify_car/'.$car->id),
+    'is_disabled' => $is_disabled
 ])
     <div class="row">
         @if($car->verify->isNotEmpty())
