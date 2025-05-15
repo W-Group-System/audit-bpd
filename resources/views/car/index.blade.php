@@ -206,13 +206,16 @@
                                             @php
                                                 $approver = ($car->approver)->where('user_id', $car->auditee_id)->where('status','Submitted');
 
-                                                $approver_data = ($car->approver)->every(function($item, $key) {
-                                                    if (in_array($item->status, ['Approved', 'Submitted']))
-                                                    {
-                                                        return true;
-                                                    }
-                                                });
-
+                                                $approver_data = false;
+                                                if ($car->approver->isNotEmpty())
+                                                {
+                                                    $approver_data = ($car->approver)->every(function($item, $key) {
+                                                        if (in_array($item->status, ['Approved', 'Submitted']))
+                                                        {
+                                                            return true;
+                                                        }
+                                                    });
+                                                }
                                                 $verifier = ($car->verify)->where('user_id', auth()->user()->id)->first();
                                             @endphp
                                             
@@ -220,7 +223,7 @@
                                                 <i class="fa fa-eye"></i>
                                             </button>
 
-                                            @if(($approver_data && auth()->user()->role->name == 'Auditee' && $car->status != 'Closed'))
+                                            @if($approver_data && auth()->user()->role->name == 'Auditee' && $car->status != 'Closed')
                                                 <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#verify{{ $car->id }}">
                                                     <i class="fa fa-check"></i>
                                                 </button>
