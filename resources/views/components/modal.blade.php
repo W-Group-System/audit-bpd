@@ -13,7 +13,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     @if(!isset($is_view))
-                    <button type="submit" class="btn btn-primary" @if(isset($is_disabled) > 0) disabled @endif>Save</button>
+                    <button type="submit" class="btn btn-primary" @if(isset($is_disabled)) @if($is_disabled > 0) disabled @endif @endif>Save</button>
                     @endif
                 </div>
             </form>
