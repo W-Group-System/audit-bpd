@@ -56,6 +56,17 @@ class ForReviewController extends Controller
             $approver_data->remarks = $request->remarks;
             $approver_data->save();
 
+            $corrective_action_request = CorrectiveActionRequest::findOrFail($request->car_id);
+            if (auth()->user()->role->name == 'Auditor')
+            {
+                $corrective_action_request->status = 'Approval CAR';
+            }
+            elseif(auth()->user()->role->name == 'Audit Head')
+            {
+                $corrective_action_request->status = 'For Implementation';
+            }
+            $corrective_action_request->save();
+
             $approvers = CorrectiveActionRequestApprover::where('corrective_action_request_id', $request->car_id)->where('status', 'Waiting')->orderBy('level', 'asc')->get();
             
             foreach($approvers as $key=>$approver)
@@ -86,8 +97,11 @@ class ForReviewController extends Controller
             $approver_data->remarks = $request->remarks;
             $approver_data->save();
 
-            $approvers = CorrectiveActionRequestApprover::where('corrective_action_request_id', $request->car_id)->orderBy('level', 'asc')->get();
+            $corrective_action_request = CorrectiveActionRequest::findOrFail($request->car_id);
+            $corrective_action_request->status = 'Fill-Out';
+            $corrective_action_request->save();
 
+            $approvers = CorrectiveActionRequestApprover::where('corrective_action_request_id', $request->car_id)->orderBy('level', 'asc')->get();
             foreach($approvers as $key=>$approver)
             {
                 if ($key == 0)

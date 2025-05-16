@@ -1,7 +1,7 @@
 @component('components.modal', [
     'id' => 'view'.$car->id,
     'size' => 'modal-lg',
-    'title' => 'View CAR',
+    'title' => 'View CAR - '.$car->status,
     // 'is_view' => true
     'url' => url('car_action')
 ])
@@ -40,7 +40,7 @@
         </div>
     </div>
     
-    @if($car->status == 'In Progress')
+    @if($car->status != 'Fill-Out')
     <div class="row">
         <div class="col-md-4">
             <b>Action Date :</b>
@@ -68,22 +68,37 @@
     </div>
     {{-- <hr> --}}
     <div class="row">
-        {{-- <div class="col-md-6">
-            <b>Action Date :</b>
-            {{ date('M d Y', strtotime($car->action_date_root_cause)) }}
-        </div>
-        <div class="col-md-6"></div> --}}
         <div class="col-md-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     III. Root Cause Analysis
                 </div>
                 <div class="panel-body">
-                    1. {!! nl2br(e($car->man )) !!} <br>
-                    2. {!! nl2br(e($car->method )) !!} <br>
-                    3. {!! nl2br(e($car->machine )) !!} <br>
-                    4. {!! nl2br(e($car->material )) !!} <br>
-                    5. {!! nl2br(e($car->mother_nature )) !!}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr><th>#</th>
+                                    <th>Man</th>
+                                    <th>Method</th>
+                                    <th>Machine</th>
+                                    <th>Material</th>
+                                    <th>Mother Nature</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach ($car->rootCauseAnalysis as $key=>$rootCauseAnalysis)
+                                <tr>
+                                    <td>{{ $key+1 }}</td>
+                                    <td>{!! nl2br(e($rootCauseAnalysis->man)) !!}</td>
+                                    <td>{!! nl2br(e($rootCauseAnalysis->method)) !!}</td>
+                                    <td>{!! nl2br(e($rootCauseAnalysis->machine)) !!}</td>
+                                    <td>{!! nl2br(e($rootCauseAnalysis->material)) !!}</td>
+                                    <td>{!! nl2br(e($rootCauseAnalysis->mother_nature)) !!}</td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

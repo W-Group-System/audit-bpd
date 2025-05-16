@@ -71,8 +71,6 @@
                                         <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
                                         <td>{!! nl2br(e($car->description_of_nonconformity)) !!}</td>
                                     </tr>
-
-                                    @include('for_approval.for_approval')
                                 @endforeach
                             </tbody>
                         </table>
@@ -119,6 +117,11 @@
         </div>
     </div>
 </div>
+
+@foreach ($approvers as $approver)
+@include('for_approval.for_approval')
+@endforeach
+
 @endsection
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>

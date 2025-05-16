@@ -1,7 +1,7 @@
 @component('components.modal', [
     'id' => 'view'.$car->id,
     'size' => 'modal-lg',
-    'title' => 'View CAR',
+    'title' => 'View CAR -' .$car->status,
     'is_view' => true
     // 'url' => url('store_car')
 ])
