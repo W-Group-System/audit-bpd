@@ -4,13 +4,60 @@
 @component('components.modal', [
     'id' => 'verify'.$car->id,
     'size' => 'modal-lg',
-    'title' => 'Verify CAR',
+    'title' => 'Verify CAR - ' .$car->status,
     // 'is_view' => true
     'url' => url('verify_car/'.$car->id),
     'is_disabled' => $is_disabled
 ])
     <div class="row">
         @if($car->verify->isNotEmpty())
+            <div class="col-md-12">
+                Correction Immediate Action :
+                <textarea name="correction_immediate_action" class="form-control" cols="30" rows="10">{{ $car->immediate_action }}</textarea>
+            </div>
+            <div class="col-md-6 m-b-md">
+                Action Date :
+                <input type="date" name="correction_immediate_action_date" class="form-control input-sm" value="{{ $car->action_date_immediate_action }}" required>
+            </div>
+            
+            <div class="col-md-12 m-b-md">
+                Corrective Action : 
+                {{-- <button type="button" class="btn btn-xs btn-primary" onclick="addRowBtn({{ $car->id }})"><i class="fa fa-plus"></i></button>
+                <button type="button" class="btn btn-xs btn-danger" onclick="removeRowBtn({{ $car->id }})"><i class="fa fa-minus"></i></button> --}}
+
+                @if($car->correctiveAction->isNotEmpty())
+                    <div id="correctiveActionContainer{{ $car->id }}">
+                        @foreach ($car->correctiveAction as $key=>$ca)
+                        <div class="row" id="caNum_{{ $key+1 }}">
+                            <div class="col-md-1">
+                                {{ $key+1 }}
+                            </div>
+                            <div class="col-md-6">
+                                <textarea name="corrective_action[]" class="form-control" cols="30" required>{{ $ca->corrective_action }}</textarea>
+                            </div>
+                            <div class="col-md-5">
+                                <input type="date" name="action_date[]" class="form-control input-sm" min="{{ date('Y-m-d') }}" value="{{ $ca->action_date }}" required>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                @else
+                <div id="correctiveActionContainer{{ $car->id }}">
+                    <div class="row" id="caNum_1">
+                        <div class="col-md-1">
+                            1
+                        </div>
+                        <div class="col-md-6">
+                            <textarea name="corrective_action[]" class="form-control" cols="30" required></textarea>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="date" name="action_date[]" class="form-control input-sm" min="{{ date('Y-m-d') }}" required>
+                        </div>
+                    </div>
+                </div>
+                @endif
+            </div>
+            <hr>
             <div class="col-md-12">
                 <div class="panel panel-primary">
                     <div class="panel-heading">

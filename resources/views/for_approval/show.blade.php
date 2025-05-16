@@ -12,7 +12,7 @@
         <div class="col-lg-9">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>View Corrective Action</h5>
+                    <h5>View Corrective Action - {{ $car->status }}</h5>
 
                     <a href="{{ url('for-approval') }}" class="btn btn-danger pull-right">Back</a>
                 </div>
@@ -61,18 +61,48 @@
                                 <b>Action Responsible :</b>
                                 {{ $car->auditee->name }}
                             </div>
-                            <div class="col-md-4">
+                            {{-- <div class="col-md-4">
                                 <b>Verification :</b>
                                 {{ $car->verification_correction }}
-                            </div>
-                            <div class="col-md-6"></div>
+                            </div> --}}
                             <div class="col-md-12">
                                 <div class="panel panel-primary">
                                     <div class="panel-heading">
                                         II. Correction Immediate Action
                                     </div>
                                     <div class="panel-body">
-                                        {!! nl2br(e($car->immediate_action)) !!}
+                                        {{-- {!! nl2br(e($car->immediate_action)) !!} --}}
+                                        <div class="row">
+                                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                                                <b>Correction Immediate Action</b>
+                                            </div>
+                                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                                                <b>Action Date</b>
+                                            </div>
+                                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                                                <b>Status</b>
+                                            </div>
+                                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                                                <b>Remarks</b>
+                                            </div>
+                                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                                                {{ $car->immediate_action }}
+                                            </div>
+                                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                                                {{ date('M d Y', strtotime($car->action_date_immediate_action)) }}
+                                                
+                                            </div>
+                                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                                                <select name="immediate_action_status" class="form-control input-sm" required>
+                                                    <option value=""></option>
+                                                    <option value="Pending" @if($car->immediate_action_status == 'Pending') selected @endif>Pending</option>
+                                                    <option value="Done" @if($car->immediate_action_status == 'Done') selected @endif>Done</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                                                <textarea name="immediate_action_remarks" class="form-control" cols="30" required>{{ $car->immediate_action_remarks }}</textarea>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -84,11 +114,31 @@
                                         III. Root Cause Analysis
                                     </div>
                                     <div class="panel-body">
-                                        1. {!! nl2br(e($car->man )) !!} <br>
-                                        2. {!! nl2br(e($car->method )) !!} <br>
-                                        3. {!! nl2br(e($car->machine )) !!} <br>
-                                        4. {!! nl2br(e($car->material )) !!} <br>
-                                        5. {!! nl2br(e($car->mother_nature )) !!}
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr><th>#</th>
+                                                        <th>Man</th>
+                                                        <th>Method</th>
+                                                        <th>Machine</th>
+                                                        <th>Material</th>
+                                                        <th>Mother Nature</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                @foreach ($car->rootCauseAnalysis as $key=>$rootCauseAnalysis)
+                                                    <tr>
+                                                        <td>{{ $key+1 }}</td>
+                                                        <td>{!! nl2br(e($rootCauseAnalysis->man)) !!}</td>
+                                                        <td>{!! nl2br(e($rootCauseAnalysis->method)) !!}</td>
+                                                        <td>{!! nl2br(e($rootCauseAnalysis->machine)) !!}</td>
+                                                        <td>{!! nl2br(e($rootCauseAnalysis->material)) !!}</td>
+                                                        <td>{!! nl2br(e($rootCauseAnalysis->mother_nature)) !!}</td>
+                                                    </tr>
+                                                @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

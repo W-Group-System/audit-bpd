@@ -65,6 +65,10 @@ class ForReviewController extends Controller
             {
                 $corrective_action_request->status = 'For Implementation';
             }
+            else
+            {
+                $corrective_action_request->status = 'Review CAR';
+            }
             $corrective_action_request->save();
 
             $approvers = CorrectiveActionRequestApprover::where('corrective_action_request_id', $request->car_id)->where('status', 'Waiting')->orderBy('level', 'asc')->get();
@@ -170,6 +174,11 @@ class ForReviewController extends Controller
     public function verifyAction(Request $request)
     {
         // dd($request->all());
+        $corrective_action_request = CorrectiveActionRequest::findOrFail($request->car_id);
+        $corrective_action_request->immediate_action_status = $request->immediate_action_status;
+        $corrective_action_request->immediate_action_remarks = $request->immediate_action_remarks;
+        $corrective_action_request->save();
+
         $verifier = CorrectiveActionRequestVerifier::where('status', 'Pending')->first();
         $verifier->status = $request->action;
         $verifier->remarks = $request->remarks;
@@ -185,6 +194,17 @@ class ForReviewController extends Controller
 
         if ($request->action == 'Approved')
         {
+            $corrective_action_request = CorrectiveActionRequest::findOrFail($request->car_id);
+            if (auth()->user()->role->name == 'Auditor')
+            {
+                $corrective_action_request->status = 'For Closing';
+            }
+            // elseif(auth()->user()->role->name == 'Auditee')
+            // {
+            //     $corrective_action_request->status = 'For Verification';
+            // }
+            $corrective_action_request->save();
+
             $verifiers = CorrectiveActionRequestVerifier::where('corrective_action_request_id', $request->car_id)->where('status', 'Waiting')->orderBy('level','asc')->get();
             if ($verifiers->isNotEmpty())
             {
@@ -212,6 +232,10 @@ class ForReviewController extends Controller
         }
         else
         {
+            $corrective_action_request = CorrectiveActionRequest::findOrFail($request->car_id);
+            $corrective_action_request->status = 'For Implementation';
+            $corrective_action_request->save();
+
             $verifiers = CorrectiveActionRequestVerifier::where('corrective_action_request_id', $request->car_id)->orderBy('level','asc')->get();
             foreach($verifiers as $key => $verifier)
             {
@@ -229,15 +253,15 @@ class ForReviewController extends Controller
             Alert::success('Successfully Returned')->persistent('Dismiss');
         }
 
-        foreach($request->status as $key=>$status)
-        {
-            $remarks_history = new RemarksHistory;
-            $remarks_history->corrective_action_request_id = $request->car_id;
-            $remarks_history->status = $status;
-            $remarks_history->remarks = $request->remarks_action[$key];
-            $remarks_history->corrective_action_id = $corrective_action->id;
-            $remarks_history->save();
-        }
+        // foreach($request->status as $key=>$status)
+        // {
+        //     $remarks_history = new RemarksHistory;
+        //     $remarks_history->corrective_action_request_id = $request->car_id;
+        //     $remarks_history->status = $status;
+        //     $remarks_history->remarks = $request->remarks_action[$key];
+        //     $remarks_history->corrective_action_id = $corrective_action->id[$key];
+        //     $remarks_history->save();
+        // }
 
         return redirect('for-approval');
     }
