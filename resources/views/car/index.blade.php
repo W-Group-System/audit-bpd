@@ -120,7 +120,7 @@
                                         </td>
                                     </tr>
 
-                                    @include('car.view')
+                                    {{-- @include('car.view') --}}
                                 @endforeach
                             </tbody>
                         </table>
@@ -162,7 +162,7 @@
                                         <td>{!! nl2br(e($car->description_of_nonconformity)) !!}</td>
                                     </tr>
 
-                                    @include('car.view')
+                                    {{-- @include('car.view') --}}
                                 @endforeach
                             </tbody>
                         </table>
@@ -260,7 +260,6 @@
                                         </td>
                                     </tr>
 
-                                    @include('car.view')
                                     @include('car.verify_car')
                                 @endforeach
                             </tbody>
@@ -276,6 +275,7 @@
 @include('car.create')'
 @foreach ($corrective_action_requests as $car)
 @include('car.edit')
+@include('car.view')
 @endforeach
 @endsection
 

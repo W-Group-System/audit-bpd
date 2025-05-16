@@ -34,4 +34,8 @@ class CorrectiveActionRequest extends Model
     {
         return $this->hasMany(RemarksHistory::class);
     }
+    public function rootCauseAnalysis()
+    {
+        return $this->hasMany(RootCauseAnalysis::class);
+    }
 }

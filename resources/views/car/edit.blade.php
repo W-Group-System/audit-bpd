@@ -1,6 +1,6 @@
 @component('components.modal', [
     'id' => 'edit'.$car->id,
-    'size' => 'modal-lg',
+    'size' => 'modal-xl',
     'title' => 'Edit CAR',
     // 'is_view' => true
     'url' => url('update_car/'.$car->id),
@@ -15,7 +15,7 @@
             Action Date :
             <input type="date" name="action_date_immediate_action" class="form-control input-sm" min="{{ date('Y-m-d') }}" value="{{ $car->action_date_immediate_action }}">
         </div>
-        <div class="col-md-6">
+        {{-- <div class="col-md-6">
             Verification :
             <select data-placeholder="Select verification" name="verification_correction" class="form-control input-sm cat">
                 <option value=""></option>
@@ -23,14 +23,14 @@
                 <option value="ND" @if($car->verification_correction == 'ND') selected @endif>Not Done</option>
                 <option value="OG" @if($car->verification_correction == 'OG') selected @endif>On-going</option>
             </select>
-        </div>
+        </div> --}}
     </div>
     <hr>
     <div class="row">
         <div class="col-md-12">
             Root Cause Analysis :
             {{-- <textarea name="root_cause_analysis" class="form-control" cols="30" rows="10" required></textarea> --}}
-            <div class="row">
+            {{-- <div class="row">
                 <div class="col-md-3">1. Man</div>
                 <div class="col-md-9">
                     <textarea name="man" id="" class="form-control" cols="30">{{ $car->man }}</textarea>
@@ -50,6 +50,80 @@
                 <div class="col-md-3">5. Mother Nature</div>
                 <div class="col-md-9">
                     <textarea name="mother_nature" id="" class="form-control" cols="30">{{ $car->mother_nature }}</textarea>
+                </div>
+            </div> --}}
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Man</th>
+                                    <th>Method</th>
+                                    <th>Machine</th>
+                                    <th>Material</th>
+                                    <th>Mother Nature</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1. </td>
+                                    <td>
+                                        <textarea name="man[]" class="form-control" cols="30"></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea name="method[]" class="form-control" cols="30"></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea name="machine[]" class="form-control" cols="30"></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea name="material[]" class="form-control" cols="30"></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea name="mother_nature[]" class="form-control" cols="30"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2. </td>
+                                    <td>
+                                        <textarea name="man[]" class="form-control" cols="30"></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea name="method[]" class="form-control" cols="30"></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea name="machine[]" class="form-control" cols="30"></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea name="material[]" class="form-control" cols="30"></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea name="mother_nature[]" class="form-control" cols="30"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3. </td>
+                                    <td>
+                                        <textarea name="man[]" class="form-control" cols="30"></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea name="method[]" class="form-control" cols="30"></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea name="machine[]" class="form-control" cols="30"></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea name="material[]" class="form-control" cols="30"></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea name="mother_nature[]" class="form-control" cols="30"></textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

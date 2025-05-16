@@ -8,6 +8,7 @@ use App\CorrectiveActionRequestApprover;
 use App\CorrectiveActionRequestAttachment;
 use App\CorrectiveActionRequestVerifier;
 use App\Department;
+use App\RootCauseAnalysis;
 use App\User;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -61,7 +62,7 @@ class CorrectiveActionRequestController extends Controller
         $car->auditee_id = $request->auditee;
         // $car->reference_document = $request->reference_document;
         $car->description_of_nonconformity = $request->description_of_nonconformity;
-        $car->status = 'Open';
+        $car->status = 'Fill-Out';
         $car->evidence = $request->evidence;
         if($request->has('upload_evidence'))
         {
@@ -114,18 +115,21 @@ class CorrectiveActionRequestController extends Controller
         $car->immediate_action = $request->immediate_action;
         $car->action_date_immediate_action = $request->action_date_immediate_action;
         $car->verification_correction = $request->verification_correction;
-        $car->status = 'In Progress';
-        // $car->root_cause_analysis = $request->root_cause_analysis;
-        // $car->action_date_root_cause = $request->action_date_root_cause;
-        // $car->corrective_action = $request->corrective_action;
-        // $car->action_date_corrective_action = $request->action_date_corrective_action;
-        // $car->verification_corrective_action = $request->verification_corrective_action;
-        $car->man = $request->man;
-        $car->method = $request->method;
-        $car->machine = $request->machine;
-        $car->material = $request->material;
-        $car->mother_nature = $request->mother_nature;
+        $car->status = 'Review CAR';
         $car->save();
+
+        $root_cause_analysis = RootCauseAnalysis::where('corrective_action_request_id', $id)->delete();
+        foreach($request->man as $key=>$man)
+        {
+            $root_cause_analysis = new RootCauseAnalysis;
+            $root_cause_analysis->corrective_action_request_id = $id;
+            $root_cause_analysis->man = $man;
+            $root_cause_analysis->method = $request->method[$key];
+            $root_cause_analysis->machine = $request->machine[$key];
+            $root_cause_analysis->material = $request->material[$key];
+            $root_cause_analysis->mother_nature = $request->mother_nature[$key];
+            $root_cause_analysis->save();
+        }
 
         $corrective_action = CorrectiveAction::where('corrective_action_request_id', $id)->delete();
         foreach($request->corrective_action as $key=>$ca)
@@ -172,10 +176,6 @@ class CorrectiveActionRequestController extends Controller
         {
             foreach($corrective_action_request_approver as $key=>$approver)
             {
-                // $corrective_action_request_approver = new CorrectiveActionRequestApprover;
-                // $corrective_action_request_approver->user_id = $user->id;
-                // $corrective_action_request_approver->corrective_action_request_id = $id;
-                // $corrective_action_request_approver->level = $key+1;
                 if ($key == 0)
                 {
                     $approver->status = 'Submitted';
@@ -191,23 +191,6 @@ class CorrectiveActionRequestController extends Controller
                 $approver->save();
             }
         }
-
-        // $corrective_action_request_approver = CorrectiveActionRequestApprover::where('')
-        
-        // $files = $request->file('attachment');
-        // foreach($files as $file)
-        // {
-        //     $name = time().'_'.$file->getClientOriginalName();
-        //     $file->move(public_path('car_attachments'), $name);
-        //     $file_name = '/car_attachments/'.$name;
-
-        //     $car_attachment = new CorrectiveActionRequestAttachment;
-        //     $car_attachment->corrective_action_request_id = $id;
-        //     $car_attachment->extension = $file->getClientOriginalExtension();
-        //     $car_attachment->name = $name;
-        //     $car_attachment->file = $file_name;
-        //     $car_attachment->save();
-        // }
 
         Alert::success('Successfully Updated')->persistent('Dismiss');
         return back();
