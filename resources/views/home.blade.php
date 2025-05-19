@@ -31,7 +31,7 @@
                                         <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
                                         <td>{{ $car->description_of_nonconformity }}</td>
                                         <td>
-                                            @if($car->status == 'Open')
+                                            {{-- @if($car->status == 'Open')
                                             <span class="label label-primary">
                                             @elseif($car->status == 'In Progress')
                                             <span class="label label-warning">
@@ -39,13 +39,31 @@
                                             <span class="label label-danger">
                                             @endif
 
+                                            </span> --}}
                                             {{ $car->status }}
-                                            </span>
                                         </td>
                                         <td>{{ $car->auditee->name  }}</td>
-                                        <td>0000-00-00</td>
-                                        <td>N/A</td>
-                                        <td>N/A</td>
+                                        <td>
+                                            @foreach ($car->correctiveAction as $key => $corrective_action)
+                                                {{ date('M d Y', strtotime($corrective_action->action_date)) }} - {{ $corrective_action->status }} <br>
+                                            @endforeach
+                                        </td>
+                                        <td>
+                                            @foreach ($car->correctiveAction as $key => $corrective_action)
+                                                @if($corrective_action->file_attachments)
+                                                <a href="{{ url($corrective_action->file_attachments) }}" target="_blank">
+                                                    <i class="fa fa-file"></i> 
+                                                </a> <br>
+                                                @endif
+                                            @endforeach
+                                        </td>
+                                        <td>
+                                            @foreach ($car->correctiveAction as $key => $corrective_action)
+                                                @if($corrective_action->corrective_action)
+                                                    {!! nl2br(e($corrective_action->corrective_action)) !!} <br>
+                                                @endif
+                                            @endforeach
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
