@@ -16,7 +16,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+        {{-- <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Open</h5>
@@ -35,7 +35,7 @@
                     <h1 class="no-margins">{{ count($corrective_action_requests->where('status','In Progress')) }}</h1>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
@@ -248,15 +248,15 @@
                                         <td>{{ $car->auditee->name }}</td>
                                         <td>{{ date('M d Y', strtotime($car->created_at)) }}</td>
                                         <td>
-                                            @if($car->status == 'Open')
+                                            {{-- @if($car->status == 'Open')
                                             <span class="label label-primary">
                                             @elseif($car->status == 'In Progress')
                                             <span class="label label-warning">
                                             @elseif($car->status == 'Closed')
                                             <span class="label label-danger">
                                             @endif                                            
-                                                {{ $car->status }}
-                                            </span>
+                                        </span> --}}
+                                            {{ $car->status }}
                                         </td>
                                     </tr>
 

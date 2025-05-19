@@ -229,14 +229,17 @@ class CorrectiveActionRequestController extends Controller
         $car->action_date_immediate_action = $request->correction_immediate_action_date;
         $car->save();
 
-        $corrective_actions = CorrectiveAction::where('corrective_action_request_id', $id)->get();
-        foreach($corrective_actions as $key=>$corrective_action)
+        if ($request->has('corrective_action'))
         {
-            // $corrective_action = new CorrectiveAction;
-            $corrective_action->corrective_action_request_id = $car->id;
-            $corrective_action->corrective_action = $request->corrective_action[$key];
-            $corrective_action->action_date = $request->action_date[$key];
-            $corrective_action->save();
+            $corrective_actions = CorrectiveAction::where('corrective_action_request_id', $id)->get();
+            foreach($corrective_actions as $key=>$corrective_action)
+            {
+                // $corrective_action = new CorrectiveAction;
+                $corrective_action->corrective_action_request_id = $id;
+                $corrective_action->corrective_action = $request->corrective_action[$key];
+                $corrective_action->action_date = $request->action_date[$key];
+                $corrective_action->save();
+            }
         }
         
         $audit_head = User::whereNull('status')->where('role_id', 4)->first();

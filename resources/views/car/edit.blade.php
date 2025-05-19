@@ -9,11 +9,11 @@
     <div class="row">
         <div class="col-md-12">
             Correction / Immediate Action :
-            <textarea name="immediate_action" class="form-control input-sm" cols="30" rows="10" >{{ $car->immediate_action }}</textarea>
+            <textarea name="immediate_action" class="form-control input-sm" cols="30" rows="10" required>{{ $car->immediate_action }}</textarea>
         </div>
         <div class="col-md-6">
             Action Date :
-            <input type="date" name="action_date_immediate_action" class="form-control input-sm" min="{{ date('Y-m-d') }}" value="{{ $car->action_date_immediate_action }}">
+            <input type="date" name="action_date_immediate_action" class="form-control input-sm" min="{{ date('Y-m-d') }}" value="{{ $car->action_date_immediate_action }}" required>
         </div>
         {{-- <div class="col-md-6">
             Verification :

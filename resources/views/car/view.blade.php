@@ -30,10 +30,10 @@
             </a>
             @endif
         </div>
-        {{-- <div class="col-lg-12">
-            <b>Reference Document </b> <i>(if any) :</i>
-            {!! nl2br(e($car->reference_document)) !!}
-        </div> --}}
+        <div class="col-lg-6">
+            <b>Auditor : </b>
+            {{ $car->auditor->name }}
+        </div>
         
         <div class="col-md-12">
             <div class="panel panel-primary">
@@ -179,91 +179,94 @@
         </div>
     </div>
     <hr>
+    @endif
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    Approvers
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                            <b>Name</b>
-                        </div>
-                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                            <b>Status</b>
-                        </div>
-                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                            <b>Action Date</b>
-                        </div>
-                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                            <b>Remarks</b>
-                        </div>
+    @if($car->approver->isNotEmpty())
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        Approvers
                     </div>
-                    @foreach ($car->approver as $approver)
+                    <div class="panel-body">
                         <div class="row">
                             <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                                {{ $approver->user->name }}
+                                <b>Name</b>
                             </div>
                             <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                                {{ $approver->status }}
+                                <b>Status</b>
                             </div>
                             <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                                {{ date('M d Y', strtotime($approver->updated_at )) }}
+                                <b>Action Date</b>
                             </div>
                             <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                                {{ $approver->remarks }}
+                                <b>Remarks</b>
                             </div>
                         </div>
-                    @endforeach
-                    {{-- @dd($car->correctiveAction) --}}
+                        @foreach ($car->approver as $approver)
+                            <div class="row">
+                                <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                    {{ $approver->user->name }}
+                                </div>
+                                <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                    {{ $approver->status }}
+                                </div>
+                                <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                    {{ date('M d Y', strtotime($approver->updated_at )) }}
+                                </div>
+                                <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                    {{ $approver->remarks }}
+                                </div>
+                            </div>
+                        @endforeach
+                        {{-- @dd($car->correctiveAction) --}}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    Verifiers
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                            <b>Name</b>
-                        </div>
-                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                            <b>Status</b>
-                        </div>
-                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                            <b>Action Date</b>
-                        </div>
-                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                            <b>Remarks</b>
-                        </div>
+    @endif
+    @if($car->verify->isNotEmpty())
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        Verifiers
                     </div>
-                    @foreach ($car->verify as $verify)
+                    <div class="panel-body">
                         <div class="row">
                             <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                                {{ $verify->user->name }}
+                                <b>Name</b>
                             </div>
                             <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                                {{ $verify->status }}
+                                <b>Status</b>
                             </div>
                             <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                                {{ date('M d Y', strtotime($verify->updated_at )) }}
+                                <b>Action Date</b>
                             </div>
                             <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                                {{ $verify->remarks }}
+                                <b>Remarks</b>
                             </div>
                         </div>
-                    @endforeach
-                    {{-- @dd($car->correctiveAction) --}}
+                        @foreach ($car->verify as $verify)
+                            <div class="row">
+                                <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                    {{ $verify->user->name }}
+                                </div>
+                                <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                    {{ $verify->status }}
+                                </div>
+                                <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                    {{ date('M d Y', strtotime($verify->updated_at )) }}
+                                </div>
+                                <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                    {{ $verify->remarks }}
+                                </div>
+                            </div>
+                        @endforeach
+                        {{-- @dd($car->correctiveAction) --}}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     @endif
 @endcomponent
