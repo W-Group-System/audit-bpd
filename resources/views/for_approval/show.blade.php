@@ -17,7 +17,7 @@
                     <a href="{{ url('for-approval') }}" class="btn btn-danger pull-right">Back</a>
                 </div>
                 <div class="ibox-content">
-                    <form method="POST" action="{{ url('verify_action') }}" onsubmit="show()">
+                    <form method="POST" action="{{ url('verify_action') }}" onsubmit="show()" enctype="multipart/form-data">
                         @csrf 
                         <input type="hidden" name="car_id" value="{{ $car->id }}">
 
@@ -72,41 +72,63 @@
                                     </div>
                                     <div class="panel-body">
                                         {{-- {!! nl2br(e($car->immediate_action)) !!} --}}
-                                        <div class="row">
-                                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
-                                                <b>Correction Immediate Action</b>
-                                            </div>
-                                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
-                                                <b>Action Date</b>
-                                            </div>
-                                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
-                                                <b>Status</b>
-                                            </div>
-                                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
-                                                <b>Remarks</b>
-                                            </div>
-                                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
-                                                {{ $car->immediate_action }}
-                                            </div>
-                                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
-                                                {{ date('M d Y', strtotime($car->action_date_immediate_action)) }}
-                                                
-                                            </div>
-                                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
-                                                <select name="immediate_action_status" class="form-control input-sm" required>
-                                                    <option value=""></option>
-                                                    <option value="Pending" @if($car->immediate_action_status == 'Pending') selected @endif>Pending</option>
-                                                    <option value="Done" @if($car->immediate_action_status == 'Done') selected @endif>Done</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
-                                                <textarea name="immediate_action_remarks" class="form-control" cols="30" required>{{ $car->immediate_action_remarks }}</textarea>
-                                            </div>
-                                        </div>
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        Correction Immediate Action>
+                                                    </th>
+                                                    <th>
+                                                        Action Date
+                                                    </th>
+                                                    <th>
+                                                        Status
+                                                    </th>
+                                                    <th>
+                                                        Remarks
+                                                    </th>
+                                                    <th>
+                                                        Attachment
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        {{ $car->immediate_action }}
+                                                    </td>
+                                                    <td>
+                                                        {{ date('M d Y', strtotime($car->action_date_immediate_action)) }}
+                                                    </td>
+                                                    <td>
+                                                        <select name="immediate_action_status" class="form-control input-sm" required>
+                                                            <option value=""></option>
+                                                            <option value="Pending" @if($car->immediate_action_status == 'Pending') selected @endif>Pending</option>
+                                                            <option value="Done" @if($car->immediate_action_status == 'Done') selected @endif>Done</option>
+                                                        </select>
+
+                                                        <div id="immediateActionFile" hidden>
+                                                            <input type="file" name="immediate_action_file" class="form-control input-sm">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <textarea name="immediate_action_remarks" class="form-control" cols="30" required>{{ $car->immediate_action_remarks }}</textarea>
+                                                    </td>
+                                                    <td>
+                                                        @if($car->immediate_action_file)
+                                                            <a href="{{ url($car->immediate_action_file) }}" target="_blank">
+                                                                <i class="fa fa-file"></i>
+                                                            </a>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="panel panel-primary">
@@ -152,48 +174,55 @@
                                         IV. Corrective Action
                                     </div>
                                     <div class="panel-body">
-                                        <div class="row">
-                                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
-                                                <b>Corrective Action</b>
-                                            </div>
-                                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
-                                                <b>Action Date</b>
-                                            </div>
-                                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
-                                                <b>Status</b>
-                                            </div>
-                                            <div class="col-md-3 border border-1 border-top-bottom border-right-left">
-                                                <b>Remarks</b>
-                                            </div>
-                                        </div>
-                                        @foreach ($car->correctiveAction as $corrective_action)
-                                            <input type="hidden" name="corrective_action_id[]" value="{{ $corrective_action->id }}">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Corrective Action</th>
+                                                    <th>Action Date</th>
+                                                    <th>Status</th>
+                                                    <th>Remarks</th>
+                                                    <th>Attachment</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($car->correctiveAction as $corrective_action)
+                                                    <tr>
+                                                        <input type="hidden" name="corrective_action_id[]" value="{{ $corrective_action->id }}">
 
-                                            <div class="row">
-                                                <div class="col-md-3 border border-1 border-top-bottom border-right-left">
-                                                    {{ $corrective_action->corrective_action }}
-                                                </div>
-                                                <div class="col-md-3 border border-1 border-top-bottom border-right-left">
-                                                    {{ date('M d, Y', strtotime($corrective_action->action_date)) }}
-                                                </div>
-                                                <div class="col-md-3 border border-1 border-top-bottom border-right-left">
-                                                    <select name="status[]" class="form-control input-sm" required>
-                                                        <option value=""></option>
-                                                        <option value="Pending" @if($corrective_action->status == 'Pending') selected @endif>Pending</option>
-                                                        <option value="Done" @if($corrective_action->status == 'Done') selected @endif>Done</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-3 border border-1 border-top-bottom border-right-left">
-                                                    <textarea name="remarks_action[]" class="form-control input-sm" cols="30" required >{{ $corrective_action->remarks }}</textarea>
-                                                </div>
-                                            </div>
-                                        @endforeach
+                                                        <td>
+                                                            {{ $corrective_action->corrective_action }}
+                                                        </td>
+                                                        <td>
+                                                            {{ date('M d, Y', strtotime($corrective_action->action_date)) }}
+                                                        </td>
+                                                        <td>
+                                                            <select name="status[]" class="form-control input-sm" required onchange="correctiveActionStatus({{ $corrective_action->id }}, this.value)">
+                                                                <option value=""></option>
+                                                                <option value="Pending" @if($corrective_action->status == 'Pending') selected @endif>Pending</option>
+                                                                <option value="Done" @if($corrective_action->status == 'Done') selected @endif>Done</option>
+                                                            </select>
+
+                                                            <div id="correctiveActionFile{{ $corrective_action->id }}" hidden>
+                                                                <input type="file" name="corrective_action_files[]" class="form-control" >
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <textarea name="remarks_action[]" class="form-control input-sm" cols="30" required >{{ $corrective_action->remarks }}</textarea>
+                                                        </td>
+                                                        <td>
+                                                            @if($corrective_action->file_attachments)
+                                                                <a href="{{ url($corrective_action->file_attachments) }}" target="_blank"><i class="fa fa-file"></i></a>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <hr>
-    
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="panel panel-primary">
@@ -285,9 +314,20 @@
 <script src="{{ asset('login_css/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
 
 <script>
+    function correctiveActionStatus(id, value)
+    {
+        if (value == 'Done')
+        {
+            $("#correctiveActionFile"+id).removeAttr('hidden')
+        }
+        else
+        {
+            $("#correctiveActionFile"+id).prop('hidden', true)
+        }
+        
+    }
+
     $(document).ready(function(){
-        
-        
         $('.cat').chosen({width: "100%"});
         $('.tables').DataTable({
             pageLength: 25,
@@ -312,6 +352,19 @@
                 }
             ]
         });
+
+        $("[name='immediate_action_status']").on('change', function() {
+            var value = $(this).val();
+
+            if (value == 'Done')
+            {
+                $("#immediateActionFile").removeAttr('hidden');
+            }
+            else
+            {
+                $("#immediateActionFile").prop('hidden', true);
+            }
+        })
     });
 
 </script>

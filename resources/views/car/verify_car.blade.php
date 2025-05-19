@@ -13,11 +13,11 @@
         @if($car->verify->isNotEmpty())
             <div class="col-md-12">
                 Correction Immediate Action :
-                <textarea name="correction_immediate_action" class="form-control" cols="30" rows="10">{{ $car->immediate_action }}</textarea>
+                <textarea name="correction_immediate_action" class="form-control" cols="30" rows="10" @if($car->immediate_action_status == 'Done') readonly @endif>{{ $car->immediate_action }}</textarea>
             </div>
             <div class="col-md-6 m-b-md">
                 Action Date :
-                <input type="date" name="correction_immediate_action_date" class="form-control input-sm" value="{{ $car->action_date_immediate_action }}" required>
+                <input type="date" name="correction_immediate_action_date" class="form-control input-sm" value="{{ $car->action_date_immediate_action }}" @if($car->immediate_action_status == 'Done') readonly @endif required>
             </div>
             
             <div class="col-md-12 m-b-md">
@@ -33,10 +33,10 @@
                                 {{ $key+1 }}
                             </div>
                             <div class="col-md-6">
-                                <textarea name="corrective_action[]" class="form-control" cols="30" required>{{ $ca->corrective_action }}</textarea>
+                                <textarea name="corrective_action[]" class="form-control" cols="30" @if($ca->status == 'Done') readonly @endif required>{{ $ca->corrective_action }}</textarea>
                             </div>
                             <div class="col-md-5">
-                                <input type="date" name="action_date[]" class="form-control input-sm" min="{{ date('Y-m-d') }}" value="{{ $ca->action_date }}" required>
+                                <input type="date" name="action_date[]" class="form-control input-sm" min="{{ date('Y-m-d') }}" value="{{ $ca->action_date }}" @if($ca->status == 'Done') readonly @endif required>
                             </div>
                         </div>
                         @endforeach
