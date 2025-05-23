@@ -119,6 +119,9 @@
 </div>
 
 @foreach ($approvers as $approver)
+@php
+    $car = $approver->correctiveActionRequest;
+@endphp
 @include('for_approval.for_approval')
 @endforeach
 

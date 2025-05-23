@@ -225,8 +225,11 @@ class CorrectiveActionRequestController extends Controller
         // dd($request->all(), $id);
         $car = CorrectiveActionRequest::findOrFail($id);
         $car->status = 'For Verification';
-        $car->immediate_action = $request->correction_immediate_action;
-        $car->action_date_immediate_action = $request->correction_immediate_action_date;
+        if ($request->has('correction_immediate_action'))
+        {
+            $car->immediate_action = $request->correction_immediate_action;
+            $car->action_date_immediate_action = $request->correction_immediate_action_date;
+        }
         $car->save();
 
         if ($request->has('corrective_action'))

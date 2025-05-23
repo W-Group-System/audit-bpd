@@ -67,7 +67,7 @@ class ForReviewController extends Controller
             }
             else
             {
-                $corrective_action_request->status = 'Review CAR';
+                $corrective_action_request->status = 'For Review CAR';
             }
             $corrective_action_request->save();
 

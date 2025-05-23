@@ -76,7 +76,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>
-                                                        Correction Immediate Action>
+                                                        Correction Immediate Action
                                                     </th>
                                                     <th>
                                                         Action Date
@@ -95,7 +95,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td>
-                                                        {{ $car->immediate_action }}
+                                                        {!! nl2br(e($car->immediate_action)) !!}
                                                     </td>
                                                     <td>
                                                         {{ date('M d Y', strtotime($car->action_date_immediate_action)) }}
