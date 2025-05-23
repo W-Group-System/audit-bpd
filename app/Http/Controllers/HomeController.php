@@ -37,12 +37,15 @@ class HomeController extends Controller
         foreach($departments as $department)
         {
             $object = new stdClass;
-            $car = CorrectiveActionRequest::get();
+            // $car = CorrectiveActionRequest::get();
             
-            $object->department = $department->name;
-            $object->open = count($car->where('status', 'Open')->where('department_id', $department->id));
-            $object->in_progress = count($car->where('status', 'In Progress')->where('department_id', $department->id));
-            $object->closed = count($car->where('status', 'Closed')->where('department_id', $department->id));
+            $object->dept_id = $department->id;
+            $object->department = $department->code .' - '.$department->name;
+            $object->open = count($cars->where('status', '!=', 'Closed')->where('department_id', $department->id));
+            // $object->in_progress = count($car->where('status', 'In Progress')->where('department_id', $department->id));
+            $object->closed = count($cars->where('status', 'Closed')->where('department_id', $department->id));
+            $object->open_cars = $cars->where('status', '!=', 'Closed')->where('department_id', $department->id);
+            $object->closed_cars = $cars->where('status', 'Closed')->where('department_id', $department->id);
             $car_per_dept_array[] = $object;
         }
 

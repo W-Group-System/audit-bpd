@@ -84,7 +84,7 @@
                                 <tr>
                                     <th>Department</th>
                                     <th>Open CARs</th>
-                                    <th>In Progress CARs</th>
+                                    {{-- <th>In Progress CARs</th> --}}
                                     <th>Closed CARs</th>
                                 </tr>
                             </thead>
@@ -92,9 +92,14 @@
                                 @foreach ($car_per_dept_array as $car)
                                     <tr>
                                         <td>{{ $car->department }}</td>
-                                        <td>{{ $car->open }}</td>
-                                        <td>{{ $car->in_progress }}</td>
-                                        <td>{{ $car->closed }}</td>
+                                        <td>
+                                            <a href="" data-toggle="modal" data-target="#viewStatus{{ $car->dept_id }}">{{ $car->open }}</a>
+                                        </td>
+                                        {{-- <td>{{ $car->in_progress }}</td> --}}
+                                        <td>
+                                            <a href="" data-toggle="modal" data-target="#viewCloseStatus{{ $car->dept_id }}">{{ $car->closed }}</a>
+                                        </td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
@@ -104,6 +109,11 @@
         </div>
     </div>
 </div>
+
+@foreach ($car_per_dept_array as $car)
+    @include('view_open_car_status')
+    @include('view_closed_car_status')
+@endforeach
 @endsection
 
 @section('js')
