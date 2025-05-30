@@ -33,6 +33,10 @@ Route::get('companies', 'CompanyController@index');
 
 // Department
 Route::get('departments', 'DepartmentController@index');
+Route::post('store_department', 'DepartmentController@store');
+Route::post('update_department/{id}', 'DepartmentController@update');
+Route::post('deactivate_department', 'DepartmentController@deactivate_department');
+Route::post('activate_department', 'DepartmentController@activate_department');
 
 // CAR
 Route::get('corrective-action-request', 'CorrectiveActionRequestController@index');

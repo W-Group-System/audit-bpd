@@ -75,7 +75,11 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
+                    @if(auth()->user()->role->name == 'Auditor' || auth()->user()->role->name == 'Administrator')
                     <h5>Status of CAR per Department</h5>
+                    @else
+                    <h5>Status of CAR</h5>
+                    @endif
                 </div>
                 <div class="ibox-content">
                     <div class="table-responsive">
@@ -86,6 +90,7 @@
                                     <th>Open CARs</th>
                                     {{-- <th>In Progress CARs</th> --}}
                                     <th>Closed CARs</th>
+                                    <th>Rating %</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -98,6 +103,16 @@
                                         {{-- <td>{{ $car->in_progress }}</td> --}}
                                         <td>
                                             <a href="" data-toggle="modal" data-target="#viewCloseStatus{{ $car->dept_id }}">{{ $car->closed }}</a>
+                                        </td>
+                                        <td>
+                                            @php
+                                                if($car->closed != 0)
+                                                {
+                                                    $percentage = $car->closed / ($car->open + $car->closed);
+                                                }
+                                            @endphp
+
+                                            {{ round((float)$percentage * 100). '%' }}
                                         </td>
                                     </tr>
                                 @endforeach

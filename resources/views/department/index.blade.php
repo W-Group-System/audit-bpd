@@ -7,7 +7,6 @@
 @section('content')
 
 <div class="wrapper wrapper-content">
-    {{-- @include('error') --}}
     <div class="row">
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
@@ -64,13 +63,20 @@
                         <tbody>
                             @foreach($departments as $department)
                             <tr>
-                                <td>
-                                    <button class="btn btn-warning btn-sm" type="button">
+                                <td >
+                                    <button class="btn btn-warning btn-sm" type="button" data-toggle="modal" data-target="#edit{{ $department->id }}">
                                         <i class="fa fa-pencil-square-o"></i>
                                     </button>
-                                    <button class="btn btn-danger btn-sm" type="button">
+
+                                    @if($department->status)
+                                    <button class="btn btn-info btn-sm activate-department" id="{{ $department->id }}" type="button">
+                                        <i class="fa fa-check"></i>
+                                    </button>
+                                    @else
+                                    <button class="btn btn-danger btn-sm deactivate-department" id="{{ $department->id }}" type="button">
                                         <i class="fa fa-trash"></i>
                                     </button>
+                                    @endif
                                 </td>
                                 <td>{{ $department->code }}</td>
                                 <td>{{ $department->name }}</td>
@@ -94,6 +100,11 @@
 
     </div>
 </div>
+
+@include('department.create')
+@foreach($departments as $department)
+@include('department.edit')
+@endforeach
 @endsection
 
 @section('js')
@@ -103,67 +114,67 @@
 
 <script>
     $(document).ready(function(){
-        // $('.deactivate-user').click(function () {
-        
-        //     var id = this.id;
-        //     swal({
-        //         title: "Are you sure?",
-        //         text: "This user will be deactivated!",
-        //         type: "warning",
-        //         showCancelButton: true,
-        //         confirmButtonColor: "#DD6B55",
-        //         confirmButtonText: "Yes, deactivated it!",
-        //         closeOnConfirm: false
-        //     }, function (){
-        //         $.ajax({
-        //             dataType: 'json',
-        //             type:'POST',
-        //             url:  '{{url("deactivate_user")}}',
-        //             data:{id:id},
-        //             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        //         }).done(function(data){
-        //             console.log(data);
-        //             swal("Deactivated!", "User is now deactivated.", "success");
-        //             location.reload();
-        //         }).fail(function(data)
-        //         {
+        $('.deactivate-department').click(function () {
+            
+            var id = this.id;
+            swal({
+                title: "Are you sure?",
+                text: "This department will be deactivated!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, deactivated it!",
+                closeOnConfirm: false
+            }, function (){
+                $.ajax({
+                    dataType: 'json',
+                    type:'POST',
+                    url:  '{{url("deactivate_department")}}',
+                    data:{id:id},
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                }).done(function(data){
+                    console.log(data);
+                    swal("Deactivated!", "User is now deactivated.", "success");
+                    location.reload();
+                }).fail(function(data)
+                {
                     
-        //             swal("Deactivated!", "User is now deactivated.", "success");
-        //         location.reload();
-        //         });
-        //     });
-        // });
+                    swal("Deactivated!", "Department is now deactivated.", "success");
+                location.reload();
+                });
+            });
+        });
 
-        // $('.activate-user').click(function () {
+        $('.activate-department').click(function () {
         
-        //     var id = this.id;
-        //     swal({
-        //         title: "Are you sure?",
-        //         text: "This user will be activated!",
-        //         type: "warning",
-        //         showCancelButton: true,
-        //         confirmButtonColor: "#DD6B55",
-        //         confirmButtonText: "Yes, Activated it!",
-        //         closeOnConfirm: false
-        //     }, function (){
-        //         $.ajax({
-        //             dataType: 'json',
-        //             type:'POST',
-        //             url:  '{{url("activate_user")}}',
-        //             data:{id:id},
-        //             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        //         }).done(function(data){
-        //             console.log(data);
-        //             swal("Activated!", "User is now activated.", "success");
-        //             location.reload();
-        //         }).fail(function(data)
-        //         {
+            var id = this.id;
+            swal({
+                title: "Are you sure?",
+                text: "This user will be activated!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, Activated it!",
+                closeOnConfirm: false
+            }, function (){
+                $.ajax({
+                    dataType: 'json',
+                    type:'POST',
+                    url:  '{{url("activate_department")}}',
+                    data:{id:id},
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                }).done(function(data){
+                    console.log(data);
+                    swal("Activated!", "User is now activated.", "success");
+                    location.reload();
+                }).fail(function(data)
+                {
                     
-        //             swal("Activated!", "User is now activated.", "success");
-        //         location.reload();
-        //         });
-        //     });
-        // });
+                    swal("Activated!", "User is now activated.", "success");
+                location.reload();
+                });
+            });
+        });
         
         $('.cat').chosen({width: "100%"});
         
