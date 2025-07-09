@@ -154,4 +154,18 @@ class UserController extends Controller
         // Alert::success('Successfully Activated')->persistent('Dismiss');
         // return back();
     }
+
+    public function change_password(Request $request,$id)
+    {
+        $this->validate($request,[
+            'password' => 'min:6|confirmed'
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->password = bcrypt($request->password);
+        $user->save();
+        
+        Alert::success('Successfully Changed')->persistent('Dismiss');
+        return back();
+    }
 }

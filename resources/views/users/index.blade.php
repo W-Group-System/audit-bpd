@@ -73,8 +73,9 @@
                                     @else
                                         <button class="btn btn-sm btn-warning" data-target="#change_pass{{$user->id}}" data-toggle="modal" title='change password' ><i class="fa fa-key"></i></button>
                                         <button class="btn btn-sm btn-info"  title='Edit' data-target="#edit{{$user->id}}" data-toggle="modal"><i class="fa fa-edit"></i></button>
-                                    @if(Auth::user()->id != $user->id)
-                                        <button class="btn btn-sm btn-danger deactivate-user" id='{{$user->id}}' title='Deactivate' ><i class="fa fa-trash"></i></button>@endif
+                                        @if(Auth::user()->id != $user->id)
+                                            <button class="btn btn-sm btn-danger deactivate-user" id='{{$user->id}}' title='Deactivate' ><i class="fa fa-trash"></i></button>
+                                        @endif
                                     @endif
                                 </td>
                                 <td>{{$user->name}}</td>
@@ -85,7 +86,7 @@
                                 <td  id='statususer{{$user->id}}'>@if($user->status) <small class="label label-danger">Inactive</small>  @else <small class="label label-primary">Active</small> @endif</td>
                             </tr>
                             @include('users.edit') 
-                            {{-- @include('changepassword')  --}}
+                            @include('users.change_password') 
                             @endforeach
                         </tbody>
                         </table>

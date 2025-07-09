@@ -27,6 +27,7 @@ Route::post('store_user', 'UserController@store');
 Route::post('update_user/{id}', 'UserController@update');
 Route::post('deactivate_user', 'UserController@deactivate');
 Route::post('activate_user', 'UserController@activate');
+Route::post('change_password/{id}','UserController@change_password');
 
 // Company
 Route::get('companies', 'CompanyController@index');
