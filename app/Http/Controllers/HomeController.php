@@ -27,7 +27,7 @@ class HomeController extends Controller
     public function index()
     {
         $cars = CorrectiveActionRequest::get();
-        $departments = Department::get();
+        $departments = Department::whereNull('status')->get();
         if (auth()->user()->role->name == 'Auditee')
         {
             $cars = CorrectiveActionRequest::where('department_id', auth()->user()->department_id)->get();
