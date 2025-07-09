@@ -106,6 +106,7 @@
                                         </td>
                                         <td>
                                             @php
+                                                $percentage = 0;
                                                 if($car->closed != 0)
                                                 {
                                                     $percentage = $car->closed / ($car->open + $car->closed);
