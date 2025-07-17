@@ -11,6 +11,9 @@
 |
 */
 
+use App\Mail\NotifyEmail;
+use App\User;
+
 Route::get('/', function () {
     // return view('welcome');
     return redirect('login');
@@ -51,3 +54,9 @@ Route::get('for-approval', 'ForReviewController@index');
 Route::post('car_action', 'ForReviewController@store');
 Route::get('show_verification/{id}', 'ForReviewController@show');
 Route::post('verify_action', 'ForReviewController@verifyAction');
+
+// Route::get('mailable', function () {
+//     $user = User::find(3);
+
+//     return new NotifyEmail($user);
+// });
