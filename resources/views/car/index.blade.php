@@ -331,6 +331,12 @@
                                                     </button>
                                                     @endif
                                                 @endif
+
+                                                @if(auth()->user()->role->name == 'Administrator')
+                                                <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editAdmin{{ $car->id }}">
+                                                    <i class="fa fa-pencil-square-o"></i>
+                                                </button>
+                                                @endif
                                             </td>
                                             <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
                                             <td>{{ $car->department->name }}</td>
@@ -371,6 +377,7 @@
 @foreach ($corrective_action_requests as $car)
 @include('car.edit')
 @include('car.view')
+@include('car.edit_admin')
 @endforeach
 @endsection
 

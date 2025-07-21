@@ -343,4 +343,34 @@ class CorrectiveActionRequestController extends Controller
             return back();
         }
     }
+    
+    public function updateAdmin(Request $request,$id)
+    {
+        // dd($request->all());
+        $car = CorrectiveActionRequest::findOrFail($id);
+        $car->standard_and_clause = $request->standard_and_clause;
+        $car->department_id = $request->department;
+        $car->classification_of_nonconformity = $request->classification_of_nonconformity;
+        $car->nature_of_nonconformity = $request->nature_of_nonconformity;
+        $car->type_of_nonconformity = $request->type_of_nonconformity;
+        $car->auditor_id = $request->auditor;
+        $car->auditee_id = $request->auditee;
+        // $car->reference_document = $request->reference_document;
+        $car->description_of_nonconformity = $request->description_of_nonconformity;
+        // $car->status = 'Fill-Out';
+        $car->evidence = $request->evidence;
+        if($request->has('upload_evidence'))
+        {
+            $file = $request->file('upload_evidence');
+            $name = time().'_'.$file->getClientOriginalName();
+            $file->move(public_path('evidence'), $name);
+            $filename = '/evidence/'.$name;
+
+            $car->evidence_attachment = $filename;
+        }
+        $car->save();
+
+        Alert::success('Successfully Saved')->persistent('Dismiss');
+        return back();
+    }
 }
