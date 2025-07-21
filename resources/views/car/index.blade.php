@@ -50,224 +50,319 @@
     </div>
     <div class='row'>
         @if(auth()->user()->role->name == 'Auditor')
-        <div class="col-lg-8">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>Corrective Action Request 
-                        @if(auth()->user()->role->name == 'Auditor' || auth()->user()->role->name == 'Administrator')
-                            <button class="btn btn-success" data-target="#new" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New CAR</button>
-                        @endif
-                    </h5>
-                </div>
-                <div class="ibox-content">
-                    @include('components.error')
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover tables" >
-                            <thead>
-                                <tr>
-                                    <th>Action</th>
-                                    <th>CAR #</th>
-                                    <th>Department</th>
-                                    {{-- <th>Standard and Clause</th> --}}
-                                    {{-- <th>Classification of Nonconformity</th> --}}
-                                    {{-- <th>Nature of Nonconformity</th> --}}
-                                    <th>Description of Nonconformity</th>
-                                    <th>Issued By</th>
-                                    <th>Issued To</th>
-                                    <th>Issued Date</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($corrective_action_requests->where('auditor_id', auth()->user()->id) as $car)
+            <div class="col-lg-8">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Corrective Action Request 
+                            @if(auth()->user()->role->name == 'Auditor' || auth()->user()->role->name == 'Administrator')
+                                <button class="btn btn-success" data-target="#new" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New CAR</button>
+                            @endif
+                        </h5>
+                    </div>
+                    <div class="ibox-content">
+                        @include('components.error')
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover tables" >
+                                <thead>
                                     <tr>
-                                        <td>
-                                            @php
-                                                $approver = ($car->approver)->where('user_id', $car->auditee_id)->where('status','Submitted')
-                                            @endphp
-                                            <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#view{{ $car->id }}">
-                                                <i class="fa fa-eye"></i>
-                                            </button>
-
-                                            @if(auth()->user()->role->name == 'Auditee')
-                                                @if(count($approver) == 0)
-                                                <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#edit{{ $car->id }}">
-                                                    <i class="fa fa-pencil-square-o"></i>
+                                        <th>Action</th>
+                                        <th>CAR #</th>
+                                        <th>Department</th>
+                                        {{-- <th>Standard and Clause</th> --}}
+                                        {{-- <th>Classification of Nonconformity</th> --}}
+                                        {{-- <th>Nature of Nonconformity</th> --}}
+                                        <th>Description of Nonconformity</th>
+                                        <th>Issued By</th>
+                                        <th>Issued To</th>
+                                        <th>Issued Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($corrective_action_requests->where('auditor_id', auth()->user()->id) as $car)
+                                        <tr>
+                                            <td>
+                                                @php
+                                                    $approver = ($car->approver)->where('user_id', $car->auditee_id)->where('status','Submitted')
+                                                @endphp
+                                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#view{{ $car->id }}">
+                                                    <i class="fa fa-eye"></i>
                                                 </button>
+
+                                                @if(auth()->user()->role->name == 'Auditee')
+                                                    @if(count($approver) == 0)
+                                                    <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#edit{{ $car->id }}">
+                                                        <i class="fa fa-pencil-square-o"></i>
+                                                    </button>
+                                                    @endif
                                                 @endif
-                                            @endif
-                                        </td>
-                                        <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
-                                        <td>{{ $car->department->name }}</td>
-                                        {{-- <td>{!! nl2br(e($car->standard_and_clause)) !!}</td>
-                                        <td>{{ $car->classification_of_nonconformity }}</td>
-                                        <td>{{ $car->nature_of_nonconformity }}</td>
-                                        <td>{{ $car->type_of_nonconformity }}</td> --}}
-                                        <td>{!! nl2br(e($car->description_of_nonconformity)) !!}</td>
-                                        <td>{{ $car->auditor->name }}</td>
-                                        <td>{{ $car->auditee->name }}</td>
-                                        <td>{{ date('M d Y', strtotime($car->created_at)) }}</td>
-                                        <td>
-                                            {{-- @if($car->status == 'Open')
-                                            <span class="label label-primary">
-                                            @elseif($car->status == 'In Progress')
-                                            <span class="label label-warning">
-                                            @elseif($car->status == 'Closed')
-                                            <span class="label label-danger">
-                                            @endif                                            
-                                            </span> --}}
-                                            {{ $car->status }}
-                                        </td>
-                                    </tr>
+                                            </td>
+                                            <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
+                                            <td>{{ $car->department->name }}</td>
+                                            {{-- <td>{!! nl2br(e($car->standard_and_clause)) !!}</td>
+                                            <td>{{ $car->classification_of_nonconformity }}</td>
+                                            <td>{{ $car->nature_of_nonconformity }}</td>
+                                            <td>{{ $car->type_of_nonconformity }}</td> --}}
+                                            <td>{!! nl2br(e($car->description_of_nonconformity)) !!}</td>
+                                            <td>{{ $car->auditor->name }}</td>
+                                            <td>{{ $car->auditee->name }}</td>
+                                            <td>{{ date('M d Y', strtotime($car->created_at)) }}</td>
+                                            <td>
+                                                {{-- @if($car->status == 'Open')
+                                                <span class="label label-primary">
+                                                @elseif($car->status == 'In Progress')
+                                                <span class="label label-warning">
+                                                @elseif($car->status == 'Closed')
+                                                <span class="label label-danger">
+                                                @endif                                            
+                                                </span> --}}
+                                                {{ $car->status }}
+                                            </td>
+                                        </tr>
 
-                                    {{-- @include('car.view') --}}
-                                @endforeach
-                            </tbody>
-                        </table>
+                                        {{-- @include('car.view') --}}
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>List of Corrective Action Request 
-                    </h5>
-                </div>
-                <div class="ibox-content">
-                    @include('components.error')
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover tables" >
-                            <thead>
-                                <tr>
-                                    <th>Action</th>
-                                    <th>CAR #</th>
-                                    <th>Department</th>
-                                    {{-- <th>Standard and Clause</th> --}}
-                                    {{-- <th>Classification of Nonconformity</th> --}}
-                                    {{-- <th>Nature of Nonconformity</th> --}}
-                                    <th>Description of Nonconformity</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($corrective_action_requests as $car)
+            <div class="col-lg-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>List of Corrective Action Request 
+                        </h5>
+                    </div>
+                    <div class="ibox-content">
+                        @include('components.error')
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover tables" >
+                                <thead>
                                     <tr>
-                                        <td>
-                                            <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#view{{ $car->id }}">
-                                                <i class="fa fa-eye"></i>
-                                            </button>
-                                        </td>
-                                        <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
-                                        <td>{{ $car->department->name }}</td>
-                                        <td>{!! nl2br(e($car->description_of_nonconformity)) !!}</td>
+                                        <th>Action</th>
+                                        <th>CAR #</th>
+                                        <th>Department</th>
+                                        {{-- <th>Standard and Clause</th> --}}
+                                        {{-- <th>Classification of Nonconformity</th> --}}
+                                        {{-- <th>Nature of Nonconformity</th> --}}
+                                        <th>Description of Nonconformity</th>
                                     </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($corrective_action_requests as $car)
+                                        <tr>
+                                            <td>
+                                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#view{{ $car->id }}">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
+                                            </td>
+                                            <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
+                                            <td>{{ $car->department->name }}</td>
+                                            <td>{!! nl2br(e($car->description_of_nonconformity)) !!}</td>
+                                        </tr>
 
-                                    {{-- @include('car.view') --}}
-                                @endforeach
-                            </tbody>
-                        </table>
+                                        {{-- @include('car.view') --}}
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         @else
-        <div class="col-lg-12">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>Corrective Action Request 
-                        @if(auth()->user()->role->name == 'Auditor' || auth()->user()->role->name == 'Administrator')
-                            <button class="btn btn-success" data-target="#new" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New CAR</button>
-                        @endif
-                    </h5>
-                </div>
-                <div class="ibox-content">
-                    @include('components.error')
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover tables" >
-                            <thead>
-                                <tr>
-                                    <th>Action</th>
-                                    <th>CAR #</th>
-                                    <th>Department</th>
-                                    {{-- <th>Standard and Clause</th> --}}
-                                    {{-- <th>Classification of Nonconformity</th> --}}
-                                    {{-- <th>Nature of Nonconformity</th> --}}
-                                    <th>Description of Nonconformity</th>
-                                    <th>Issued By</th>
-                                    <th>Issued To</th>
-                                    <th>Issued Date</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($corrective_action_requests as $car)
-                                    <tr>
-                                        <td>
-                                            @php
-                                                $approver = ($car->approver)->where('user_id', $car->auditee_id)->where('status','Submitted');
+            @if(auth()->user()->role->name == 'Audit Head')
+                <div class="col-lg-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Corrective Action Request in Department</h5>
+                        </div>
+                        <div class="ibox-content">
+                            @include('components.error')
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered table-hover tables" >
+                                    <thead>
+                                        <tr>
+                                            <th>Action</th>
+                                            <th>CAR #</th>
+                                            <th>Department</th>
+                                            {{-- <th>Standard and Clause</th> --}}
+                                            {{-- <th>Classification of Nonconformity</th> --}}
+                                            {{-- <th>Nature of Nonconformity</th> --}}
+                                            <th>Description of Nonconformity</th>
+                                            <th>Issued By</th>
+                                            <th>Issued To</th>
+                                            <th>Issued Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($corrective_action_requests->where('department_id', auth()->user()->department_id) as $car)
+                                            <tr>
+                                                <td>
+                                                    @php
+                                                        $approver = ($car->approver)->where('user_id', $car->auditee_id)->where('status','Submitted');
 
-                                                $approver_data = false;
-                                                if ($car->approver->isNotEmpty())
-                                                {
-                                                    $approver_data = ($car->approver)->every(function($item, $key) {
-                                                        if (in_array($item->status, ['Approved', 'Submitted']))
+                                                        $approver_data = false;
+                                                        if ($car->approver->isNotEmpty())
                                                         {
-                                                            return true;
+                                                            $approver_data = ($car->approver)->every(function($item, $key) {
+                                                                if (in_array($item->status, ['Approved', 'Submitted']))
+                                                                {
+                                                                    return true;
+                                                                }
+                                                            });
                                                         }
-                                                    });
-                                                }
-                                                $verifier = ($car->verify)->where('user_id', auth()->user()->id)->first();
-                                            @endphp
-                                            
-                                            <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#view{{ $car->id }}">
-                                                <i class="fa fa-eye"></i>
-                                            </button>
+                                                        $verifier = ($car->verify)->where('user_id', auth()->user()->id)->first();
+                                                    @endphp
+                                                    
+                                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#view{{ $car->id }}">
+                                                        <i class="fa fa-eye"></i>
+                                                    </button>
 
-                                            @if($approver_data && auth()->user()->role->name == 'Auditee' && $car->status != 'Closed')
-                                                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#verify{{ $car->id }}">
-                                                    <i class="fa fa-check"></i>
-                                                </button>
-                                            @endif
+                                                    @if(($approver_data) && (auth()->user()->role->name == 'Auditee' || auth()->user()->role->name == 'Audit Head') && ($car->status != 'Closed'))
+                                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#verify{{ $car->id }}">
+                                                            <i class="fa fa-check"></i>
+                                                        </button>
+                                                    @endif
 
-                                            @if(auth()->user()->role->name == 'Auditee')
-                                                @if(count($approver) == 0)
-                                                <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#edit{{ $car->id }}">
-                                                    <i class="fa fa-pencil-square-o"></i>
-                                                </button>
-                                                @endif
-                                            @endif
-                                        </td>
-                                        <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
-                                        <td>{{ $car->department->name }}</td>
-                                        {{-- <td>{!! nl2br(e($car->standard_and_clause)) !!}</td>
-                                        <td>{{ $car->classification_of_nonconformity }}</td>
-                                        <td>{{ $car->nature_of_nonconformity }}</td>
-                                        <td>{{ $car->type_of_nonconformity }}</td> --}}
-                                        <td>{!! nl2br(e($car->description_of_nonconformity)) !!}</td>
-                                        <td>{{ $car->auditor->name }}</td>
-                                        <td>{{ $car->auditee->name }}</td>
-                                        <td>{{ date('M d Y', strtotime($car->created_at)) }}</td>
-                                        <td>
-                                            {{-- @if($car->status == 'Open')
-                                            <span class="label label-primary">
-                                            @elseif($car->status == 'In Progress')
-                                            <span class="label label-warning">
-                                            @elseif($car->status == 'Closed')
-                                            <span class="label label-danger">
-                                            @endif                                            
-                                        </span> --}}
-                                            {{ $car->status }}
-                                        </td>
+                                                    @if(auth()->user()->role->name == 'Auditee' || auth()->user()->role->name == 'Audit Head')
+                                                        @if(count($approver) == 0)
+                                                        <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#edit{{ $car->id }}">
+                                                            <i class="fa fa-pencil-square-o"></i>
+                                                        </button>
+                                                        @endif
+                                                    @endif
+                                                </td>
+                                                <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
+                                                <td>{{ $car->department->name }}</td>
+                                                {{-- <td>{!! nl2br(e($car->standard_and_clause)) !!}</td>
+                                                <td>{{ $car->classification_of_nonconformity }}</td>
+                                                <td>{{ $car->nature_of_nonconformity }}</td>
+                                                <td>{{ $car->type_of_nonconformity }}</td> --}}
+                                                <td>{!! nl2br(e($car->description_of_nonconformity)) !!}</td>
+                                                <td>{{ $car->auditor->name }}</td>
+                                                <td>{{ $car->auditee->name }}</td>
+                                                <td>{{ date('M d Y', strtotime($car->created_at)) }}</td>
+                                                <td>
+                                                    {{-- @if($car->status == 'Open')
+                                                    <span class="label label-primary">
+                                                    @elseif($car->status == 'In Progress')
+                                                    <span class="label label-warning">
+                                                    @elseif($car->status == 'Closed')
+                                                    <span class="label label-danger">
+                                                    @endif                                            
+                                                </span> --}}
+                                                    {{ $car->status }}
+                                                </td>
+                                            </tr>
+
+                                            @include('car.verify_car')
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+            <div @if(auth()->user()->role->name == 'Audit Head') class="col-lg-6" @else class="col-lg-12" @endif>
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Corrective Action Request 
+                            @if(auth()->user()->role->name == 'Auditor' || auth()->user()->role->name == 'Administrator')
+                                <button class="btn btn-success" data-target="#new" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New CAR</button>
+                            @endif
+                        </h5>
+                    </div>
+                    <div class="ibox-content">
+                        @include('components.error')
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover tables" >
+                                <thead>
+                                    <tr>
+                                        <th>Action</th>
+                                        <th>CAR #</th>
+                                        <th>Department</th>
+                                        {{-- <th>Standard and Clause</th> --}}
+                                        {{-- <th>Classification of Nonconformity</th> --}}
+                                        {{-- <th>Nature of Nonconformity</th> --}}
+                                        <th>Description of Nonconformity</th>
+                                        <th>Issued By</th>
+                                        <th>Issued To</th>
+                                        <th>Issued Date</th>
+                                        <th>Status</th>
                                     </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($corrective_action_requests as $car)
+                                        <tr>
+                                            <td>
+                                                @php
+                                                    $approver = ($car->approver)->where('user_id', $car->auditee_id)->where('status','Submitted');
 
-                                    @include('car.verify_car')
-                                @endforeach
-                            </tbody>
-                        </table>
+                                                    $approver_data = false;
+                                                    if ($car->approver->isNotEmpty())
+                                                    {
+                                                        $approver_data = ($car->approver)->every(function($item, $key) {
+                                                            if (in_array($item->status, ['Approved', 'Submitted']))
+                                                            {
+                                                                return true;
+                                                            }
+                                                        });
+                                                    }
+                                                    $verifier = ($car->verify)->where('user_id', auth()->user()->id)->first();
+                                                @endphp
+                                                
+                                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#view{{ $car->id }}">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
+
+                                                @if($approver_data && auth()->user()->role->name == 'Auditee' && $car->status != 'Closed')
+                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#verify{{ $car->id }}">
+                                                        <i class="fa fa-check"></i>
+                                                    </button>
+                                                @endif
+
+                                                @if(auth()->user()->role->name == 'Auditee')
+                                                    @if(count($approver) == 0)
+                                                    <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#edit{{ $car->id }}">
+                                                        <i class="fa fa-pencil-square-o"></i>
+                                                    </button>
+                                                    @endif
+                                                @endif
+                                            </td>
+                                            <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
+                                            <td>{{ $car->department->name }}</td>
+                                            {{-- <td>{!! nl2br(e($car->standard_and_clause)) !!}</td>
+                                            <td>{{ $car->classification_of_nonconformity }}</td>
+                                            <td>{{ $car->nature_of_nonconformity }}</td>
+                                            <td>{{ $car->type_of_nonconformity }}</td> --}}
+                                            <td>{!! nl2br(e($car->description_of_nonconformity)) !!}</td>
+                                            <td>{{ $car->auditor->name }}</td>
+                                            <td>{{ $car->auditee->name }}</td>
+                                            <td>{{ date('M d Y', strtotime($car->created_at)) }}</td>
+                                            <td>
+                                                {{-- @if($car->status == 'Open')
+                                                <span class="label label-primary">
+                                                @elseif($car->status == 'In Progress')
+                                                <span class="label label-warning">
+                                                @elseif($car->status == 'Closed')
+                                                <span class="label label-danger">
+                                                @endif                                            
+                                            </span> --}}
+                                                {{ $car->status }}
+                                            </td>
+                                        </tr>
+
+                                        @include('car.verify_car')
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         @endif
     </div>
 </div>

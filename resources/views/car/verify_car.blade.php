@@ -117,22 +117,33 @@
                             $auditor = $users->where('id', $car->auditor_id)->first();
                             $audit_head = $users->where('role_id', 4)->first();
                         @endphp
-                        <div class="row">
-                            <div class="col-md-6 border border-1 border-top-bottom border-left-right">
-                                1
+                        @if($car->department_id == 2)
+                            <div class="row">
+                                <div class="col-md-6 border border-1 border-top-bottom border-left-right">
+                                    1
+                                </div>
+                                <div class="col-md-6 border border-1 border-top-bottom border-left-right">
+                                    {{ $auditor->name }}
+                                </div>
                             </div>
-                            <div class="col-md-6 border border-1 border-top-bottom border-left-right">
-                                {{ $auditor->name }}
+                        @else
+                            <div class="row">
+                                <div class="col-md-6 border border-1 border-top-bottom border-left-right">
+                                    1
+                                </div>
+                                <div class="col-md-6 border border-1 border-top-bottom border-left-right">
+                                    {{ $auditor->name }}
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 border border-1 border-top-bottom border-left-right">
-                                2
+                            <div class="row">
+                                <div class="col-md-6 border border-1 border-top-bottom border-left-right">
+                                    2
+                                </div>
+                                <div class="col-md-6 border border-1 border-top-bottom border-left-right">
+                                    {{ $audit_head->name }}
+                                </div>
                             </div>
-                            <div class="col-md-6 border border-1 border-top-bottom border-left-right">
-                                {{ $audit_head->name }}
-                            </div>
-                        </div>
+                        @endif
                     </div>
                 </div>
             </div>

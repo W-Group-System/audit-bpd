@@ -145,12 +145,31 @@ class CorrectiveActionRequestController extends Controller
         if ($corrective_action_request_approver->isEmpty())
         {
             $audit_head = User::where('role_id',4)->first();
-            $approver_array = [
-                $car->auditee_id,
-                $car->auditor_id,
-                $audit_head->id,
-            ];
-            $users = User::whereIn('id', $approver_array)->orderBy('level','asc')->get();
+            if ($car->department_id == 2)
+            {
+                $approver_array = [
+                    $car->auditee_id,
+                    $car->auditor_id
+                ];
+            }
+            else
+            {
+                $approver_array = [
+                    $car->auditee_id,
+                    $car->auditor_id,
+                    $audit_head->id,
+                ];
+            }
+            
+            if ($car->department_id == 2)
+            {
+                $users = User::whereIn('id', $approver_array)->orderBy('role_id','desc')->get();
+            }
+            else
+            {
+                $users = User::whereIn('id', $approver_array)->orderBy('level','asc')->get();
+            }
+            
             foreach($users as $key=>$user)
             {
                 $corrective_action_request_approver = new CorrectiveActionRequestApprover;
@@ -247,12 +266,21 @@ class CorrectiveActionRequestController extends Controller
         
         $audit_head = User::whereNull('status')->where('role_id', 4)->first();
         $auditor = $car->auditor_id;
-
-        $verifier_array = [
-            $car->auditee_id,
-            $auditor,
-            $audit_head->id
-        ];
+        if($car->department_id == 2)
+        {
+            $verifier_array = [
+                $car->auditee_id,
+                $auditor
+            ];
+        }
+        else
+        {
+            $verifier_array = [
+                $car->auditee_id,
+                $auditor,
+                $audit_head->id
+            ];
+        }
 
         $verify = CorrectiveActionRequestVerifier::where('corrective_action_request_id', $id)->orderBy('level','asc')->get();
         if ($verify->isNotEmpty())
@@ -280,7 +308,14 @@ class CorrectiveActionRequestController extends Controller
         }
         else
         {
-            $users = User::whereIn('id', $verifier_array)->orderBy('level','asc')->get();
+            if($car->department_id == 2)
+            {
+                $users = User::whereIn('id', $verifier_array)->orderBy('role_id','desc')->get();
+            }
+            else
+            {
+                $users = User::whereIn('id', $verifier_array)->orderBy('level','asc')->get();
+            }
             foreach($users as $key=>$user)
             {
                 $corrective_action_request_verifier = new CorrectiveActionRequestVerifier;
