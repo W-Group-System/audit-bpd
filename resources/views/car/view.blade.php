@@ -57,10 +57,10 @@
             <b>Action Responsible :</b>
             {{ $car->auditee->name }}
         </div>
-        <div class="col-md-4">
+        {{-- <div class="col-md-4">
             <b>Verification :</b>
             {{ $car->verification_correction }}
-        </div>
+        </div> --}}
         <div class="col-md-6"></div>
         <div class="col-md-12">
             <div class="panel panel-primary">
@@ -68,7 +68,26 @@
                     II. Correction Immediate Action
                 </div>
                 <div class="panel-body">
-                    {!! nl2br(e($car->immediate_action)) !!}
+                    <table class="table table-bordered">
+                        <tr>
+                            <th style="padding: 1px;">Correction Immediate Action</th>
+                            <th style="padding: 1px;">Status</th>
+                            <th style="padding: 1px;">Remarks</th>
+                            <th style="padding: 1px;">Attachments</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1px;">{!! nl2br(e($car->immediate_action)) !!}</td>
+                            <td style="padding: 1px;">{{ $car->immediate_action_status }}</td>
+                            <td style="padding: 1px;">{{ $car->immediate_action_remarks }}</td>
+                            <td style="padding: 1px;">
+                                @if($car->immediate_action_file)
+                                <a href="{{ url($car->immediate_action_file) }}" target="_blank">
+                                    <i class="fa fa-file"></i>
+                                </a>
+                                @endif
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>
@@ -87,28 +106,24 @@
                 </div>
                 <div class="panel-body">
                     <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr><th>#</th>
-                                    <th>Man</th>
-                                    <th>Method</th>
-                                    <th>Machine</th>
-                                    <th>Material</th>
-                                    <th>Mother Nature</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                        <table class="table table-bordered">
+                            <tr><th style="padding: 1px;">#</th>
+                                <th style="padding: 1px;">Man</th>
+                                <th style="padding: 1px;">Method</th>
+                                <th style="padding: 1px;">Machine</th>
+                                <th style="padding: 1px;">Material</th>
+                                <th style="padding: 1px;">Mother Nature</th>
+                            </tr>
                             @foreach ($car->rootCauseAnalysis as $key=>$rootCauseAnalysis)
                                 <tr>
-                                    <td>{{ $key+1 }}</td>
-                                    <td>{!! nl2br(e($rootCauseAnalysis->man)) !!}</td>
-                                    <td>{!! nl2br(e($rootCauseAnalysis->method)) !!}</td>
-                                    <td>{!! nl2br(e($rootCauseAnalysis->machine)) !!}</td>
-                                    <td>{!! nl2br(e($rootCauseAnalysis->material)) !!}</td>
-                                    <td>{!! nl2br(e($rootCauseAnalysis->mother_nature)) !!}</td>
+                                    <td style="padding: 1px;">{{ $key+1 }}</td>
+                                    <td style="padding: 1px;">{!! nl2br(e($rootCauseAnalysis->man)) !!}</td>
+                                    <td style="padding: 1px;">{!! nl2br(e($rootCauseAnalysis->method)) !!}</td>
+                                    <td style="padding: 1px;">{!! nl2br(e($rootCauseAnalysis->machine)) !!}</td>
+                                    <td style="padding: 1px;">{!! nl2br(e($rootCauseAnalysis->material)) !!}</td>
+                                    <td style="padding: 1px;">{!! nl2br(e($rootCauseAnalysis->mother_nature)) !!}</td>
                                 </tr>
                             @endforeach
-                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -118,18 +133,6 @@
 
     {{-- <hr> --}}
     <div class="row">
-        {{-- <div class="col-md-4">
-            <b>Action Date :</b>
-            {{ date('M d Y', strtotime($car->action_date_corrective_action)) }}
-        </div> --}}
-        {{-- <div class="col-md-4">
-            <b>Action Responsible :</b>
-            {{ $car->auditee->name }}
-        </div>
-        <div class="col-md-4">
-            <b>Verification :</b>
-            {{ $car->verification_corrective_action }}
-        </div> --}}
         <div class="col-md-6"></div>
         <div class="col-md-12">
             <div class="panel panel-primary">
@@ -137,43 +140,37 @@
                     IV. Corrective Action
                 </div>
                 <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                            <b>Corrective Action</b>
-                        </div>
-                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                            <b>Action Date</b>
-                        </div>
-                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                            <b>Status</b>
-                        </div>
-                        <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                            <b>Remarks</b>
-                        </div>
-                    </div>
-                    @foreach ($car->correctiveAction as $corrective_action)
-                        <div class="row">
-                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                                {!! nl2br(e($corrective_action->corrective_action)) !!}
-                            </div>
-                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                                {{ date('M d, Y', strtotime($corrective_action->action_date)) }}
-                            </div>
-                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                                {{ $corrective_action->status }}
-                                @if(empty($corrective_action->status))
-                                &nbsp;
+                    <table class="table table-bordered table-sm">
+                        <tr>
+                            <th style="padding: 1px;">Corrective Action</th>
+                            <th style="padding: 1px;">Action Date</th>
+                            <th style="padding: 1px;">Status</th>
+                            <th style="padding: 1px;">Remarks</th>
+                            <th style="padding: 1px;">Attachment</th>
+                        </tr>
+                        @foreach ($car->correctiveAction as $corrective_action)
+                        <tr>
+                            <td style="padding: 1px;">{!! nl2br(e($corrective_action->corrective_action)) !!}</td>
+                            <td style="padding: 1px;">{{ date('M d, Y', strtotime($corrective_action->action_date)) }}</td>
+                            <td style="padding: 1px;">{{ $corrective_action->status }}</td>
+                            <td style="padding: 1px;">{{ $corrective_action->remarks }}
+                                @foreach ($corrective_action->remarks_history as $remarks)
+                                    @if($corrective_action->remarks !== $remarks->remarks)
+                                    <hr>
+                                    {{ $remarks->remarks }} <br>
+                                    @endif
+                                @endforeach
+                            </td>
+                            <td style="padding: 1px;">
+                                @if($corrective_action->file_attachments)
+                                <a href="{{ url($corrective_action->file_attachments) }}" target="_blank">
+                                    <i class="fa fa-file"></i>
+                                </a>
                                 @endif
-                            </div>
-                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
-                                {{ $corrective_action->remarks }}
-                                @if(empty($corrective_action->remarks))
-                                &nbsp;
-                                @endif
-                            </div>
-                        </div>
-                    @endforeach
-                    {{-- @dd($car->correctiveAction) --}}
+                            </td>
+                        </tr>
+                        @endforeach
+                    </table>
                 </div>
             </div>
         </div>

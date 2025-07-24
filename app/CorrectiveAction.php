@@ -8,4 +8,9 @@ use OwenIt\Auditing\Contracts\Auditable;
 class CorrectiveAction extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
+    
+    public function remarks_history()
+    {
+        return $this->hasMany(RemarksHistory::class);
+    }
 }

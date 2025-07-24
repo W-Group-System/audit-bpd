@@ -25,10 +25,10 @@ class CorrectiveActionRequestController extends Controller
     {
         $users = User::whereNull('status')->get();
         $departments = Department::whereNull('status')->get();
-        $corrective_action_requests = CorrectiveActionRequest::with('auditor','auditee','department','correctiveAction','approver','verify')->get();
+        $corrective_action_requests = CorrectiveActionRequest::with('auditor','auditee','department','correctiveAction.remarks_history','approver','verify')->get();
         if(auth()->user()->role->name == 'Auditee')
         {
-            $corrective_action_requests = CorrectiveActionRequest::with('auditor','auditee','department','correctiveAction','approver','verify')->where('auditee_id', auth()->user()->id)->get();
+            $corrective_action_requests = CorrectiveActionRequest::with('auditor','auditee','department','correctiveAction.remarks_history','approver','verify')->where('auditee_id', auth()->user()->id)->get();
         }
 
         return view('car.index', compact('users', 'corrective_action_requests', 'departments'));
