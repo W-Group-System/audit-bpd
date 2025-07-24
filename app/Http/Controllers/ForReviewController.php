@@ -174,39 +174,10 @@ class ForReviewController extends Controller
     public function verifyAction(Request $request)
     {
         // dd($request->all());
-        $corrective_action_request = CorrectiveActionRequest::findOrFail($request->car_id);
-        $corrective_action_request->immediate_action_status = $request->immediate_action_status;
-        $corrective_action_request->immediate_action_remarks = $request->immediate_action_remarks;
-        // File
-        if ($request->has('immediate_action_file'))
-        {
-            $file = $request->file('immediate_action_file');
-            $name = time().'_'.$file->getClientOriginalName();
-            $file->move(public_path('immediate_action_file'), $name);
-            $corrective_action_request->immediate_action_file = '/immediate_action_file/'.$name;
-        }
-        $corrective_action_request->save();
-
         $verifier = CorrectiveActionRequestVerifier::where('status', 'Pending')->first();
         $verifier->status = $request->action;
         $verifier->remarks = $request->remarks;
         $verifier->save();
-
-        $corrective_actions = CorrectiveAction::where('corrective_action_request_id', $request->car_id)->get();
-        foreach($corrective_actions as $key=>$corrective_action)
-        {
-            if(isset($request->file('corrective_action_files')[$key]))
-            {
-                $files = $request->file('corrective_action_files')[$key];
-                $name = time().'_'.$files->getClientOriginalName();
-                $files->move(public_path('corrective_action_files'), $name);
-                $corrective_action->file_attachments = '/corrective_action_files/'.$name;
-            }
-            
-            $corrective_action->status = $request->status[$key];
-            $corrective_action->remarks = $request->remarks_action[$key];
-            $corrective_action->save();
-        }
 
         if ($request->action == 'Approved')
         {
@@ -267,16 +238,6 @@ class ForReviewController extends Controller
             }
 
             Alert::success('Successfully Returned')->persistent('Dismiss');
-        }
-
-        foreach($request->status as $key=>$status)
-        {
-            $remarks_history = new RemarksHistory;
-            $remarks_history->corrective_action_request_id = $request->car_id;
-            $remarks_history->status = $status;
-            $remarks_history->remarks = $request->remarks_action[$key];
-            $remarks_history->corrective_action_id = $request->corrective_action_id[$key];
-            $remarks_history->save();
         }
 
         return redirect('for-approval');

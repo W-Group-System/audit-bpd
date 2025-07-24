@@ -8,6 +8,7 @@ use App\CorrectiveActionRequestApprover;
 use App\CorrectiveActionRequestAttachment;
 use App\CorrectiveActionRequestVerifier;
 use App\Department;
+use App\RemarksHistory;
 use App\RootCauseAnalysis;
 use App\User;
 use Illuminate\Http\Request;
@@ -369,6 +370,66 @@ class CorrectiveActionRequestController extends Controller
             $car->evidence_attachment = $filename;
         }
         $car->save();
+
+        Alert::success('Successfully Saved')->persistent('Dismiss');
+        return back();
+    }
+
+    public function updateCia(Request $request,$id)
+    {
+        // dd($request->all(),$id);
+        $corrective_action_request = CorrectiveActionRequest::findOrFail($id);
+        $corrective_action_request->immediate_action_status = $request->immediate_action_status;
+        $corrective_action_request->immediate_action_remarks = $request->immediate_action_remarks;
+        // File
+        if ($request->has('immediate_action_file'))
+        {
+            $file = $request->file('immediate_action_file');
+            $name = time().'_'.$file->getClientOriginalName();
+            $file->move(public_path('immediate_action_file'), $name);
+            $corrective_action_request->immediate_action_file = '/immediate_action_file/'.$name;
+        }
+        $corrective_action_request->save();
+
+        $remarks_history = new RemarksHistory;
+        $remarks_history->corrective_action_request_id = $id;
+        $remarks_history->status =  $request->immediate_action_status;
+        $remarks_history->remarks = $request->immediate_action_remarks;
+        // $remarks_history->corrective_action_id = $corrective_action_request->id;
+        $remarks_history->save();
+
+        Alert::success('Successfully Saved')->persistent('Dismiss');
+        return back();
+    }
+
+    public function updateCa(Request $request,$id)
+    {
+        // dd($request->all(),$id);
+        $corrective_actions = CorrectiveAction::where('corrective_action_request_id', $id)->get();
+        foreach($corrective_actions as $key=>$corrective_action)
+        {
+            if(isset($request->file('corrective_action_files')[$key]))
+            {
+                $files = $request->file('corrective_action_files')[$key];
+                $name = time().'_'.$files->getClientOriginalName();
+                $files->move(public_path('corrective_action_files'), $name);
+                $corrective_action->file_attachments = '/corrective_action_files/'.$name;
+            }
+            
+            $corrective_action->status = $request->status[$key];
+            $corrective_action->remarks = $request->remarks_action[$key];
+            $corrective_action->save();
+        }
+
+        foreach($request->status as $key=>$status)
+        {
+            $remarks_history = new RemarksHistory;
+            $remarks_history->corrective_action_request_id = $id;
+            $remarks_history->status =  $status;
+            $remarks_history->remarks = $request->remarks_action[$key];
+            $remarks_history->corrective_action_id = $request->corrective_action_id[$key];
+            $remarks_history->save();
+        }
 
         Alert::success('Successfully Saved')->persistent('Dismiss');
         return back();

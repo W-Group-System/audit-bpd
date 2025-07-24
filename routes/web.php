@@ -49,6 +49,8 @@ Route::post('update_car/{id}', 'CorrectiveActionRequestController@update');
 Route::post('refresh_dept_head', 'CorrectiveActionRequestController@refreshDeptHead');
 Route::post('verify_car/{id}', 'CorrectiveActionRequestController@verify');
 Route::post('update_admin/{id}','CorrectiveActionRequestController@updateAdmin');
+Route::post('update_cia/{id}','CorrectiveActionRequestController@updateCia');
+Route::post('update_ca/{id}','CorrectiveActionRequestController@updateCa');
 
 // For Review
 Route::get('for-approval', 'ForReviewController@index');
