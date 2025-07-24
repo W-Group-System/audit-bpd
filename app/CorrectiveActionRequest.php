@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class CorrectiveActionRequest extends Model
+class CorrectiveActionRequest extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+    
     public function auditor()
     {
         return $this->belongsTo(User::class, 'auditor_id');

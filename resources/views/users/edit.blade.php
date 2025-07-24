@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-md-12">
             Name :
-            <input type="text" name="name" class="form-control input-sm" value="{{ $user->name }}" required>
+            <input type="text" name="name" class="form-control input-sm" value="{{ $user->name }}" readonly required>
         </div>
         <div class="col-md-12">
             Email :
