@@ -73,7 +73,7 @@
                                 <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">{{auth()->user()->name}}</strong>
                                  </span> <span class="text-muted text-xs block">{{auth()->user()->role->name}} <b class="caret"></b></span> </span> </a>
                             <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                                <li><a href="#">Change Password</a></li>
+                                <li><a href="#" data-toggle="modal" data-target="#userChangePassword">Change Password</a></li>
                             </ul>
                         </div>
                         <div class="logo-element">
@@ -149,6 +149,8 @@
             </div>
         </div>
     </div>
+    @include('user_change_pass')
+
     @include('sweetalert::alert')
     <script src="{{ asset('login_css/js/jquery-3.1.1.min.js')}}"></script>
     <script src="{{ asset('login_css/js/bootstrap.min.js')}}"></script>
