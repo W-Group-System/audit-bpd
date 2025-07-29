@@ -63,11 +63,11 @@
     </div>
     <div class="col-md-6">
         Issued To :
-        <select name="auditee" class="form-control" id="auditee" required>
+        <select name="auditee" class="form-control cat" required>
             <option value="">Select type of auditor</option>
-            {{-- @foreach ($users->where('role_id', 2) as $auditee)
-            <option value="{{ $auditee->id }}">{{ $auditee->name }}</option>
-            @endforeach --}}
+            @foreach ($users->where('role_id', 2) as $auditee)
+            <option value="{{ $auditee->id }}" @if($car->auditee_id == $auditee->id) selected @endif>{{ $auditee->name }}</option>
+            @endforeach
         </select>
     </div>
     <div class="col-md-6">

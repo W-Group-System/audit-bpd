@@ -400,7 +400,6 @@
             },
             success: function(res)
             {
-                console.log(res);
                 // document.getElementById('auditee').innerHTML = res
                 $("#auditee").html(res)
             }
@@ -426,8 +425,6 @@
                 </div>
             </div>
         `
-            console.log(newRow);
-            
         $("#correctiveActionContainer"+carId).append(newRow)
     }
 
