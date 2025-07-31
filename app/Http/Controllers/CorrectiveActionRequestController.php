@@ -381,6 +381,7 @@ class CorrectiveActionRequestController extends Controller
         $corrective_action_request = CorrectiveActionRequest::findOrFail($id);
         $corrective_action_request->immediate_action_status = $request->immediate_action_status;
         $corrective_action_request->immediate_action_remarks = $request->immediate_action_remarks;
+        $corrective_action_request->approved_date = date('Y-m-d');
         // File
         if ($request->has('immediate_action_file'))
         {

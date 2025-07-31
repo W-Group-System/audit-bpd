@@ -1,6 +1,6 @@
 @component('components.modal', [
     'id' => 'view'.$car->id,
-    'size' => 'modal-lg',
+    'size' => 'modal-xl',
     'title' => 'View CAR -' .$car->status,
     'is_view' => true
     // 'url' => url('store_car')
@@ -49,19 +49,14 @@
     
     @if($car->status != 'Fill-Out')
     <div class="row">
-        <div class="col-md-4">
+        {{-- <div class="col-md-4">
             <b>Action Date :</b>
             {{ date('M d Y', strtotime($car->action_date_immediate_action)) }}
-        </div>
-        <div class="col-md-4">
+        </div> --}}
+        {{-- <div class="col-md-4">
             <b>Action Responsible :</b>
             {{ $car->auditee->name }}
-        </div>
-        {{-- <div class="col-md-4">
-            <b>Verification :</b>
-            {{ $car->verification_correction }}
         </div> --}}
-        <div class="col-md-6"></div>
         <div class="col-md-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
@@ -71,19 +66,29 @@
                     <table class="table table-bordered">
                         <tr>
                             <th style="padding: 1px;">Correction Immediate Action</th>
+                            <th style="padding: 1px;">Action Responsible</th>
+                            <th style="padding: 1px;">Action Date</th>
                             <th style="padding: 1px;">Status</th>
                             <th style="padding: 1px;">Remarks</th>
                             <th style="padding: 1px;">Attachments</th>
+                            <th style="padding: 1px;">Approved Date</th>
                         </tr>
                         <tr>
                             <td style="padding: 1px;">{!! nl2br(e($car->immediate_action)) !!}</td>
+                            <td style="padding: 1px;">{{ $car->auditee->name }}</td>
+                            <td style="padding: 1px;">{{ date('Y-m-d', strtotime($car->action_date_immediate_action)) }}</td>
                             <td style="padding: 1px;">{{ $car->immediate_action_status }}</td>
-                            <td style="padding: 1px;">{{ $car->immediate_action_remarks }}</td>
+                            <td style="padding: 1px;">{!! nl2br(e($car->immediate_action_remarks)) !!}</td>
                             <td style="padding: 1px;">
                                 @if($car->immediate_action_file)
                                 <a href="{{ url($car->immediate_action_file) }}" target="_blank">
                                     <i class="fa fa-file"></i>
                                 </a>
+                                @endif
+                            </td>
+                            <td>
+                                @if($car->approved_date)
+                                {{ date('Y-m-d', strtotime($car->approved_date)) }}
                                 @endif
                             </td>
                         </tr>
@@ -147,17 +152,18 @@
                             <th style="padding: 1px;">Status</th>
                             <th style="padding: 1px;">Remarks</th>
                             <th style="padding: 1px;">Attachment</th>
+                            <th style="padding: 1px;">Approved Date</th>
                         </tr>
                         @foreach ($car->correctiveAction as $corrective_action)
                         <tr>
                             <td style="padding: 1px;">{!! nl2br(e($corrective_action->corrective_action)) !!}</td>
                             <td style="padding: 1px;">{{ date('M d, Y', strtotime($corrective_action->action_date)) }}</td>
                             <td style="padding: 1px;">{{ $corrective_action->status }}</td>
-                            <td style="padding: 1px;">{{ $corrective_action->remarks }}
+                            <td style="padding: 1px;">{!! nl2br(e($corrective_action->remarks)) !!}
                                 @foreach ($corrective_action->remarks_history as $remarks)
                                     @if($corrective_action->remarks !== $remarks->remarks)
                                     <hr>
-                                    {{ $remarks->remarks }} <br>
+                                    {!! nl2br(e($remarks->remarks)) !!} <br>
                                     @endif
                                 @endforeach
                             </td>
@@ -166,6 +172,11 @@
                                 <a href="{{ url($corrective_action->file_attachments) }}" target="_blank">
                                     <i class="fa fa-file"></i>
                                 </a>
+                                @endif
+                            </td>
+                            <td style="padding: 1px;">
+                                @if($corrective_action->status == "Done")
+                                    {{ date('Y-m-d', strtotime($corrective_action->updated_at)) }}
                                 @endif
                             </td>
                         </tr>
