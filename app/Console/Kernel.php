@@ -14,7 +14,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\NotifyEmail::class
+        Commands\NotifyEmail::class,
+        Commands\NotifyHeads::class
     ];
 
     /**
@@ -28,6 +29,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
         $schedule->command('command:notify_email')->weekly();
+        $schedule->command('command:notify_heads')->weekly();
     }
 
     /**
