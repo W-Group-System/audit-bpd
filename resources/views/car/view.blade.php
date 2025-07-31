@@ -71,7 +71,7 @@
                             <th style="padding: 1px;">Status</th>
                             <th style="padding: 1px;">Remarks</th>
                             <th style="padding: 1px;">Attachments</th>
-                            <th style="padding: 1px;">Approved Date</th>
+                            <th style="padding: 1px;">Verified Date</th>
                         </tr>
                         <tr>
                             <td style="padding: 1px;">{!! nl2br(e($car->immediate_action)) !!}</td>
@@ -152,7 +152,7 @@
                             <th style="padding: 1px;">Status</th>
                             <th style="padding: 1px;">Remarks</th>
                             <th style="padding: 1px;">Attachment</th>
-                            <th style="padding: 1px;">Approved Date</th>
+                            <th style="padding: 1px;">Verified Date</th>
                         </tr>
                         @foreach ($car->correctiveAction as $corrective_action)
                         <tr>
