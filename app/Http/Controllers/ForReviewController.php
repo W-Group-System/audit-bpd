@@ -210,6 +210,10 @@ class ForReviewController extends Controller
             }
             else
             {
+                $verifiers = CorrectiveActionRequestVerifier::where('corrective_action_request_id', $request->car_id)->where('user_id', auth()->user()->id)->first();
+                $verifiers->status = "Approved";
+                $verifiers->save();
+                
                 $corrective_action = CorrectiveActionRequest::findOrFail($request->car_id);
                 $corrective_action->status = 'Closed';
                 $corrective_action->save();
