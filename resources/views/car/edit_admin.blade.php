@@ -3,7 +3,7 @@
 'size' => 'modal-lg',
 'title' => 'Edit CAR',
 // 'is_view' => true
-'url' => url('update_car/'.$car->id),
+'url' => url('update_admin/'.$car->id),
 'has_enctype' => true
 ])
 <div class="row">
