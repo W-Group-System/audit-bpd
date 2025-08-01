@@ -174,7 +174,7 @@ class ForReviewController extends Controller
     public function verifyAction(Request $request)
     {
         // dd($request->all());
-        $verifier = CorrectiveActionRequestVerifier::where('status', 'Pending')->first();
+        $verifier = CorrectiveActionRequestVerifier::where('status', 'Pending')->where('corrective_action_request_id', $request->car_id)->first();
         $verifier->status = $request->action;
         $verifier->remarks = $request->remarks;
         $verifier->save();
@@ -213,7 +213,7 @@ class ForReviewController extends Controller
                 $verifiers = CorrectiveActionRequestVerifier::where('corrective_action_request_id', $request->car_id)->where('user_id', auth()->user()->id)->first();
                 $verifiers->status = "Approved";
                 $verifiers->save();
-                
+
                 $corrective_action = CorrectiveActionRequest::findOrFail($request->car_id);
                 $corrective_action->status = 'Closed';
                 $corrective_action->save();
