@@ -133,7 +133,7 @@ class ForReviewController extends Controller
      */
     public function show($id)
     {
-        $car = CorrectiveActionRequest::with('verify','remarksHistory.correctiveAction')->findOrFail($id);
+        $car = CorrectiveActionRequest::with('verify','remarksHistory.correctiveAction', 'remarksHistory.correctionImmediateAction')->findOrFail($id);
 
         return view('for_approval.show', compact('car'));
     }

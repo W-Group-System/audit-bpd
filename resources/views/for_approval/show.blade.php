@@ -19,6 +19,10 @@
                 <div class="ibox-content">
                     <div class="row">
                         <div class="col-lg-6">
+                            <b>CAR :</b>
+                            CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}
+                        </div>
+                        <div class="col-lg-6">
                             <b>Standard and Clause :</b>
                             {!! nl2br(e($car->standard_and_clause)) !!}
                         </div>
@@ -49,18 +53,6 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
-                            <b>Action Date :</b>
-                            {{ date('M d Y', strtotime($car->action_date_immediate_action)) }}
-                        </div>
-                        <div class="col-md-4">
-                            <b>Action Responsible :</b>
-                            {{ $car->auditee->name }}
-                        </div>
-                        {{-- <div class="col-md-4">
-                            <b>Verification :</b>
-                            {{ $car->verification_correction }}
-                        </div> --}}
                         <div class="col-md-12">
                             <form method="post" action="{{ url('update_cia/'.$car->id) }}" onsubmit="show()"
                                 enctype="multipart/form-data">
@@ -77,44 +69,27 @@
                                         </div>
                                     </div>
                                     <div class="panel-body">
-                                        {{-- {!! nl2br(e($car->immediate_action)) !!} --}}
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>
-                                                        Correction Immediate Action
-                                                    </th>
-                                                    <th>
-                                                        Action Date
-                                                    </th>
-                                                    <th>
-                                                        Status
-                                                    </th>
-                                                    <th>
-                                                        Remarks
-                                                    </th>
-                                                    <th>
-                                                        Attachment
-                                                    </th>
-                                                </tr>
-                                            </thead>
+                                        <table class="table table-bordered">
+                                            <tr>
+                                                <th style="padding: 1px;">Correction Immediate Action</th>
+                                                <th style="padding: 1px;">Action Responsible</th>
+                                                <th style="padding: 1px;">Action Date</th>
+                                                <th style="padding: 1px;">Status</th>
+                                                <th style="padding: 1px;">Remarks</th>
+                                                <th style="padding: 1px;">Attachment</th>
+                                                <th style="padding: 1px;">Date Approved</th>
+                                            </tr>
                                             <tbody>
+                                                @if($car->immediate_action)
                                                 <tr>
-                                                    <td>
-                                                        {!! nl2br(e($car->immediate_action)) !!}
-                                                    </td>
-                                                    <td>
-                                                        {{ date('M d Y', strtotime($car->action_date_immediate_action))
-                                                        }}
-                                                    </td>
-                                                    <td>
-                                                        <select name="immediate_action_status"
-                                                            class="form-control input-sm" required>
+                                                    <td style="padding: 1px;">{!! nl2br(e($car->immediate_action)) !!}</td>
+                                                    <td style="padding: 1px;">{{ $car->auditee->name }}</td>
+                                                    <td style="padding: 1px;">{{ date('M d Y', strtotime($car->action_date_immediate_action))}}</td>
+                                                    <td style="padding: 1px;">
+                                                        <select name="immediate_action_status" class="immediate_action_status form-control input-sm" required>
                                                             <option value=""></option>
-                                                            <option value="Pending" @if($car->immediate_action_status ==
-                                                                'Pending') selected @endif>Pending</option>
-                                                            <option value="Done" @if($car->immediate_action_status ==
-                                                                'Done') selected @endif>Done</option>
+                                                            <option value="Pending" @if($car->immediate_action_status == 'Pending') selected @endif>Pending</option>
+                                                            <option value="Done" @if($car->immediate_action_status == 'Done') selected @endif>Done</option>
                                                         </select>
 
                                                         <div id="immediateActionFile" hidden>
@@ -122,12 +97,10 @@
                                                                 class="form-control input-sm">
                                                         </div>
                                                     </td>
-                                                    <td>
-                                                        <textarea name="immediate_action_remarks" class="form-control"
-                                                            cols="30"
-                                                            required>{{ $car->immediate_action_remarks }}</textarea>
+                                                    <td style="padding: 1px;">
+                                                        <textarea name="immediate_action_remarks" class="form-control" cols="30" required>{{ $car->immediate_action_remarks }}</textarea>
                                                     </td>
-                                                    <td>
+                                                    <td style="padding: 1px;">
                                                         @if($car->immediate_action_file)
                                                         <a href="{{ url($car->immediate_action_file) }}"
                                                             target="_blank">
@@ -136,11 +109,47 @@
                                                         @endif
                                                     </td>
                                                 </tr>
+                                                @else
+                                                    @foreach ($car->correctionImmediateAction as $correctionImmediateAction)
+                                                        <input type="hidden" name="correction_immediate_action_id[]" value="{{ $correctionImmediateAction->id }}">
+                                                        <tr>
+                                                            <td style="padding: 1px;">{!! nl2br(e($correctionImmediateAction->correction_immediate_action)) !!}</td>
+                                                            <td style="padding: 1px;">{{ $correctionImmediateAction->corrective_action_request->auditee->name }}</td>
+                                                            <td style="padding: 1px;">{{ date('M d Y', strtotime($correctionImmediateAction->correction_action_date))}}</td>
+                                                            <td style="padding: 1px;">
+                                                                <select name="immediate_action_status[]" class="form-control input-sm" required onchange="showUploadFile({{ $correctionImmediateAction->id }}, this.value)">
+                                                                    <option value=""></option>
+                                                                    <option value="Pending" @if($correctionImmediateAction->status == 'Pending') selected @endif>Pending</option>
+                                                                    <option value="Done" @if($correctionImmediateAction->status == 'Done') selected @endif>Done</option>
+                                                                </select>
+
+                                                                <div id="immediateActionFile{{ $correctionImmediateAction->id }}" hidden>
+                                                                    <input type="file" name="immediate_action_file[]" class="form-control input-sm">
+                                                                </div>
+                                                            </td>
+                                                            <td style="padding: 1px;">
+                                                                <textarea name="immediate_action_remarks[]" class="form-control" cols="30" required>{{ $correctionImmediateAction->remarks }}</textarea>
+                                                            </td>
+                                                            <td style="padding: 1px;">
+                                                                @if($correctionImmediateAction->attachments)
+                                                                <a href="{{ url($correctionImmediateAction->attachments) }}"
+                                                                    target="_blank">
+                                                                    <i class="fa fa-file"></i>
+                                                                </a>
+                                                                @endif
+                                                            </td>
+                                                            <td style="padding: 1px;">
+                                                                @if($correctionImmediateAction->date_approved)
+                                                                {{ date('Y-m-d', strtotime($correctionImmediateAction->date_approved)) }}
+                                                                @endif
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                @endif
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
-
                             </form>
                         </div>
                     </div>
@@ -153,29 +162,25 @@
                                 </div>
                                 <div class="panel-body">
                                     <div class="table-responsive">
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Man</th>
-                                                    <th>Method</th>
-                                                    <th>Machine</th>
-                                                    <th>Material</th>
-                                                    <th>Mother Nature</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($car->rootCauseAnalysis as $key=>$rootCauseAnalysis)
-                                                <tr>
-                                                    <td>{{ $key+1 }}</td>
-                                                    <td>{!! nl2br(e($rootCauseAnalysis->man)) !!}</td>
-                                                    <td>{!! nl2br(e($rootCauseAnalysis->method)) !!}</td>
-                                                    <td>{!! nl2br(e($rootCauseAnalysis->machine)) !!}</td>
-                                                    <td>{!! nl2br(e($rootCauseAnalysis->material)) !!}</td>
-                                                    <td>{!! nl2br(e($rootCauseAnalysis->mother_nature)) !!}</td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
+                                        <table class="table table-bordered">
+                                            <tr>
+                                                <th style="padding: 1px;">#</th>
+                                                <th style="padding: 1px;">Man</th>
+                                                <th style="padding: 1px;">Method</th>
+                                                <th style="padding: 1px;">Machine</th>
+                                                <th style="padding: 1px;">Material</th>
+                                                <th style="padding: 1px;">Mother Nature</th>
+                                            </tr>
+                                            @foreach ($car->rootCauseAnalysis as $key=>$rootCauseAnalysis)
+                                            <tr>
+                                                <td style="padding: 1px;">{{ $key+1 }}</td>
+                                                <td style="padding: 1px;">{!! nl2br(e($rootCauseAnalysis->man)) !!}</td>
+                                                <td style="padding: 1px;">{!! nl2br(e($rootCauseAnalysis->method)) !!}</td>
+                                                <td style="padding: 1px;">{!! nl2br(e($rootCauseAnalysis->machine)) !!}</td>
+                                                <td style="padding: 1px;">{!! nl2br(e($rootCauseAnalysis->material)) !!}</td>
+                                                <td style="padding: 1px;">{!! nl2br(e($rootCauseAnalysis->mother_nature)) !!}</td>
+                                            </tr>
+                                            @endforeach
                                         </table>
                                     </div>
                                 </div>
@@ -197,29 +202,27 @@
                                         </div>
                                     </div>
                                     <div class="panel-body">
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Corrective Action</th>
-                                                    <th>Action Date</th>
-                                                    <th>Status</th>
-                                                    <th>Remarks</th>
-                                                    <th>Attachment</th>
-                                                </tr>
-                                            </thead>
+                                        <table class="table table-bordered">
+                                            <tr>
+                                                <th style="padding: 1px;">Corrective Action</th>
+                                                <th style="padding: 1px;">Action Date</th>
+                                                <th style="padding: 1px;">Status</th>
+                                                <th style="padding: 1px;">Remarks</th>
+                                                <th style="padding: 1px;">Attachment</th>
+                                            </tr>
                                             <tbody>
                                                 @foreach ($car->correctiveAction as $corrective_action)
                                                 <tr>
                                                     <input type="hidden" name="corrective_action_id[]"
                                                         value="{{ $corrective_action->id }}">
     
-                                                    <td>
+                                                    <td style="padding: 1px;">
                                                         {{ $corrective_action->corrective_action }}
                                                     </td>
-                                                    <td>
+                                                    <td style="padding: 1px;">
                                                         {{ date('M d, Y', strtotime($corrective_action->action_date)) }}
                                                     </td>
-                                                    <td>
+                                                    <td style="padding: 1px;">
                                                         <select name="status[]" class="form-control input-sm" required
                                                             onchange="correctiveActionStatus({{ $corrective_action->id }}, this.value)">
                                                             <option value=""></option>
@@ -234,11 +237,11 @@
                                                                 class="form-control">
                                                         </div>
                                                     </td>
-                                                    <td>
+                                                    <td style="padding: 1px;">
                                                         <textarea name="remarks_action[]" class="form-control input-sm"
                                                             cols="30" required>{{ $corrective_action->remarks }}</textarea>
                                                     </td>
-                                                    <td>
+                                                    <td style="padding: 1px;">
                                                         @if($corrective_action->file_attachments)
                                                         <a href="{{ url($corrective_action->file_attachments) }}"
                                                             target="_blank"><i class="fa fa-file"></i></a>
@@ -331,10 +334,10 @@
                 <div class="ibox-content">
                     @if($car->remarksHistory->isNotEmpty())
                         @foreach ($car->remarksHistory as $history)
-                            @if($history->corrective_action_request_id)
-                            <h3 class="text-dark">{{ $history->correctiveActionRequest->immediate_action }}
+                            @if($history->correctionImmediateAction)
+                            <h3 class="text-dark">{{ $history->correctionImmediateAction->correction_immediate_action }}
                             @else
-                            <h3 class="text-dark">{{ $history->correctiveActionRequest }}
+                            <h3 class="text-dark">{{ $history->correctiveAction->corrective_action }}
                             @endif
                         @if($history->status =='Pending') <span class="label label-warning">{{ $history->status }}</span> @else <span
                                 class="label label-primary">{{ $history->status }}</span> @endif</h3>
@@ -370,6 +373,19 @@
         
     }
 
+    function showUploadFile(id,value)
+    {
+        if (value == 'Done')
+        {
+            $("#immediateActionFile"+id).removeAttr('hidden')
+        }
+        else
+        {
+            $("#immediateActionFile"+id).prop('hidden', true)
+        }
+        
+    }
+
     $(document).ready(function(){
         $('.cat').chosen({width: "100%"});
         $('.tables').DataTable({
@@ -396,7 +412,7 @@
             ]
         });
 
-        $("[name='immediate_action_status']").on('change', function() {
+        $(".immediate_action_status").on('change', function() {
             var value = $(this).val();
 
             if (value == 'Done')

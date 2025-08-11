@@ -17,4 +17,8 @@ class RemarksHistory extends Model implements Auditable
     {
         return $this->belongsTo(CorrectiveAction::class);
     }
+    public function correctionImmediateAction()
+    {
+        return $this->belongsTo(CorrectionImmediateAction::class);
+    }
 }

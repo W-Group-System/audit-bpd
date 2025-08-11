@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\CorrectionImmediateAction;
 use App\CorrectiveAction;
 use App\CorrectiveActionRequest;
 use App\CorrectiveActionRequestApprover;
@@ -113,11 +114,21 @@ class CorrectiveActionRequestController extends Controller
     {
         // dd($request->all());
         $car = CorrectiveActionRequest::findOrFail($id);
-        $car->immediate_action = $request->immediate_action;
-        $car->action_date_immediate_action = $request->action_date_immediate_action;
+        // $car->immediate_action = $request->immediate_action;
+        // $car->action_date_immediate_action = $request->action_date_immediate_action;
         // $car->verification_correction = $request->verification_correction;
         $car->status = 'Review CAR';
         $car->save();
+
+        $correction_action = CorrectionImmediateAction::where('corrective_action_request_id',$id)->delete();
+        foreach($request->correction_immediate_action as $key=>$correction_immediate_action)
+        {
+            $correction_action = new CorrectionImmediateAction;
+            $correction_action->corrective_action_request_id = $id;
+            $correction_action->correction_immediate_action = $correction_immediate_action;
+            $correction_action->correction_action_date = $request->correction_action_date[$key];
+            $correction_action->save();
+        }
 
         $root_cause_analysis = RootCauseAnalysis::where('corrective_action_request_id', $id)->delete();
         foreach($request->man as $key=>$man)
@@ -378,26 +389,46 @@ class CorrectiveActionRequestController extends Controller
     public function updateCia(Request $request,$id)
     {
         // dd($request->all(),$id);
-        $corrective_action_request = CorrectiveActionRequest::findOrFail($id);
-        $corrective_action_request->immediate_action_status = $request->immediate_action_status;
-        $corrective_action_request->immediate_action_remarks = $request->immediate_action_remarks;
-        $corrective_action_request->approved_date = date('Y-m-d');
-        // File
-        if ($request->has('immediate_action_file'))
-        {
-            $file = $request->file('immediate_action_file');
-            $name = time().'_'.$file->getClientOriginalName();
-            $file->move(public_path('immediate_action_file'), $name);
-            $corrective_action_request->immediate_action_file = '/immediate_action_file/'.$name;
-        }
-        $corrective_action_request->save();
+        // $corrective_action_request = CorrectiveActionRequest::findOrFail($id);
+        // $corrective_action_request->immediate_action_status = $request->immediate_action_status;
+        // $corrective_action_request->immediate_action_remarks = $request->immediate_action_remarks;
+        // $corrective_action_request->approved_date = date('Y-m-d');
+        // // File
+        // if ($request->has('immediate_action_file'))
+        // {
+        //     $file = $request->file('immediate_action_file');
+        //     $name = time().'_'.$file->getClientOriginalName();
+        //     $file->move(public_path('immediate_action_file'), $name);
+        //     $corrective_action_request->immediate_action_file = '/immediate_action_file/'.$name;
+        // }
+        // $corrective_action_request->save();
 
-        $remarks_history = new RemarksHistory;
-        $remarks_history->corrective_action_request_id = $id;
-        $remarks_history->status =  $request->immediate_action_status;
-        $remarks_history->remarks = $request->immediate_action_remarks;
-        // $remarks_history->corrective_action_id = $corrective_action_request->id;
-        $remarks_history->save();
+        $correction_immediate_actions = CorrectionImmediateAction::findMany($request->correction_immediate_action_id);
+        foreach($correction_immediate_actions as $key=>$correction_immediate_action)
+        {
+            $correction_immediate_action->status = $request->immediate_action_status[$key];
+            $correction_immediate_action->remarks = $request->immediate_action_remarks[$key];
+
+            if (isset($request->immediate_action_file[$key]))
+            {
+                $files = $request->file('immediate_action_file')[$key];
+                $name = time().'_'.$files->getClientOriginalName();
+                $files->move(public_path('immediate_action_file'), $name);
+                $correction_immediate_action->attachments = '/immediate_action_file/'.$name;
+            }
+
+            $correction_immediate_action->save();
+        }
+
+        foreach($request->immediate_action_status as $key=>$status)
+        {
+            $remarks_history = new RemarksHistory;
+            $remarks_history->corrective_action_request_id = $id;
+            $remarks_history->status =  $status;
+            $remarks_history->remarks = $request->immediate_action_remarks[$key];
+            $remarks_history->correction_immediate_action_id = $request->correction_immediate_action_id[$key];
+            $remarks_history->save();
+        }
 
         Alert::success('Successfully Saved')->persistent('Dismiss');
         return back();

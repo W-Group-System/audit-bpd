@@ -41,4 +41,8 @@ class CorrectiveActionRequest extends Model implements Auditable
     {
         return $this->hasMany(RootCauseAnalysis::class);
     }
+    public function correctionImmediateAction()
+    {
+        return $this->hasMany(CorrectionImmediateAction::class);
+    }
 }

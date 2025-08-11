@@ -430,9 +430,39 @@
 
     function removeRowBtn(carId)
     {
-        if ($("#correctiveActionContainer"+carId).children().length > 1);
+        if ($("#correctiveActionContainer"+carId).children().length > 1)
         {
             $("#correctiveActionContainer"+carId).children().last().remove();
+        }
+    }
+
+    function addCorrectionBtn(carId)
+    {
+        var id = $("#correctionImmediateAction"+carId).children().last().attr('id');
+        var lastId = id.split('_');
+        var displayNum = parseInt(lastId[1]) + 1;
+        
+        var newRow = `
+            <div class="row" id="caNum_${displayNum}">
+                <div class="col-md-1">
+                    ${displayNum}
+                </div>
+                <div class="col-md-6">
+                    <textarea name="correction_immediate_action[]" class="form-control" cols="30" required></textarea>
+                </div>
+                <div class="col-md-5">
+                    <input type="date" name="correction_action_date[]" class="form-control input-sm" min="{{ date('Y-m-d') }}" required>
+                </div>
+            </div>
+        `
+        $("#correctionImmediateAction"+carId).append(newRow)
+    }
+
+    function removeCorrectionBtn(carId)
+    {
+        if ($("#correctionImmediateAction"+carId).children().length > 1)
+        {
+            $("#correctionImmediateAction"+carId).children().last().remove();
         }
     }
 
