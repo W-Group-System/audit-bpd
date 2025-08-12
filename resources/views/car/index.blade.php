@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="wrapper wrapper-content">
-    <div class="row">
+    {{-- <div class="row">
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
@@ -16,26 +16,6 @@
                 </div>
             </div>
         </div>
-        {{-- <div class="col-lg-3">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>Open</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins">{{ count($corrective_action_requests->where('status','Open')) }}</h1>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>In Progress</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins">{{ count($corrective_action_requests->where('status','In Progress')) }}</h1>
-                </div>
-            </div>
-        </div> --}}
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
@@ -46,8 +26,7 @@
                 </div>
             </div>
         </div>
-        
-    </div>
+    </div> --}}
     <div class='row'>
         @if(auth()->user()->role->name == 'Auditor')
             <div class="col-lg-8">

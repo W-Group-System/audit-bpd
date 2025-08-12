@@ -12,20 +12,22 @@
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>For Approval</h5>
+                    <h5>Pending</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">0</h1>
+                    <h1 class="no-margins">
+                        {{ $car_count }}
+                    </h1>
                 </div>
             </div>
         </div>
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Pending</h5>
+                    <h5>For Approval</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">0</h1>
+                    <h1 class="no-margins">{{ count($approvers) + count($verifiers) }}</h1>
                 </div>
             </div>
         </div>
@@ -35,7 +37,7 @@
                     <h5>Approved</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">0</h1>
+                    <h1 class="no-margins">{{ count($approvers->where('status','Approved')) + count($verifiers->where('status','Approved')) }}</h1>
                 </div>
             </div>
         </div>
