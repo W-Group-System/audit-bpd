@@ -60,7 +60,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($approvers as $approver)
+                                @foreach ($approvers->where('status', 'Pending') as $approver)
                                     @php
                                         $car = $approver->correctiveActionRequest;
                                     @endphp
@@ -97,7 +97,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($verifiers as $verify)
+                            @foreach ($verifiers->where('status', 'Pending') as $verify)
                                 @php
                                     $car = $verify->correctiveActionRequest;
                                 @endphp
