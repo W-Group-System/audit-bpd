@@ -123,7 +123,9 @@
                                     1
                                 </div>
                                 <div class="col-md-6 border border-1 border-top-bottom border-left-right">
+                                    @if($auditor)
                                     {{ $auditor->name }}
+                                    @endif
                                 </div>
                             </div>
                         @else
@@ -132,7 +134,9 @@
                                     1
                                 </div>
                                 <div class="col-md-6 border border-1 border-top-bottom border-left-right">
+                                    @if($auditor)
                                     {{ $auditor->name }}
+                                    @endif
                                 </div>
                             </div>
                             <div class="row">

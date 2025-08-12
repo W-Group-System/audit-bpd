@@ -80,7 +80,7 @@
                                                 <th style="padding: 1px;">Date Approved</th>
                                             </tr>
                                             <tbody>
-                                                @if($car->immediate_action)
+                                                {{-- @if($car->immediate_action)
                                                 <tr>
                                                     <td style="padding: 1px;">{!! nl2br(e($car->immediate_action)) !!}</td>
                                                     <td style="padding: 1px;">{{ $car->auditee->name }}</td>
@@ -110,42 +110,42 @@
                                                     </td>
                                                 </tr>
                                                 @else
-                                                    @foreach ($car->correctionImmediateAction as $correctionImmediateAction)
-                                                        <input type="hidden" name="correction_immediate_action_id[]" value="{{ $correctionImmediateAction->id }}">
-                                                        <tr>
-                                                            <td style="padding: 1px;">{!! nl2br(e($correctionImmediateAction->correction_immediate_action)) !!}</td>
-                                                            <td style="padding: 1px;">{{ $correctionImmediateAction->corrective_action_request->auditee->name }}</td>
-                                                            <td style="padding: 1px;">{{ date('M d Y', strtotime($correctionImmediateAction->correction_action_date))}}</td>
-                                                            <td style="padding: 1px;">
-                                                                <select name="immediate_action_status[]" class="form-control input-sm" required onchange="showUploadFile({{ $correctionImmediateAction->id }}, this.value)">
-                                                                    <option value=""></option>
-                                                                    <option value="Pending" @if($correctionImmediateAction->status == 'Pending') selected @endif>Pending</option>
-                                                                    <option value="Done" @if($correctionImmediateAction->status == 'Done') selected @endif>Done</option>
-                                                                </select>
+                                                @endif --}}
+                                                @foreach ($car->correctionImmediateAction as $correctionImmediateAction)
+                                                    <input type="hidden" name="correction_immediate_action_id[]" value="{{ $correctionImmediateAction->id }}">
+                                                    <tr>
+                                                        <td style="padding: 1px;">{!! nl2br(e($correctionImmediateAction->correction_immediate_action)) !!}</td>
+                                                        <td style="padding: 1px;">{{ $correctionImmediateAction->corrective_action_request->auditee->name }}</td>
+                                                        <td style="padding: 1px;">{{ date('M d Y', strtotime($correctionImmediateAction->correction_action_date))}}</td>
+                                                        <td style="padding: 1px;">
+                                                            <select name="immediate_action_status[]" class="form-control input-sm" required onchange="showUploadFile({{ $correctionImmediateAction->id }}, this.value)">
+                                                                <option value=""></option>
+                                                                <option value="Pending" @if($correctionImmediateAction->status == 'Pending') selected @endif>Pending</option>
+                                                                <option value="Done" @if($correctionImmediateAction->status == 'Done') selected @endif>Done</option>
+                                                            </select>
 
-                                                                <div id="immediateActionFile{{ $correctionImmediateAction->id }}" hidden>
-                                                                    <input type="file" name="immediate_action_file[]" class="form-control input-sm">
-                                                                </div>
-                                                            </td>
-                                                            <td style="padding: 1px;">
-                                                                <textarea name="immediate_action_remarks[]" class="form-control" cols="30" required>{{ $correctionImmediateAction->remarks }}</textarea>
-                                                            </td>
-                                                            <td style="padding: 1px;">
-                                                                @if($correctionImmediateAction->attachments)
-                                                                <a href="{{ url($correctionImmediateAction->attachments) }}"
-                                                                    target="_blank">
-                                                                    <i class="fa fa-file"></i>
-                                                                </a>
-                                                                @endif
-                                                            </td>
-                                                            <td style="padding: 1px;">
-                                                                @if($correctionImmediateAction->date_approved)
-                                                                {{ date('Y-m-d', strtotime($correctionImmediateAction->date_approved)) }}
-                                                                @endif
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                @endif
+                                                            <div id="immediateActionFile{{ $correctionImmediateAction->id }}" hidden>
+                                                                <input type="file" name="immediate_action_file[]" class="form-control input-sm">
+                                                            </div>
+                                                        </td>
+                                                        <td style="padding: 1px;">
+                                                            <textarea name="immediate_action_remarks[]" class="form-control" cols="30" required>{{ $correctionImmediateAction->remarks }}</textarea>
+                                                        </td>
+                                                        <td style="padding: 1px;">
+                                                            @if($correctionImmediateAction->attachments)
+                                                            <a href="{{ url($correctionImmediateAction->attachments) }}"
+                                                                target="_blank">
+                                                                <i class="fa fa-file"></i>
+                                                            </a>
+                                                            @endif
+                                                        </td>
+                                                        <td style="padding: 1px;">
+                                                            @if($correctionImmediateAction->date_approved)
+                                                            {{ date('Y-m-d', strtotime($correctionImmediateAction->date_approved)) }}
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>

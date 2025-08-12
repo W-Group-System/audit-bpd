@@ -77,7 +77,7 @@
                             <th style="padding: 1px;">Attachments</th>
                             <th style="padding: 1px;">Verified Date</th>
                         </tr>
-                        @if($car->immediate_action)
+                        {{-- @if($car->immediate_action)
                         <tr>
                             <td style="padding: 1px;">{!! nl2br(e($car->immediate_action)) !!}</td>
                             <td style="padding: 1px;">{{ $car->auditee->name }}</td>
@@ -98,32 +98,32 @@
                             </td>
                         </tr>
                         @else
-                            @foreach ($car->correctionImmediateAction as $correctionImmediateAction)
-                            <tr>
-                                <td style="padding: 1px;">{!! nl2br(e($correctionImmediateAction->correction_immediate_action)) !!}</td>
-                                <td style="padding: 1px;">{{ $correctionImmediateAction->corrective_action_request->auditee->name }}</td>
-                                <td style="padding: 1px;">{{ date('Y-m-d', strtotime($correctionImmediateAction->correction_action_date)) }}</td>
-                                <td style="padding: 1px;">{{ $correctionImmediateAction->status }}</td>
-                                <td style="padding: 1px;">
-                                    {{-- @if($car->immediate_action_file)
-                                    <a href="{{ url($car->immediate_action_file) }}" target="_blank">
-                                        <i class="fa fa-file"></i>
-                                    </a>
-                                    @endif --}}
-                                </td>
-                                <td style="padding: 1px;">
-                                    {{-- @if($car->approved_date)
-                                    {{ date('Y-m-d', strtotime($car->approved_date)) }}
-                                    @endif --}}
-                                </td>
-                                <td style="padding: 1px;">
-                                    {{-- @if($car->approved_date)
-                                    {{ date('Y-m-d', strtotime($car->approved_date)) }}
-                                    @endif --}}
-                                </td>
-                            </tr>
-                            @endforeach
-                        @endif
+                        @endif --}}
+                        @foreach ($car->correctionImmediateAction as $correctionImmediateAction)
+                        <tr>
+                            <td style="padding: 1px;">{!! nl2br(e($correctionImmediateAction->correction_immediate_action)) !!}</td>
+                            <td style="padding: 1px;">{{ $correctionImmediateAction->corrective_action_request->auditee->name }}</td>
+                            <td style="padding: 1px;">{{ date('Y-m-d', strtotime($correctionImmediateAction->correction_action_date)) }}</td>
+                            <td style="padding: 1px;">{{ $correctionImmediateAction->status }}</td>
+                            <td style="padding: 1px;">
+                                {{-- @if($car->immediate_action_file)
+                                <a href="{{ url($car->immediate_action_file) }}" target="_blank">
+                                    <i class="fa fa-file"></i>
+                                </a>
+                                @endif --}}
+                            </td>
+                            <td style="padding: 1px;">
+                                {{-- @if($car->approved_date)
+                                {{ date('Y-m-d', strtotime($car->approved_date)) }}
+                                @endif --}}
+                            </td>
+                            <td style="padding: 1px;">
+                                {{-- @if($car->approved_date)
+                                {{ date('Y-m-d', strtotime($car->approved_date)) }}
+                                @endif --}}
+                            </td>
+                        </tr>
+                        @endforeach
                     </table>
                 </div>
             </div>
