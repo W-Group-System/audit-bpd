@@ -107,7 +107,7 @@
                                 <th style="padding: 1px;">Man</th>
                                 <th style="padding: 1px;">Method</th>
                                 <th style="padding: 1px;">Machine</th>
-                                <th style="padding: 1px;">Material</th>
+                                <th style="padding: 1px;">Measurement</th>
                                 <th style="padding: 1px;">Mother Nature</th>
                             </tr>
                             <tbody>

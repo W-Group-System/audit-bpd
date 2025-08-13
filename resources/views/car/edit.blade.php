@@ -69,7 +69,7 @@
                                     <th>Man</th>
                                     <th>Method</th>
                                     <th>Machine</th>
-                                    <th>Material</th>
+                                    <th>Measurement</th>
                                     <th>Mother Nature</th>
                                 </tr>
                             </thead>
