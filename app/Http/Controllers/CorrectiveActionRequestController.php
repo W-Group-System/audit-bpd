@@ -408,6 +408,7 @@ class CorrectiveActionRequestController extends Controller
         {
             $correction_immediate_action->status = $request->immediate_action_status[$key];
             $correction_immediate_action->remarks = $request->immediate_action_remarks[$key];
+            $correction_immediate_action->date_approved = date('Y-m-d');
 
             if (isset($request->immediate_action_file[$key]))
             {

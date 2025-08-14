@@ -106,21 +106,19 @@
                             <td style="padding: 1px;">{{ date('Y-m-d', strtotime($correctionImmediateAction->correction_action_date)) }}</td>
                             <td style="padding: 1px;">{{ $correctionImmediateAction->status }}</td>
                             <td style="padding: 1px;">
-                                {{-- @if($car->immediate_action_file)
-                                <a href="{{ url($car->immediate_action_file) }}" target="_blank">
+                                {!! nl2br(e($correctionImmediateAction->remarks)) !!}
+                            </td>
+                            <td style="padding: 1px;">
+                                @if($correctionImmediateAction->attachments)
+                                <a href="{{ url($correctionImmediateAction->attachments ) }}" target="_blank">
                                     <i class="fa fa-file"></i>
                                 </a>
-                                @endif --}}
+                                @endif
                             </td>
                             <td style="padding: 1px;">
-                                {{-- @if($car->approved_date)
-                                {{ date('Y-m-d', strtotime($car->approved_date)) }}
-                                @endif --}}
-                            </td>
-                            <td style="padding: 1px;">
-                                {{-- @if($car->approved_date)
-                                {{ date('Y-m-d', strtotime($car->approved_date)) }}
-                                @endif --}}
+                                @if($correctionImmediateAction->date_approved)
+                                {{ date('Y-m-d', strtotime($correctionImmediateAction->date_approved)) }}
+                                @endif
                             </td>
                         </tr>
                         @endforeach

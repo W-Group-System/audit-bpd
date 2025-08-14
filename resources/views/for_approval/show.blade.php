@@ -62,11 +62,13 @@
                                     <div class="panel-heading">
                                         II. Correction Immediate Action
 
+                                        @if(auth()->user()->role->name != "Audit Head")
                                         <div class="pull-right">
                                             <button type="submit" class="btn btn-sm btn-danger">
                                                 Save
                                             </button>
                                         </div>
+                                        @endif
                                     </div>
                                     <div class="panel-body">
                                         <table class="table table-bordered">
@@ -77,7 +79,7 @@
                                                 <th style="padding: 1px;">Status</th>
                                                 <th style="padding: 1px;">Remarks</th>
                                                 <th style="padding: 1px;">Attachment</th>
-                                                <th style="padding: 1px;">Date Approved</th>
+                                                <th style="padding: 1px;">Date Verified</th>
                                             </tr>
                                             <tbody>
                                                 {{-- @if($car->immediate_action)
@@ -118,6 +120,7 @@
                                                         <td style="padding: 1px;">{{ $correctionImmediateAction->corrective_action_request->auditee->name }}</td>
                                                         <td style="padding: 1px;">{{ date('M d Y', strtotime($correctionImmediateAction->correction_action_date))}}</td>
                                                         <td style="padding: 1px;">
+                                                            @if(auth()->user()->role->name != "Audit Head")
                                                             <select name="immediate_action_status[]" class="form-control input-sm" required onchange="showUploadFile({{ $correctionImmediateAction->id }}, this.value)">
                                                                 <option value=""></option>
                                                                 <option value="Pending" @if($correctionImmediateAction->status == 'Pending') selected @endif>Pending</option>
@@ -127,9 +130,16 @@
                                                             <div id="immediateActionFile{{ $correctionImmediateAction->id }}" hidden>
                                                                 <input type="file" name="immediate_action_file[]" class="form-control input-sm">
                                                             </div>
+                                                            @else
+                                                            {{ $correctionImmediateAction->status }}
+                                                            @endif
                                                         </td>
                                                         <td style="padding: 1px;">
+                                                            @if(auth()->user()->role->name != "Audit Head")
                                                             <textarea name="immediate_action_remarks[]" class="form-control" cols="30" required>{{ $correctionImmediateAction->remarks }}</textarea>
+                                                            @else
+                                                            {!! nl2br(e($correctionImmediateAction->remarks)) !!}
+                                                            @endif
                                                         </td>
                                                         <td style="padding: 1px;">
                                                             @if($correctionImmediateAction->attachments)
@@ -197,9 +207,11 @@
                                     <div class="panel-heading">
                                         IV. Corrective Action
 
+                                        @if(auth()->user()->role->name != "Audit Head")
                                         <div class="pull-right">
                                             <button type="submit" class="btn btn-sm btn-danger">Save</button>
                                         </div>
+                                        @endif
                                     </div>
                                     <div class="panel-body">
                                         <table class="table table-bordered">
@@ -209,6 +221,7 @@
                                                 <th style="padding: 1px;">Status</th>
                                                 <th style="padding: 1px;">Remarks</th>
                                                 <th style="padding: 1px;">Attachment</th>
+                                                <th style="padding: 1px;">Date Verified</th>
                                             </tr>
                                             <tbody>
                                                 @foreach ($car->correctiveAction as $corrective_action)
@@ -223,6 +236,7 @@
                                                         {{ date('M d, Y', strtotime($corrective_action->action_date)) }}
                                                     </td>
                                                     <td style="padding: 1px;">
+                                                        @if(auth()->user()->role->name != "Audit Head")
                                                         <select name="status[]" class="form-control input-sm" required
                                                             onchange="correctiveActionStatus({{ $corrective_action->id }}, this.value)">
                                                             <option value=""></option>
@@ -236,15 +250,27 @@
                                                             <input type="file" name="corrective_action_files[]"
                                                                 class="form-control">
                                                         </div>
+                                                        @else
+                                                        {{ $corrective_action->status }}
+                                                        @endif
                                                     </td>
                                                     <td style="padding: 1px;">
+                                                        @if(auth()->user()->role->name != "Audit Head")
                                                         <textarea name="remarks_action[]" class="form-control input-sm"
                                                             cols="30" required>{{ $corrective_action->remarks }}</textarea>
+                                                        @else 
+                                                        {!! nl2br(e($corrective_action->remarks)) !!}
+                                                        @endif
                                                     </td>
                                                     <td style="padding: 1px;">
                                                         @if($corrective_action->file_attachments)
                                                         <a href="{{ url($corrective_action->file_attachments) }}"
                                                             target="_blank"><i class="fa fa-file"></i></a>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if($corrective_action->status == "Done")
+                                                        {{ date('Y-m-d', strtotime($corrective_action->updated_at)) }}
                                                         @endif
                                                     </td>
                                                 </tr>
@@ -278,7 +304,7 @@
                                             <b>Remarks</b>
                                         </div>
                                     </div>
-                                    @foreach ($car->verify as $verifier)
+                                    @foreach ($car->verify as $key=>$verifier)
                                     <div class="row">
                                         <div class="col-md-3 border border-1 border-top-bottom border-right-left">
                                             {{ $verifier->user->name }}
@@ -287,7 +313,9 @@
                                             {{ $verifier->status }}
                                         </div>
                                         <div class="col-md-3 border border-1 border-top-bottom border-right-left">
+                                            @if($verifier->status == "Approved" || $verifier->status == "Submitted")
                                             {{ date('M d Y', strtotime($verifier->updated_at )) }}
+                                            @endif
                                         </div>
                                         <div class="col-md-3 border border-1 border-top-bottom border-right-left">
                                             {{ $verifier->remarks }}
