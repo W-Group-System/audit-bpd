@@ -6,8 +6,10 @@ use App\CorrectiveAction;
 use App\CorrectiveActionRequest;
 use App\CorrectiveActionRequestApprover;
 use App\CorrectiveActionRequestVerifier;
+use App\Mail\ReturnEmail;
 use App\RemarksHistory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class ForReviewController extends Controller
@@ -97,13 +99,13 @@ class ForReviewController extends Controller
         }
         elseif($request->action == 'Returned')
         {
-            $approver_data = CorrectiveActionRequestApprover::where('corrective_action_request_id', $request->car_id)
+            $approver_data = CorrectiveActionRequestApprover::with('correctiveActionRequest.auditee')->where('corrective_action_request_id', $request->car_id)
                 ->where('status', 'Pending')
                 ->where('user_id', auth()->user()->id)
                 ->orderBy('level', 'asc')
                 ->first();
 
-            // $approver_data->status = 'Returned';
+            $approver_data->status = 'Returned';
             $approver_data->remarks = $request->remarks;
             $approver_data->save();
 
@@ -124,6 +126,8 @@ class ForReviewController extends Controller
                 }
                 $approver->save();
             }
+
+            Mail::to($approver_data->correctiveActionRequest->auditee->email)->send(new ReturnEmail($corrective_action_request, $request->remarks));
 
             Alert::success('Successfully Returned')->persistent('Dismiss');
         }

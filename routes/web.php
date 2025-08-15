@@ -11,7 +11,7 @@
 |
 */
 
-use App\Mail\NotifyEmail;
+use App\Mail\ReturnEmail;
 use App\User;
 
 Route::get('/', function () {
@@ -61,7 +61,7 @@ Route::group(['middleware' => 'auth'], function() {
 });
 
 // Route::get('mailable', function () {
-//     $user = User::find(3);
+//     // $user = User::find(3);
 
-//     return new NotifyEmail($user);
+//     return new ReturnEmail();
 // });
