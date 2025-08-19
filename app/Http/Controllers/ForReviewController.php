@@ -127,7 +127,7 @@ class ForReviewController extends Controller
                 $approver->save();
             }
 
-            Mail::to($approver_data->correctiveActionRequest->auditee->email)->send(new ReturnEmail($corrective_action_request, $request->remarks));
+            // Mail::to($approver_data->correctiveActionRequest->auditee->email)->send(new ReturnEmail($corrective_action_request, $request->remarks));
 
             Alert::success('Successfully Returned')->persistent('Dismiss');
         }
