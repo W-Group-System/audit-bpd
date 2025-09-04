@@ -27,7 +27,7 @@
                     <h5>For Approval</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{ count($approvers) + count($verifiers) }}</h1>
+                    <h1 class="no-margins">{{ count($approvers->where('status','Pending')) + count($verifiers->where('status','Pending')) }}</h1>
                 </div>
             </div>
         </div>
