@@ -359,7 +359,7 @@ class CorrectiveActionRequestController extends Controller
     public function updateAdmin(Request $request,$id)
     {
         // dd($request->all());
-        $car = CorrectiveActionRequest::findOrFail($id);
+        $car = CorrectiveActionRequest::with('approver')->findOrFail($id);
         
         $approver = ($car->approver)->where('user_id', $car->auditor_id)->first();
         $approver->user_id = $request->auditor;
