@@ -360,10 +360,12 @@ class CorrectiveActionRequestController extends Controller
     {
         // dd($request->all());
         $car = CorrectiveActionRequest::with('approver')->findOrFail($id);
-        
-        $approver = ($car->approver)->where('user_id', $car->auditor_id)->first();
-        $approver->user_id = $request->auditor;
-        $approver->save();
+        if (count($car->approver) > 0)
+        {
+            $approver = ($car->approver)->where('user_id', $car->auditor_id)->first();
+            $approver->user_id = $request->auditor;
+            $approver->save();
+        }
 
         $car->standard_and_clause = $request->standard_and_clause;
         $car->department_id = $request->department;
