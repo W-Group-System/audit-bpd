@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\CorrectiveActionRequest;
 use App\Department;
+use App\RootCauseAnalysis;
 use Illuminate\Http\Request;
 use stdClass;
 
@@ -27,6 +28,7 @@ class HomeController extends Controller
     public function index()
     {
         $cars = CorrectiveActionRequest::get();
+        $rca = RootCauseAnalysis::get();
         $departments = Department::whereNull('status')->get();
         if (auth()->user()->role->name == 'Auditee')
         {
@@ -48,7 +50,7 @@ class HomeController extends Controller
             $object->closed_cars = $cars->where('status', 'Closed')->where('department_id', $department->id);
             $car_per_dept_array[] = $object;
         }
-
-        return view('home', compact('cars', 'car_per_dept_array'));
+        
+        return view('home', compact('cars', 'car_per_dept_array', 'rca'));
     }
 }

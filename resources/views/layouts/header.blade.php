@@ -159,6 +159,10 @@
 
     <script src="{{ asset('login_css/js/inspinia.js')}}"></script>
     <script src="{{ asset('login_css/js/plugins/pace/pace.min.js')}}"></script>
+    <!-- d3 and c3 charts -->
+    <script src="{{ asset('login_css/js/plugins/d3/d3.min.js') }}"></script>
+    <script src="{{ asset('login_css/js/plugins/c3/c3.min.js') }}"></script>
+
     <script>
         function show() {
             document.getElementById("loader").style.display = "block";

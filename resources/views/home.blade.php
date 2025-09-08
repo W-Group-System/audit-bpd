@@ -47,6 +47,23 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-lg-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Root Cause Analysis Percentage</h5>
+                    <div class="pull-right">
+                        <span class="label label-warning">as of {{ date('Y-m-d') }}</span>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div>
+                        <div id="pie"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
@@ -181,28 +198,59 @@
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
 <script>
-    $('.tables').DataTable({
-        pageLength: 25,
-        responsive: true,
-        stateSave: true,
-        dom: '<"html5buttons"B>lTfgitp',
-        buttons: [
-            { extend: 'copy'},
-            {extend: 'csv'},
-            {extend: 'excel', title: 'ExampleFile'},
-            {extend: 'pdf', title: 'ExampleFile'},
-
-            {extend: 'print',
-                customize: function (win){
-                    $(win.document.body).addClass('white-bg');
-                    $(win.document.body).css('font-size', '10px');
-
-                    $(win.document.body).find('table')
-                            .addClass('compact')
-                            .css('font-size', 'inherit');
+    var total_car = {!! json_encode($cars->count()) !!}
+    var man = {!! json_encode($rca->where('man','!=',null)->count()) !!}
+    var method = {!! json_encode($rca->where('method','!=',null)->count()) !!}
+    var machine = {!! json_encode($rca->where('machine','!=',null)->count()) !!}
+    var material = {!! json_encode($rca->where('material','!=',null)->count()) !!}
+    var mother_nature = {!! json_encode($rca->where('mother_nature','!=',null)->count()) !!}
+    
+    $(document).ready(function() {
+        $('.tables').DataTable({
+            pageLength: 25,
+            responsive: true,
+            stateSave: true,
+            dom: '<"html5buttons"B>lTfgitp',
+            buttons: [
+                { extend: 'copy'},
+                {extend: 'csv'},
+                {extend: 'excel', title: 'ExampleFile'},
+                {extend: 'pdf', title: 'ExampleFile'},
+    
+                {extend: 'print',
+                    customize: function (win){
+                        $(win.document.body).addClass('white-bg');
+                        $(win.document.body).css('font-size', '10px');
+    
+                        $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                    }
                 }
+            ]
+        });
+
+        c3.generate({
+            bindto: '#pie',
+            data:{
+                columns: [
+                    ['MAN', man],
+                    ['METHOD', method],
+                    ['MACHINE', machine],
+                    ['MEASUREMENT', material],
+                    ['MOTHER NATURE', mother_nature]
+                ],
+                colors:{
+                    data1: '#d4afb9',
+                    data2: '#d1cfe2',
+                    data2: '#9cadce',
+                    data2: '#7ec4cf',
+                    data2: '#daeaf6',
+                    data2: '#e8dff5'
+                },
+                type : 'pie'
             }
-        ]
-    });
+        });
+    })
 </script>
 @endsection
