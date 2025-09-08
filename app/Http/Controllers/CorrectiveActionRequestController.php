@@ -153,7 +153,7 @@ class CorrectiveActionRequestController extends Controller
             $corrective_action->save();
         }
 
-        $corrective_action_request_approver = CorrectiveActionRequestApprover::where('corrective_action_request_id', $id)->delete();
+        $corrective_action_request_approver = CorrectiveActionRequestApprover::where('corrective_action_request_id', $id)->get();
         if ($corrective_action_request_approver->isEmpty())
         {
             $audit_head = User::where('role_id',4)->first();
