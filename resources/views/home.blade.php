@@ -48,6 +48,7 @@
             </div>
         </div>
     </div>
+    @if(auth()->user()->role->name != "Auditee")
     <div class="row">
         <div class="col-lg-6">
             <div class="ibox float-e-margins">
@@ -154,6 +155,7 @@
             </div>
         </div>
     </div>
+    @endif
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
