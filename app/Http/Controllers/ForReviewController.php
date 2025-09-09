@@ -7,6 +7,8 @@ use App\CorrectiveActionRequest;
 use App\CorrectiveActionRequestApprover;
 use App\CorrectiveActionRequestVerifier;
 use App\Mail\ReturnEmail;
+use App\Notifications\ClosedCarNotification;
+use App\Notifications\ForApprovedCorrection;
 use App\RemarksHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -64,7 +66,7 @@ class ForReviewController extends Controller
             $approver_data->remarks = $request->remarks;
             $approver_data->save();
 
-            $corrective_action_request = CorrectiveActionRequest::findOrFail($request->car_id);
+            $corrective_action_request = CorrectiveActionRequest::with('correctiveAction','correctionImmediateAction')->findOrFail($request->car_id);
             if (auth()->user()->role->name == 'Auditor')
             {
                 $corrective_action_request->status = 'Approval CAR';
@@ -80,7 +82,6 @@ class ForReviewController extends Controller
             $corrective_action_request->save();
 
             $approvers = CorrectiveActionRequestApprover::where('corrective_action_request_id', $request->car_id)->where('status', 'Waiting')->orderBy('level', 'asc')->get();
-            
             foreach($approvers as $key=>$approver)
             {
                 if ($key == 0)
@@ -93,6 +94,15 @@ class ForReviewController extends Controller
                 }
 
                 $approver->save();
+            }
+
+            if (count($approvers) == 0)
+            {
+                $correction_action_date = ($corrective_action_request->correctionImmediateAction)->pluck('correction_action_date')->toArray();
+                $corrective_action_date = ($corrective_action_request->correctiveAction)->pluck('action_date')->toArray();
+
+                $corrective_action_request->auditee->notify(new ForApprovedCorrection($corrective_action_request,$correction_action_date,$corrective_action_date));
+                $corrective_action_request->auditor->notify(new ForApprovedCorrection($corrective_action_request,$correction_action_date,$corrective_action_date));
             }
 
             Alert::success('Successfully Approved')->persistent('Dismiss');
@@ -227,6 +237,9 @@ class ForReviewController extends Controller
                 $corrective_action = CorrectiveActionRequest::findOrFail($request->car_id);
                 $corrective_action->status = 'Closed';
                 $corrective_action->save();
+
+                $corrective_action_request->auditee->notify(new ClosedCarNotification($corrective_action_request));
+                $corrective_action_request->auditor->notify(new ClosedCarNotification($corrective_action_request));
             }
 
             Alert::success('Successfully Approved')->persistent('Dismiss');
