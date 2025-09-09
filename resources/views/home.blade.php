@@ -75,7 +75,7 @@
                 </div>
                 <div class="ibox-content"  style="height:361px; overflow:auto;">
                     <div class="row">
-                        <div class="col-lg-2">
+                        {{-- <div class="col-md-2">
                             <p style="font-weight: bold;">MAN</p>
                             @php
                                 $num = 0;
@@ -90,7 +90,7 @@
                                 @include('car.view')
                             @endforeach
                         </div>
-                        <div class="col-lg-2">
+                        <div class="col-md-2">
                             <p style="font-weight: bold;">METHOD</p>
                             @php
                                 $num = 0;
@@ -105,7 +105,7 @@
                                 @include('car.view')
                             @endforeach
                         </div>
-                        <div class="col-lg-2">
+                        <div class="col-md-2">
                             <p style="font-weight: bold;">MACHINE</p>
                             @php
                                 $num = 0;
@@ -120,7 +120,7 @@
                                 @include('car.view')
                             @endforeach
                         </div>
-                        <div class="col-lg-2">
+                        <div class="col-md-2">
                             <p style="font-weight: bold;">MEASUREMENT</p>
                             @php
                                 $num = 0;
@@ -135,7 +135,7 @@
                                 @include('car.view')
                             @endforeach
                         </div>
-                        <div class="col-lg-2">
+                        <div class="col-md-2">
                             <p style="font-weight: bold;">MOTHER NATURE</p>
                             @php
                                 $num = 0;
@@ -149,6 +149,99 @@
                                 @endphp
                                 @include('car.view')
                             @endforeach
+                        </div> --}}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tr>
+                                    <th class="text-center">MAN</th>
+                                    <th class="text-center">METHOD</th>
+                                    <th class="text-center">MACHINE</th>
+                                    <th class="text-center">MEASUREMENT</th>
+                                    <th class="text-center">MOTHER NATURE</th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @php
+                                            $num = 0;
+                                            $man_analysis = $rca->whereNotIn('man',['N/A','n/a',null]);
+                                        @endphp
+                                        @foreach ($man_analysis->sortBy('corrective_action_request_id') as $man)
+                                            <div class="text-center">
+                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $man->corrective_action_request->id }}">CAR-{{ str_pad($man->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+                                            </div>
+
+                                            @php
+                                                $car = $man->corrective_action_request;
+                                            @endphp
+                                            @include('car.view')
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @php
+                                            $num = 0;
+                                            $method_analysis = $rca->whereNotIn('method',['N/A','n/a',null]);
+                                        @endphp
+                                        @foreach ($method_analysis->sortBy('corrective_action_request_id') as $method)
+                                            <div class="text-center">
+                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $method->corrective_action_request->id }}">CAR-{{ str_pad($method->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+                                            </div>
+
+                                            @php
+                                                $car = $method->corrective_action_request;
+                                            @endphp
+                                            @include('car.view')
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @php
+                                            $num = 0;
+                                            $machine_analysis = $rca->whereNotIn('machine',['N/A','n/a',null]);
+                                        @endphp
+                                        @foreach ($machine_analysis->sortBy('corrective_action_request_id') as $machine)
+                                            <div class="text-center">
+                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $machine->corrective_action_request->id }}">CAR-{{ str_pad($machine->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+                                            </div>
+
+                                            @php
+                                                $car = $machine->corrective_action_request;
+                                            @endphp
+                                            @include('car.view')
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @php
+                                            $num = 0;
+                                            $measurement_analysis = $rca->whereNotIn('material',['N/A','n/a',null]);
+                                        @endphp
+                                        @foreach ($measurement_analysis->sortBy('corrective_action_request_id') as $measurement)
+                                            <div class="text-center">
+                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $measurement->corrective_action_request->id }}">CAR-{{ str_pad($measurement->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+                                            </div>
+
+                                            @php
+                                                $car = $measurement->corrective_action_request;
+                                            @endphp
+                                            @include('car.view')
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @php
+                                            $num = 0;
+                                            $mother_nature_analysis = $rca->whereNotIn('mother_nature',['N/A','n/a',null]);
+                                        @endphp
+                                        @foreach ($mother_nature_analysis->sortBy('corrective_action_request_id') as $mother_nature)
+                                            <div class="text-centet">
+                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $mother_nature->corrective_action_request->id }}">CAR-{{ str_pad($mother_nature->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+                                            </div>
+
+                                            @php
+                                                $car = $mother_nature->corrective_action_request;
+                                            @endphp
+                                            @include('car.view')
+                                        @endforeach
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>
