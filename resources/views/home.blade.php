@@ -1,6 +1,8 @@
 @extends('layouts.header')
 @section('css')
 <link href="{{ asset('login_css/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+<!-- c3 Charts -->
+<link href="{{ asset('login_css/css/plugins/c3/c3.min.css') }}" rel="stylesheet">
 @endsection
 
 @section('content')
@@ -58,6 +60,95 @@
                 <div class="ibox-content">
                     <div>
                         <div id="pie"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Root Cause Analysis</h5>
+                    <div class="pull-right">
+                        <span class="label label-warning">as of {{ date('Y-m-d') }}</span>
+                    </div>
+                </div>
+                <div class="ibox-content"  style="height:361px; overflow:auto;">
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <p style="font-weight: bold;">MAN</p>
+                            @php
+                                $num = 0;
+                                $man_analysis = $rca->whereNotIn('man',['N/A','n/a',null]);
+                            @endphp
+                            @foreach ($man_analysis as $man)
+                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $man->corrective_action_request->id }}">CAR-{{ str_pad($man->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+
+                                @php
+                                    $car = $man->corrective_action_request;
+                                @endphp
+                                @include('car.view')
+                            @endforeach
+                        </div>
+                        <div class="col-lg-2">
+                            <p style="font-weight: bold;">METHOD</p>
+                            @php
+                                $num = 0;
+                                $method_analysis = $rca->whereNotIn('method',['N/A','n/a',null]);
+                            @endphp
+                            @foreach ($method_analysis as $method)
+                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $method->corrective_action_request->id }}">CAR-{{ str_pad($method->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+
+                                @php
+                                    $car = $method->corrective_action_request;
+                                @endphp
+                                @include('car.view')
+                            @endforeach
+                        </div>
+                        <div class="col-lg-2">
+                            <p style="font-weight: bold;">MACHINE</p>
+                            @php
+                                $num = 0;
+                                $machine_analysis = $rca->whereNotIn('machine',['N/A','n/a',null]);
+                            @endphp
+                            @foreach ($machine_analysis as $machine)
+                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $machine->corrective_action_request->id }}">CAR-{{ str_pad($machine->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+
+                                @php
+                                    $car = $machine->corrective_action_request;
+                                @endphp
+                                @include('car.view')
+                            @endforeach
+                        </div>
+                        <div class="col-lg-2">
+                            <p style="font-weight: bold;">MEASUREMENT</p>
+                            @php
+                                $num = 0;
+                                $measurement_analysis = $rca->whereNotIn('material',['N/A','n/a',null]);
+                            @endphp
+                            @foreach ($measurement_analysis as $measurement)
+                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $measurement->corrective_action_request->id }}">CAR-{{ str_pad($measurement->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+
+                                @php
+                                    $car = $measurement->corrective_action_request;
+                                @endphp
+                                @include('car.view')
+                            @endforeach
+                        </div>
+                        <div class="col-lg-2">
+                            <p style="font-weight: bold;">MOTHER NATURE</p>
+                            @php
+                                $num = 0;
+                                $mother_nature_analysis = $rca->whereNotIn('mother_nature',['N/A','n/a',null]);
+                            @endphp
+                            @foreach ($mother_nature_analysis as $mother_nature)
+                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $mother_nature->corrective_action_request->id }}">CAR-{{ str_pad($mother_nature->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+
+                                @php
+                                    $car = $mother_nature->corrective_action_request;
+                                @endphp
+                                @include('car.view')
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             </div>
@@ -199,11 +290,11 @@
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
 <script>
     var total_car = {!! json_encode($cars->count()) !!}
-    var man = {!! json_encode($rca->where('man','!=',null)->count()) !!}
-    var method = {!! json_encode($rca->where('method','!=',null)->count()) !!}
-    var machine = {!! json_encode($rca->where('machine','!=',null)->count()) !!}
-    var material = {!! json_encode($rca->where('material','!=',null)->count()) !!}
-    var mother_nature = {!! json_encode($rca->where('mother_nature','!=',null)->count()) !!}
+    var man = {!! json_encode($rca->where('man','!=',null)->whereNotIn('man', ['N/A','n/a'])->count()) !!}
+    var method = {!! json_encode($rca->where('method','!=',null)->whereNotIn('method', ['N/A','n/a'])->count()) !!}
+    var machine = {!! json_encode($rca->where('machine','!=',null)->whereNotIn('machine', ['N/A','n/a'])->count()) !!}
+    var material = {!! json_encode($rca->where('material','!=',null)->whereNotIn('material', ['N/A','n/a'])->count()) !!}
+    var mother_nature = {!! json_encode($rca->where('mother_nature','!=',null)->whereNotIn('mother_nature', ['N/A','n/a'])->count()) !!}
     
     $(document).ready(function() {
         $('.tables').DataTable({
@@ -243,10 +334,9 @@
                 colors:{
                     data1: '#d4afb9',
                     data2: '#d1cfe2',
-                    data2: '#9cadce',
-                    data2: '#7ec4cf',
-                    data2: '#daeaf6',
-                    data2: '#e8dff5'
+                    data3: '#9cadce',
+                    data4: '#7ec4cf',
+                    data5: '#daeaf6'
                 },
                 type : 'pie'
             }

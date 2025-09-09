@@ -10,4 +10,9 @@ class RootCauseAnalysis extends Model implements Auditable
     use \OwenIt\Auditing\Auditable;
     
     protected $table = 'root_cause_analysis';
+
+    public function corrective_action_request()
+    {
+        return $this->belongsTo(CorrectiveActionRequest::class);
+    }
 }
