@@ -8,6 +8,7 @@ use App\CorrectiveActionRequest;
 use App\Notifications\ForVerificationNotification;
 use App\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class ForVerificationCommand extends Command
 {
