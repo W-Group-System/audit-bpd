@@ -163,7 +163,7 @@
                                     <td>
                                         @php
                                             $num = 0;
-                                            $man_analysis = $rca->whereNotIn('man',['N/A','n/a',null]);
+                                            $man_analysis = $rca->whereNotIn('man',['N/A','n/a',null])->unique('corrective_action_request_id');
                                         @endphp
                                         @foreach ($man_analysis->sortBy('corrective_action_request_id') as $man)
                                             <div class="text-center">
@@ -179,7 +179,7 @@
                                     <td>
                                         @php
                                             $num = 0;
-                                            $method_analysis = $rca->whereNotIn('method',['N/A','n/a',null]);
+                                            $method_analysis = $rca->whereNotIn('method',['N/A','n/a',null])->unique('corrective_action_request_id');
                                         @endphp
                                         @foreach ($method_analysis->sortBy('corrective_action_request_id') as $method)
                                             <div class="text-center">
@@ -195,7 +195,7 @@
                                     <td>
                                         @php
                                             $num = 0;
-                                            $machine_analysis = $rca->whereNotIn('machine',['N/A','n/a',null]);
+                                            $machine_analysis = $rca->whereNotIn('machine',['N/A','n/a',null])->unique('corrective_action_request_id');
                                         @endphp
                                         @foreach ($machine_analysis->sortBy('corrective_action_request_id') as $machine)
                                             <div class="text-center">
@@ -211,7 +211,7 @@
                                     <td>
                                         @php
                                             $num = 0;
-                                            $measurement_analysis = $rca->whereNotIn('material',['N/A','n/a',null]);
+                                            $measurement_analysis = $rca->whereNotIn('material',['N/A','n/a',null])->unique('corrective_action_request_id');
                                         @endphp
                                         @foreach ($measurement_analysis->sortBy('corrective_action_request_id') as $measurement)
                                             <div class="text-center">
@@ -227,7 +227,7 @@
                                     <td>
                                         @php
                                             $num = 0;
-                                            $mother_nature_analysis = $rca->whereNotIn('mother_nature',['N/A','n/a',null]);
+                                            $mother_nature_analysis = $rca->whereNotIn('mother_nature',['N/A','n/a',null])->unique('corrective_action_request_id');
                                         @endphp
                                         @foreach ($mother_nature_analysis->sortBy('corrective_action_request_id') as $mother_nature)
                                             <div class="text-centet">
