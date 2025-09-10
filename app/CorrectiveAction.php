@@ -13,4 +13,8 @@ class CorrectiveAction extends Model implements Auditable
     {
         return $this->hasMany(RemarksHistory::class);
     }
+    public function corrective_action_request()
+    {
+        return $this->belongsTo(CorrectiveActionRequest::class);
+    }
 }
