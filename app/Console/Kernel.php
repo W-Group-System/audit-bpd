@@ -31,7 +31,7 @@ class Kernel extends ConsoleKernel
         //          ->hourly();
         // $schedule->command('command:notify_email')->everyMinute();
         // $schedule->command('command:notify_heads')->dailyAt('8:00');
-        $schedule->command('command:for_verification_deadline')->everyMinute();;
+        $schedule->command('command:for_verification_deadline')->everyMinute();
     }
 
     /**
