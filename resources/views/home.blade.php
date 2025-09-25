@@ -158,12 +158,16 @@
                                     <th class="text-center">MACHINE</th>
                                     <th class="text-center">MEASUREMENT</th>
                                     <th class="text-center">MOTHER NATURE</th>
+                                    <th class="text-center">COMBINED(MAN & METHOD)</th>
                                 </tr>
+                                @php
+                                    $combined = $rca->whereNotIn('man',['N/A','n/a',null])->whereNotIn('method',['N/A','n/a',null])->unique('corrective_action_request_id');
+                                @endphp
                                 <tr>
                                     <td>
                                         @php
                                             $num = 0;
-                                            $man_analysis = $rca->whereNotIn('man',['N/A','n/a',null])->unique('corrective_action_request_id');
+                                            $man_analysis = $rca->whereNotIn('man',['N/A','n/a',null])->whereNotIn('corrective_action_request_id', $combined->pluck('corrective_action_request_id')->toArray())->unique('corrective_action_request_id');
                                         @endphp
                                         @foreach ($man_analysis->sortBy('corrective_action_request_id') as $man)
                                             <div class="text-center">
@@ -179,7 +183,7 @@
                                     <td>
                                         @php
                                             $num = 0;
-                                            $method_analysis = $rca->whereNotIn('method',['N/A','n/a',null])->unique('corrective_action_request_id');
+                                            $method_analysis = $rca->whereNotIn('method',['N/A','n/a',null])->whereNotIn('corrective_action_request_id', $combined->pluck('corrective_action_request_id')->toArray())->unique('corrective_action_request_id');
                                         @endphp
                                         @foreach ($method_analysis->sortBy('corrective_action_request_id') as $method)
                                             <div class="text-center">
@@ -236,6 +240,18 @@
 
                                             @php
                                                 $car = $mother_nature->corrective_action_request;
+                                            @endphp
+                                            @include('car.view')
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach ($combined->sortBy('corrective_action_request_id') as $combine)
+                                            <div class="text-center">
+                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $combine->corrective_action_request->id }}">CAR-{{ str_pad($combine->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+                                            </div>
+
+                                            @php
+                                                $car = $combine->corrective_action_request;
                                             @endphp
                                             @include('car.view')
                                         @endforeach
