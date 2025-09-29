@@ -400,14 +400,6 @@
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
 <script>
-    var total_car = {!! json_encode($cars->count()) !!}
-    var combined = {!! json_encode($rca->whereNotIn('man',['N/A','n/a',null])->whereNotIn('method',['N/A','n/a',null])->unique('corrective_action_request_id')->count()) !!}
-    var man = {!! json_encode($rca->where('man','!=',null)->whereNotIn('man', ['N/A','n/a'])->whereNotIn('corrective_action_request_id', $combined->pluck('corrective_action_request_id')->toArray())->unique('corrective_action_request_id')->count()) !!}
-    var method = {!! json_encode($rca->where('method','!=',null)->whereNotIn('method', ['N/A','n/a'])->whereNotIn('corrective_action_request_id', $combined->pluck('corrective_action_request_id')->toArray())->unique('corrective_action_request_id')->count()) !!}
-    var machine = {!! json_encode($rca->where('machine','!=',null)->whereNotIn('machine', ['N/A','n/a'])->whereNotIn('corrective_action_request_id', $combined->pluck('corrective_action_request_id')->toArray())->unique('corrective_action_request_id')->count()) !!}
-    var material = {!! json_encode($rca->where('material','!=',null)->whereNotIn('material', ['N/A','n/a'])->whereNotIn('corrective_action_request_id', $combined->pluck('corrective_action_request_id')->toArray())->unique('corrective_action_request_id')->count()) !!}
-    var mother_nature = {!! json_encode($rca->where('mother_nature','!=',null)->whereNotIn('mother_nature', ['N/A','n/a'])->whereNotIn('corrective_action_request_id', $combined->pluck('corrective_action_request_id')->toArray())->unique('corrective_action_request_id')->count()) !!}
-    
     $(document).ready(function() {
         $('.tables').DataTable({
             pageLength: 25,
@@ -432,7 +424,20 @@
                 }
             ]
         });
+    })
+</script>
 
+@if(auth()->user()->role->name != 'Auditee')
+<script>
+    var total_car = {!! json_encode($cars->count()) !!}
+    var combined = {!! json_encode($rca->whereNotIn('man',['N/A','n/a',null])->whereNotIn('method',['N/A','n/a',null])->unique('corrective_action_request_id')->count()) !!}
+    var man = {!! json_encode($rca->where('man','!=',null)->whereNotIn('man', ['N/A','n/a'])->whereNotIn('corrective_action_request_id', $combined->pluck('corrective_action_request_id')->toArray())->unique('corrective_action_request_id')->count()) !!}
+    var method = {!! json_encode($rca->where('method','!=',null)->whereNotIn('method', ['N/A','n/a'])->whereNotIn('corrective_action_request_id', $combined->pluck('corrective_action_request_id')->toArray())->unique('corrective_action_request_id')->count()) !!}
+    var machine = {!! json_encode($rca->where('machine','!=',null)->whereNotIn('machine', ['N/A','n/a'])->whereNotIn('corrective_action_request_id', $combined->pluck('corrective_action_request_id')->toArray())->unique('corrective_action_request_id')->count()) !!}
+    var material = {!! json_encode($rca->where('material','!=',null)->whereNotIn('material', ['N/A','n/a'])->whereNotIn('corrective_action_request_id', $combined->pluck('corrective_action_request_id')->toArray())->unique('corrective_action_request_id')->count()) !!}
+    var mother_nature = {!! json_encode($rca->where('mother_nature','!=',null)->whereNotIn('mother_nature', ['N/A','n/a'])->whereNotIn('corrective_action_request_id', $combined->pluck('corrective_action_request_id')->toArray())->unique('corrective_action_request_id')->count()) !!}
+    
+    $(document).ready(function() {
         c3.generate({
             bindto: '#pie',
             data:{
@@ -457,4 +462,5 @@
         });
     })
 </script>
+@endif
 @endsection
