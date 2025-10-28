@@ -40,13 +40,13 @@
                     @php
                         $closed_car = (intval((count($cars->where('status','Closed')))) / intval((count($cars)))) * 100;
                     @endphp
-                    <h5>Total Closed CAR ({{ round($closed_car, 2) }}%)</h5>
+                    <h5>Total Closed CAR</h5>
                     <div class="pull-right">
                         <span class="label label-danger">as of {{ date('Y-m-d') }}</span>
                     </div>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{ count($cars->where('status','Closed')) }}</h1>
+                    <h1 class="no-margins">{{ count($cars->where('status','Closed')) }} ({{ round($closed_car, 2) }}%)</h1>
                 </div>
             </div>
         </div>
@@ -64,6 +64,20 @@
                 <div class="ibox-content">
                     <div>
                         <div id="pie"></div>
+                    </div>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">INFO</div>
+                        <div class="panel-body">
+                            <p>
+                                <b>Man</b> - The findings was caused by Human error such as insufficient training, miscommunication and failure to follow the policy.
+                            </p>
+                            <p>
+                                <b>Method</b> - The findings was caused due to incorrect procedures, unclear work instructions and lack of Standardized Processes.
+                            </p>
+                            <p>
+                                <b>Combined (Man & Method)</b> - The findings was caused due to absences of Policies and incorrect implementation by personnel.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -153,21 +167,6 @@
                                 @include('car.view')
                             @endforeach
                         </div> --}}
-
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">INFO</div>
-                            <div class="panel-body">
-                                <p>
-                                    <b>Man</b> - The findings was caused by Human error such as insufficient training, miscommunication and failure to follow the policy.
-                                </p>
-                                <p>
-                                    <b>Method</b> - The findings was caused due to incorrect procedures, unclear work instructions and lack of Standardized Processes.
-                                </p>
-                                <p>
-                                    <b>Combined (Man & Method)</b> - The findings was caused due to absences of Policies and incorrect implementation by personnel.
-                                </p>
-                            </div>
-                        </div>
 
                         <div class="table-responsive">
                             <table class="table">
