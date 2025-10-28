@@ -61,7 +61,7 @@
                         <span class="label label-warning">as of {{ date('Y-m-d') }}</span>
                     </div>
                 </div>
-                <div class="ibox-content">
+                <div class="ibox-content" style="height: 538px;">
                     <div>
                         <div id="pie"></div>
                     </div>
