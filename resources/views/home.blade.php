@@ -37,7 +37,10 @@
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Total Closed CAR</h5>
+                    @php
+                        $closed_car = (intval((count($cars->where('status','Closed')))) / intval((count($cars)))) * 100;
+                    @endphp
+                    <h5>Total Closed CAR ({{ round($closed_car, 2) }}%)</h5>
                     <div class="pull-right">
                         <span class="label label-danger">as of {{ date('Y-m-d') }}</span>
                     </div>
@@ -150,6 +153,22 @@
                                 @include('car.view')
                             @endforeach
                         </div> --}}
+
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">INFO</div>
+                            <div class="panel-body">
+                                <p>
+                                    <b>Man</b> - The findings was caused by Human error such as insufficient training, miscommunication and failure to follow the policy.
+                                </p>
+                                <p>
+                                    <b>Method</b> - The findings was caused due to incorrect procedures, unclear work instructions and lack of Standardized Processes.
+                                </p>
+                                <p>
+                                    <b>Combined (Man & Method)</b> - The findings was caused due to absences of Policies and incorrect implementation by personnel.
+                                </p>
+                            </div>
+                        </div>
+
                         <div class="table-responsive">
                             <table class="table">
                                 <tr>
