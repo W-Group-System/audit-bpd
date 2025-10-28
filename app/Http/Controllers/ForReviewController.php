@@ -25,7 +25,7 @@ class ForReviewController extends Controller
     {
         $approvers = CorrectiveActionRequestApprover::with('correctiveActionRequest')->where('user_id', auth()->user()->id)->get();
         $verifiers = CorrectiveActionRequestVerifier::with('correctiveActionRequest')->where('user_id', auth()->user()->id)->get();
-        $car_count = CorrectiveActionRequest::where('status','!=','Closed')->count();
+        $car_count = CorrectiveActionRequest::whereIn('status', ['Fill-out'])->count();
         if(auth()->user()->role->name == "Administrator")
         {
             $approvers = CorrectiveActionRequestApprover::with('correctiveActionRequest')->where('status', 'Pending')->get();
