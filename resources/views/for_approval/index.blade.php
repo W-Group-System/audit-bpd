@@ -16,7 +16,7 @@
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">
-                        {{ $car_count }}
+                        {{ $car_count + (count($approvers->where('status','Pending'))) }}
                     </h1>
                 </div>
             </div>
