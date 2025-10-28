@@ -90,7 +90,7 @@
                         <span class="label label-warning">as of {{ date('Y-m-d') }}</span>
                     </div>
                 </div>
-                <div class="ibox-content"  style="height:361px; overflow:auto;">
+                <div class="ibox-content" style="height:538px; overflow:auto;">
                     <div class="row">
                         {{-- <div class="col-md-2">
                             <p style="font-weight: bold;">MAN</p>
