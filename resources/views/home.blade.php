@@ -341,14 +341,15 @@
                                     <td><b>{{ collect($car_per_dept_array)->sum('closed') }}</b></td>
 
                                     @php
-                                        $total_open = collect($car_per_dept_array)->sum('open');
-                                        $total_closed = collect($car_per_dept_array)->sum('closed');
-                                        $overall_percentage = 0;
+                                        // $total_open = collect($car_per_dept_array)->sum('open');
+                                        // $total_closed = collect($car_per_dept_array)->sum('closed');
+                                        // $overall_percentage = 0;
 
-                                        if ($total_closed != 0)
-                                        {
-                                            $overall_percentage = $total_closed / ($total_open + $total_closed);
-                                        }
+                                        // if ($total_closed != 0)
+                                        // {
+                                        //     $overall_percentage = $total_closed / ($total_open + $total_closed);
+                                        // }
+                                        $overall_percentage = (collect($car_per_dept_array)->sum('closed') / intval((count($cars)))) * 100;
                                     @endphp
                                     <td><b>{{ round($overall_percentage, 2) }}%</b></td>
                                 </tr>
