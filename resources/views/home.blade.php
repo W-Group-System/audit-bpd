@@ -294,42 +294,6 @@
                     @endif
                 </div>
                 <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <div class="panel panel-primary">
-                                <div class="panel-heading">Total Open</div>
-                                <div class="panel-body">
-                                    <h3 style="margin: 0; padding:0;">{{ collect($car_per_dept_array)->sum('open') }}</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="panel panel-primary">
-                                <div class="panel-heading">Total Closed</div>
-                                <div class="panel-body">
-                                    <h3 style="margin: 0; padding:0;">{{ collect($car_per_dept_array)->sum('closed') }}</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="panel panel-primary">
-                                <div class="panel-heading">Total Rating</div>
-                                <div class="panel-body">
-                                    @php
-                                        $total_open = collect($car_per_dept_array)->sum('open');
-                                        $total_closed = collect($car_per_dept_array)->sum('closed');
-                                        $overall_percentage = 0;
-
-                                        if ($total_closed != 0)
-                                        {
-                                            $overall_percentage = $total_closed / ($total_open + $total_closed);
-                                        }
-                                    @endphp
-                                    <h3 style="margin: 0; padding:0;">{{ round($overall_percentage, 2) }}%</h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered table-hover tables">
                             <thead>
@@ -370,6 +334,25 @@
                                 </tr>
                                 @endforeach
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2"><p style="text-align: end; margin:0; padding:0; font-weight:bold;">Total :</p></td>
+                                    <td>{{ collect($car_per_dept_array)->sum('open') }}</td>
+                                    <td>{{ collect($car_per_dept_array)->sum('closed') }}</td>
+
+                                    @php
+                                        $total_open = collect($car_per_dept_array)->sum('open');
+                                        $total_closed = collect($car_per_dept_array)->sum('closed');
+                                        $overall_percentage = 0;
+
+                                        if ($total_closed != 0)
+                                        {
+                                            $overall_percentage = $total_closed / ($total_open + $total_closed);
+                                        }
+                                    @endphp
+                                    <td>{{ round($overall_percentage, 2) }}%</td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
