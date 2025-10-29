@@ -336,9 +336,9 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="2"><p style="text-align: end; margin:0; padding:0; font-weight:bold;">Total :</p></td>
-                                    <td>{{ collect($car_per_dept_array)->sum('open') }}</td>
-                                    <td>{{ collect($car_per_dept_array)->sum('closed') }}</td>
+                                    <td colspan="2"><p style="margin:0; padding:0; font-weight:bold;">Total :</p></td>
+                                    <td><b>{{ collect($car_per_dept_array)->sum('open') }}</b></td>
+                                    <td><b>{{ collect($car_per_dept_array)->sum('closed') }}</b></td>
 
                                     @php
                                         $total_open = collect($car_per_dept_array)->sum('open');
@@ -350,7 +350,7 @@
                                             $overall_percentage = $total_closed / ($total_open + $total_closed);
                                         }
                                     @endphp
-                                    <td>{{ round($overall_percentage, 2) }}%</td>
+                                    <td><b>{{ round($overall_percentage, 2) }}%</b></td>
                                 </tr>
                             </tfoot>
                         </table>
