@@ -9,6 +9,8 @@ use App\CorrectiveActionRequestVerifier;
 use App\Mail\ReturnEmail;
 use App\Notifications\ClosedCarNotification;
 use App\Notifications\ForApprovedCorrection;
+use App\Ofi;
+use App\OfiVerifier;
 use App\RemarksHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -25,18 +27,21 @@ class ForReviewController extends Controller
     {
         $approvers = CorrectiveActionRequestApprover::with('correctiveActionRequest')->where('user_id', auth()->user()->id)->get();
         $verifiers = CorrectiveActionRequestVerifier::with('correctiveActionRequest')->where('user_id', auth()->user()->id)->get();
+        $ofi_verifiers = OfiVerifier::with('ofi','user')->where('user_id', auth()->user()->id)->get();
         $car_count = 0;
         if (auth()->user()->role->name == 'Auditor')
         {
             $car_count = CorrectiveActionRequest::whereIn('status', ['Fill-out'])->where('auditor_id', auth()->user()->id)->count();
+            $ofi_verifiers = OfiVerifier::with('ofi','user')->where('user_id', auth()->user()->id)->get();
         }
         if(auth()->user()->role->name == "Administrator")
         {
             $approvers = CorrectiveActionRequestApprover::with('correctiveActionRequest')->where('status', 'Pending')->get();
             $verifiers = CorrectiveActionRequestVerifier::with('correctiveActionRequest')->where('status','Pending')->get();
+            $ofi_verifiers = OfiVerifier::with('ofi','user')->where('status', 'Pending')->get();
         }
         
-        return view('for_approval.index', compact('approvers', 'verifiers','car_count'));
+        return view('for_approval.index', compact('approvers', 'verifiers','car_count','ofi_verifiers'));
     }
 
     /**
@@ -272,5 +277,61 @@ class ForReviewController extends Controller
         }
 
         return redirect('for-approval');
+    }
+
+    public function ofiAction(Request $request)
+    {
+        // dd($request->all());
+        if ($request->action == "Returned")
+        {
+            $ofi_verifiers = OfiVerifier::where('ofi_id', $request->ofi_id)->get();
+            foreach($ofi_verifiers as $key=>$verifier)
+            {
+                if ($key == 0)
+                {
+                    $verifier->status = "Pending";
+                }
+                else 
+                {
+                    $verifier->status = "Waiting";
+                }
+                $verifier->save();
+            }
+            Alert::success('Successfully Returned')->persistent('Dismiss');
+        }
+        else 
+        {
+            $ofi_verifiers = OfiVerifier::where('ofi_id', $request->ofi_id)->where('status','Pending')->first();
+            $ofi_verifiers->status = $request->action;
+            $ofi_verifiers->remarks = $request->remarks;
+            $ofi_verifiers->save();
+
+            $verifiers = OfiVerifier::where('ofi_id', $request->ofi_id)->where('status','Waiting')->get();
+            if(count($verifiers) > 0)
+            {
+                foreach($verifiers as $key=>$verify)
+                {
+                    if ($key == 0) 
+                    {
+                        $verify->status = "Pending";
+                    }
+                    else 
+                    {
+                        $verify->status = "Waiting";
+                    }
+                    $verify->save();
+                }
+            }
+            else
+            {
+                $ofi = Ofi::findOrFail($request->ofi_id);
+                $ofi->status = "Closed";
+                $ofi->save();
+            }
+
+            Alert::success('Successfully Approved')->persistent('Dismiss');
+        }
+
+        return back();
     }
 }

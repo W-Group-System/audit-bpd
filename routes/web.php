@@ -58,6 +58,14 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('car_action', 'ForReviewController@store');
     Route::get('show_verification/{id}', 'ForReviewController@show');
     Route::post('verify_action', 'ForReviewController@verifyAction');
+    Route::post('ofi_action', 'ForReviewController@ofiAction');
+
+    // OFI
+    Route::get('ofi', 'OfiController@index');
+    Route::prefix('ofi')->group(function() {
+        Route::post('/store','OfiController@store');
+        Route::post('/update/{id}','OfiController@update');
+    });
 });
 
 // Route::get('mailable', function () {

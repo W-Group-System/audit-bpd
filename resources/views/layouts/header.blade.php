@@ -91,6 +91,10 @@
                         <a href="{{url('/corrective-action-request')}}"><i class="fa fa-file"></i> <span
                                 class="nav-label " >Corrective Action Request </span></a>
                     </li>
+                    <li class="{{ Request::is('ofi') ? 'active' : '' }} shownext" data-toggle="tooltip" data-placement="right" title="Opportunities for Improvements">
+                        <a href="{{url('/ofi')}}"><i class="fa fa-files-o"></i> <span
+                                class="nav-label " >Opportunities for Improvements</span></a>
+                    </li>
                     @if(auth()->user()->role->name == 'Auditor' || auth()->user()->role->name == 'Audit Head' || auth()->user()->role->name == 'Administrator')
                     <li class="{{ Request::is('for-approval') ? 'active' : 'for-approval' }} shownext" data-toggle="tooltip" data-placement="right" title="For Approval">
                         <a href="{{url('/for-approval')}}"><i class="fa fa-check"></i> <span
