@@ -321,15 +321,19 @@
                                             data-target="#viewCloseStatus{{ $car->dept_id }}">{{ $car->closed }}</a>
                                     </td>
                                     <td>
-                                        @php
-                                        $percentage = 0;
-                                        if($car->closed != 0)
-                                        {
-                                        $percentage = $car->closed / ($car->open + $car->closed);
-                                        }
-                                        @endphp
+                                        @if($car->open == $car->closed) 
+                                            100%
+                                        @else
+                                            @php
+                                            $percentage = 0;
+                                            if($car->closed != 0)
+                                            {
+                                            $percentage = $car->closed / ($car->open + $car->closed);
+                                            }
+                                            @endphp
 
                                         {{ round((float)$percentage * 100). '%' }}
+                                        @endif
                                     </td>
                                 </tr>
                                 @endforeach
