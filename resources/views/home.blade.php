@@ -321,7 +321,7 @@
                                             data-target="#viewCloseStatus{{ $car->dept_id }}">{{ $car->closed }}</a>
                                     </td>
                                     <td>
-                                        @if($car->open == $car->closed) 
+                                        @if($car->open == 0 && $car->closed == 0) 
                                             100%
                                         @else
                                             @php
