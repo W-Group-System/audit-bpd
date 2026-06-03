@@ -70,7 +70,13 @@
                                                 <i class="fa fa-eye"></i>
                                             </button>
                                         </td>
-                                        <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
+                                        <td>
+                                            @if (!empty($car->car_no))
+                                                {{ $car->car_no }}
+                                            @else
+                                                CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}
+                                            @endif
+                                        </td>
                                         <td>{!! nl2br(e($car->description_of_nonconformity)) !!}</td>
                                     </tr>
                                 @endforeach
@@ -107,7 +113,13 @@
                                             <i class="fa fa-eye"></i>
                                         </a>
                                     </td>
-                                    <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
+                                    <td>
+                                        @if (!empty($car->car_no))
+                                            {{ $car->car_no }}
+                                        @else
+                                            CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}
+                                        @endif
+                                    </td>
                                     <td>{!! nl2br(e($car->description_of_nonconformity)) !!}</td>
                                 </tr>
                             @endforeach

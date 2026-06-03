@@ -1,5 +1,5 @@
 @component('components.modal', [
-    'id' => 'viewStatus'.$car->dept_id,
+    'id' => 'viewDelayedStatus'.$car->dept_id,
     'size' => 'modal-lg',
     'title' => 'View CAR',
     'is_view' => true
@@ -7,7 +7,7 @@
 ])
     <div class="row">
         <div class="col-md-12">
-            @foreach ($car->open_cars as $open_car)
+            @foreach ($car->delayed_cars as $open_car)
                 {{-- @dd($open_car) --}}
                 <dl class="dl-horizontal">
                     <dt>CAR No. :</dt>

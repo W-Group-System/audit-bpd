@@ -27,6 +27,79 @@
             </div>
         </div>
     </div> --}}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Filter by Year</h5>
+                </div>
+                <div class="ibox-content">
+                    <form method="GET" action="{{ request()->url() }}" id="filterForm">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="ibox float-e-margins">
+                                    <div class="ibox-title">
+                                        <h5>Filter by Year</h5>
+                                    </div>
+                                    <div class="ibox-content">
+                                        <div class="input-group">
+                                            <input type="text"
+                                                id="filter_year_car"
+                                                name="year"
+                                                class="form-control"
+                                                placeholder="Select Year"
+                                                value="{{ request('year') }}"
+                                                readonly>
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if(auth()->user()->role->name == 'Auditor' || auth()->user()->role->name == 'Administrator')
+                                <div class="col-lg-3">
+                                    <div class="ibox float-e-margins">
+                                        <div class="ibox-title">
+                                            <h5>Filter by Department</h5>
+                                        </div>
+                                        <div class="ibox-content">
+                                            {{-- <div class="input-group"> --}}
+                                                <select
+                                                    id="filter_department_car"
+                                                    name="department_filter"
+                                                    class="cat form-control">
+                                                    <option value=""></option>
+                                                    @foreach ($departments as $department)
+                                                        <option value="{{ $department->id }}"
+                                                            {{ request('department_filter') == $department->id ? 'selected' : '' }}>
+                                                            {{ $department->code . ' - ' . $department->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                {{-- <span class="input-group-addon">
+                                                    <i class="fa fa-building"></i>
+                                                </span> --}}
+                                            {{-- </div> --}}
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <div class="col-lg-2">
+                                @if(request()->has('year') || request()->has('department_filter'))
+                                    <a href="{{ request()->url() }}" class="btn btn-default m-t-lg">
+                                        <i class="fa fa-times"></i> Clear Filters
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class='row'>
         @if(auth()->user()->role->name == 'Auditor')
             <div class="col-lg-8">
@@ -76,7 +149,13 @@
                                                     @endif
                                                 @endif
                                             </td>
-                                            <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
+                                            <td>
+                                                @if (!empty($car->car_no))
+                                                    {{ $car->car_no }}
+                                                @else
+                                                    CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}
+                                                @endif
+                                            </td>
                                             <td>{{ $car->department->name }}</td>
                                             {{-- <td>{!! nl2br(e($car->standard_and_clause)) !!}</td>
                                             <td>{{ $car->classification_of_nonconformity }}</td>
@@ -136,7 +215,13 @@
                                                     <i class="fa fa-eye"></i>
                                                 </button>
                                             </td>
-                                            <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
+                                            <td>
+                                                @if (!empty($car->car_no))
+                                                    {{ $car->car_no }}
+                                                @else
+                                                    CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}
+                                                @endif
+                                            </td>
                                             <td>{{ $car->department->name }}</td>
                                             <td>{!! nl2br(e($car->description_of_nonconformity)) !!}</td>
                                         </tr>
@@ -213,7 +298,13 @@
                                                         @endif
                                                     @endif
                                                 </td>
-                                                <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
+                                                <td>
+                                                    @if (!empty($car->car_no))
+                                                        {{ $car->car_no }}
+                                                    @else
+                                                        CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}
+                                                    @endif
+                                                </td>
                                                 <td>{{ $car->department->name }}</td>
                                                 {{-- <td>{!! nl2br(e($car->standard_and_clause)) !!}</td>
                                                 <td>{{ $car->classification_of_nonconformity }}</td>
@@ -317,7 +408,14 @@
                                                 </button>
                                                 @endif
                                             </td>
-                                            <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
+                                            {{-- <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td> --}}
+                                            <td>
+                                                @if (!empty($car->car_no))
+                                                    {{ $car->car_no }}
+                                                @else
+                                                    CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}
+                                                @endif
+                                            </td>
                                             <td>{{ $car->department->name }}</td>
                                             {{-- <td>{!! nl2br(e($car->standard_and_clause)) !!}</td>
                                             <td>{{ $car->classification_of_nonconformity }}</td>
@@ -444,7 +542,6 @@
             $("#correctionImmediateAction"+carId).children().last().remove();
         }
     }
-
     $(document).ready(function() {
         $('.cat').chosen({width:"100%"});
 
@@ -484,6 +581,19 @@
                 $("[name='upload_evidence']").removeAttr('required')
             }
         })
+
+        $('#filter_year_car').datepicker({
+            format: 'yyyy',
+            viewMode: 'years',
+            minViewMode: 'years',
+            autoclose: true
+        }).on('changeDate', function () {
+            $('#filterForm').submit();
+        });
+
+        $('#filter_department_car').on('change', function () {
+            $('#filterForm').submit();
+        });
     })
 </script>
 @endsection

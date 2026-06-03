@@ -50,7 +50,13 @@
                                                 <tbody>
                                                     @foreach ($datas as $car)
                                                         <tr>
-                                                            <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
+                                                            <td>
+                                                                @if (!empty($car->car_no))
+                                                                    {{ $car->car_no }}
+                                                                @else
+                                                                    CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}
+                                                                @endif
+                                                            </td>
                                                             <td>{{ $car->description_of_nonconformity }}</td>
                                                             <td>
                                                                 @foreach ($car->correctiveAction as $correctiveAction)

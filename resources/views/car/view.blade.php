@@ -8,7 +8,11 @@
     <div class="row">
         <div class="col-lg-6">
             <b>CAR :</b>
-            CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}
+            @if (!empty($car->car_no))
+                {{ $car->car_no }}
+            @else
+                CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}
+            @endif
         </div>
         <div class="col-lg-6">
             <b>Standard and Clause :</b>

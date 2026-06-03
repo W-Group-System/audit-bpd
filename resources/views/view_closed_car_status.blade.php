@@ -11,7 +11,14 @@
                 {{-- @dd($open_car) --}}
                 <dl class="dl-horizontal">
                     <dt>CAR No. :</dt>
-                    <dd>CAR-{{ str_pad($open_car->id,3,'0',STR_PAD_LEFT) }}</dd>
+                    <dd>
+                        {{-- CAR-{{ str_pad($open_car->id,3,'0',STR_PAD_LEFT) }} --}}
+                        @if (!empty($open_car->car_no))
+                            {{ $open_car->car_no }}
+                        @else
+                            CAR-{{ str_pad($open_car->id,3,'0',STR_PAD_LEFT) }}
+                        @endif
+                    </dd>
                     <dt>Status :</dt>
                     <dd>{{ $open_car->status }}</dd>
                     <dt>Corrective Action :</dt>

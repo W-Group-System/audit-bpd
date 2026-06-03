@@ -38,7 +38,13 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     @php
-                        $closed_car = (intval((count($cars->where('status','Closed')))) / intval((count($cars)))) * 100;
+                        // $closed_car = (intval((count($cars->where('status','Closed')))) / intval((count($cars)))) * 100;
+                        $totalCars = count($cars);
+                        $closedCount = count($cars->where('status','Closed'));
+
+                        $closed_car = $totalCars > 0
+                            ? ($closedCount / $totalCars) * 100
+                            : 0;
                     @endphp
                     <h5>Total Closed CAR</h5>
                     <div class="pull-right">
@@ -46,7 +52,36 @@
                     </div>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{ count($cars->where('status','Closed')) }} ({{ round($closed_car, 2) }}%)</h1>
+                    {{-- <h1 class="no-margins">{{ count($cars->where('status','Closed')) }} ({{ round($closed_car, 2) }}%)</h1> --}}
+                    <h1 class="no-margins">{{ $closedCount }} ({{ round($closed_car, 2) }}%)</h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Filter by Year</h5>
+                </div>
+                <div class="ibox-content">
+                    <form method="GET" action="{{ request()->url() }}">
+                        <div class="input-group">
+                            <input type="text"
+                                id="filter_year"
+                                name="year"
+                                class="form-control"
+                                placeholder="Select Year"
+                                value="{{ request('year') }}"
+                                readonly>
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                        @if(request('year'))
+                            <a href="{{ request()->url() }}" class="btn btn-sm btn-default btn-block m-t-sm">
+                                <i class="fa fa-times"></i> Clear
+                            </a>
+                        @endif
+                    </form>
                 </div>
             </div>
         </div>
@@ -172,7 +207,7 @@
                             <table class="table">
                                 <tr>
                                     <th class="text-center">MAN</th>
-                                    <th class="text-center">METHOD</th>
+                                    <th class="text-center">ME`THOD</th>
                                     <th class="text-center">MACHINE</th>
                                     <th class="text-center">MEASUREMENT</th>
                                     <th class="text-center">MOTHER NATURE</th>
@@ -302,6 +337,7 @@
                                     <th>Department</th>
                                     <th>Open CARs</th>
                                     {{-- <th>In Progress CARs</th> --}}
+                                    <th>Delayed CARs</th>
                                     <th>Closed CARs</th>
                                     <th>Rating %</th>
                                 </tr>
@@ -314,6 +350,10 @@
                                     <td>
                                         <a href="" data-toggle="modal" data-target="#viewStatus{{ $car->dept_id }}">{{
                                             $car->open }}</a>
+                                    </td>
+                                    <td>
+                                        <a href="" data-toggle="modal" data-target="#viewDelayedStatus{{ $car->dept_id }}">{{
+                                            $car->delayed }}</a>
                                     </td>
                                     {{-- <td>{{ $car->in_progress }}</td> --}}
                                     <td>
@@ -353,7 +393,11 @@
                                         // {
                                         //     $overall_percentage = $total_closed / ($total_open + $total_closed);
                                         // }
-                                        $overall_percentage = (collect($car_per_dept_array)->sum('closed') / intval((count($cars)))) * 100;
+                                        // $overall_percentage = (collect($car_per_dept_array)->sum('closed') / intval((count($cars)))) * 100;
+                                        $totalCars = count($cars);
+                                        $overall_percentage = $totalCars > 0
+                                            ? (collect($car_per_dept_array)->sum('closed') / $totalCars) * 100
+                                            : 0;
                                     @endphp
                                     <td><b>{{ round($overall_percentage, 2) }}%</b></td>
                                 </tr>
@@ -385,7 +429,13 @@
                             <tbody>
                                 @foreach ($cars as $car)
                                 <tr>
-                                    <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
+                                    <td>
+                                        @if (!empty($car->car_no))
+                                            {{ $car->car_no }}
+                                        @else
+                                            CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}
+                                        @endif
+                                    </td>
                                     <td>{{ $car->description_of_nonconformity }}</td>
                                     <td>
                                         {{-- @if($car->status == 'Open')
@@ -436,6 +486,7 @@
 @foreach ($car_per_dept_array as $car)
 @include('view_open_car_status')
 @include('view_closed_car_status')
+@include('view_delayed_car_status')
 @endforeach
 @endsection
 
@@ -466,6 +517,15 @@
                     }
                 }
             ]
+        });
+
+         $('#filter_year').datepicker({
+            format: 'yyyy',
+            viewMode: 'years',
+            minViewMode: 'years',
+            autoclose: true,
+        }).on('changeDate', function () {
+            $(this).closest('form').submit();
         });
     })
 </script>
