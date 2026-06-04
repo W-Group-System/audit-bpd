@@ -25,20 +25,46 @@ class ForReviewController extends Controller
      */
     public function index()
     {
-        $approvers = CorrectiveActionRequestApprover::with('correctiveActionRequest')->where('user_id', auth()->user()->id)->get();
-        $verifiers = CorrectiveActionRequestVerifier::with('correctiveActionRequest')->where('user_id', auth()->user()->id)->get();
-        $ofi_verifiers = OfiVerifier::with('ofi','user')->where('user_id', auth()->user()->id)->get();
+        $year = request('year');
+
+        $approvers = CorrectiveActionRequestApprover::with('correctiveActionRequest')->where('user_id', auth()->user()->id)
+        ->when($year, function ($query) use ($year) {
+            $query->whereYear('created_at', $year);
+        })->get();
+        $verifiers = CorrectiveActionRequestVerifier::with('correctiveActionRequest')->where('user_id', auth()->user()->id)
+        ->when($year, function ($query) use ($year) {
+            $query->whereYear('created_at', $year);
+        })->get();
+        $ofi_verifiers = OfiVerifier::with('ofi','user')->where('user_id', auth()->user()->id)
+        ->when($year, function ($query) use ($year) {
+            $query->whereYear('created_at', $year);
+        })->get();
         $car_count = 0;
         if (auth()->user()->role->name == 'Auditor')
         {
-            $car_count = CorrectiveActionRequest::whereIn('status', ['Fill-out'])->where('auditor_id', auth()->user()->id)->count();
-            $ofi_verifiers = OfiVerifier::with('ofi','user')->where('user_id', auth()->user()->id)->get();
+            $car_count = CorrectiveActionRequest::whereIn('status', ['Fill-out'])->where('auditor_id', auth()->user()->id)
+            ->when($year, function ($query) use ($year) {
+            $query->whereYear('created_at', $year);
+        })->count();
+            $ofi_verifiers = OfiVerifier::with('ofi','user')->where('user_id', auth()->user()->id)
+            ->when($year, function ($query) use ($year) {
+            $query->whereYear('created_at', $year);
+        })->get();
         }
         if(auth()->user()->role->name == "Administrator")
         {
-            $approvers = CorrectiveActionRequestApprover::with('correctiveActionRequest')->where('status', 'Pending')->get();
-            $verifiers = CorrectiveActionRequestVerifier::with('correctiveActionRequest')->where('status','Pending')->get();
-            $ofi_verifiers = OfiVerifier::with('ofi','user')->where('status', 'Pending')->get();
+            $approvers = CorrectiveActionRequestApprover::with('correctiveActionRequest')->where('status', 'Pending')
+            ->when($year, function ($query) use ($year) {
+            $query->whereYear('created_at', $year);
+        })->get();
+            $verifiers = CorrectiveActionRequestVerifier::with('correctiveActionRequest')->where('status','Pending')
+            ->when($year, function ($query) use ($year) {
+            $query->whereYear('created_at', $year);
+        })->get();
+            $ofi_verifiers = OfiVerifier::with('ofi','user')->where('status', 'Pending')
+            ->when($year, function ($query) use ($year) {
+            $query->whereYear('created_at', $year);
+        })->get();
         }
         
         return view('for_approval.index', compact('approvers', 'verifiers','car_count','ofi_verifiers'));

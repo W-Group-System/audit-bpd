@@ -41,6 +41,34 @@
                 </div>
             </div>
         </div>
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Filter by Year</h5>
+                </div>
+                <div class="ibox-content">
+                    <form method="GET" action="{{ request()->url() }}">
+                        <div class="input-group">
+                            <input type="text"
+                                id="filter_year"
+                                name="year"
+                                class="form-control"
+                                placeholder="Select Year"
+                                value="{{ request('year') }}"
+                                readonly>
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                        @if(request('year'))
+                            <a href="{{ request()->url() }}" class="btn btn-sm btn-default btn-block m-t-sm">
+                                <i class="fa fa-times"></i> Clear
+                            </a>
+                        @endif
+                    </form>
+                </div>
+            </div>
+        </div>
         
     </div>
     <div class='row'>
@@ -215,6 +243,15 @@
                 }
                 }
             ]
+        });
+
+        $('#filter_year').datepicker({
+            format: 'yyyy',
+            viewMode: 'years',
+            minViewMode: 'years',
+            autoclose: true,
+        }).on('changeDate', function () {
+            $(this).closest('form').submit();
         });
     });
 

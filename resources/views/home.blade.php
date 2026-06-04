@@ -224,7 +224,14 @@
                                         @endphp
                                         @foreach ($man_analysis->sortBy('corrective_action_request_id') as $man)
                                             <div class="text-center">
-                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $man->corrective_action_request->id }}">CAR-{{ str_pad($man->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $man->corrective_action_request->id }}">
+                                                    
+                                                    @if (!empty($man->corrective_action_request->car_no))
+                                                        {{ $man->corrective_action_request->car_no }}
+                                                    @else
+                                                        CAR-{{ str_pad($man->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}
+                                                    @endif
+                                                </a> <br>
                                             </div>
 
                                             @php
@@ -240,7 +247,13 @@
                                         @endphp
                                         @foreach ($method_analysis->sortBy('corrective_action_request_id') as $method)
                                             <div class="text-center">
-                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $method->corrective_action_request->id }}">CAR-{{ str_pad($method->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $method->corrective_action_request->id }}">
+                                                    @if (!empty($method->corrective_action_request->car_no))
+                                                        {{ $method->corrective_action_request->car_no }}
+                                                    @else
+                                                        CAR-{{ str_pad($method->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}
+                                                    @endif
+                                                </a> <br>
                                             </div>
 
                                             @php
@@ -256,7 +269,13 @@
                                         @endphp
                                         @foreach ($machine_analysis->sortBy('corrective_action_request_id') as $machine)
                                             <div class="text-center">
-                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $machine->corrective_action_request->id }}">CAR-{{ str_pad($machine->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view
+                                                {{ $machine->corrective_action_request->id }}">
+                                                @if (!empty($machine->corrective_action_request->car_no))
+                                                    {{ $machine->corrective_action_request->car_no }}
+                                                @else
+                                                    CAR-{{ str_pad($machine->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}
+                                                @endif </a> <br>
                                             </div>
 
                                             @php
@@ -272,7 +291,13 @@
                                         @endphp
                                         @foreach ($measurement_analysis->sortBy('corrective_action_request_id') as $measurement)
                                             <div class="text-center">
-                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $measurement->corrective_action_request->id }}">CAR-{{ str_pad($measurement->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $measurement->corrective_action_request->id }}">
+                                                    @if (!empty($measurement->corrective_action_request->car_no))
+                                                        {{ $measurement->corrective_action_request->car_no }}
+                                                    @else
+                                                        CAR-{{ str_pad($measurement->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}
+                                                    @endif
+                                                </a> <br>
                                             </div>
 
                                             @php
@@ -288,7 +313,14 @@
                                         @endphp
                                         @foreach ($mother_nature_analysis->sortBy('corrective_action_request_id') as $mother_nature)
                                             <div class="text-centet">
-                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $mother_nature->corrective_action_request->id }}">CAR-{{ str_pad($mother_nature->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $mother_nature->corrective_action_request->id }}">
+                                                    
+                                                    @if (!empty($mother_nature->corrective_action_request->car_no))
+                                                        {{ $mother_nature->corrective_action_request->car_no }}
+                                                    @else
+                                                        CAR-{{ str_pad($mother_nature->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}
+                                                    @endif
+                                                </a> <br>
                                             </div>
 
                                             @php
@@ -300,7 +332,14 @@
                                     <td>
                                         @foreach ($combined->sortBy('corrective_action_request_id') as $combine)
                                             <div class="text-center">
-                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $combine->corrective_action_request->id }}">CAR-{{ str_pad($combine->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $combine->corrective_action_request->id }}">
+                                                    
+                                                    @if (!empty($combine->corrective_action_request->car_no))
+                                                        {{ $combine->corrective_action_request->car_no }}
+                                                    @else
+                                                        CAR-{{ str_pad($combine->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}
+                                                    @endif
+                                                </a> <br>
                                             </div>
 
                                             @php
@@ -382,6 +421,7 @@
                                 <tr>
                                     <td colspan="2"><p style="margin:0; padding:0; font-weight:bold;">Total :</p></td>
                                     <td><b>{{ collect($car_per_dept_array)->sum('open') }}</b></td>
+                                    <td><b>{{ collect($car_per_dept_array)->sum('delayed') }}</b></td>
                                     <td><b>{{ collect($car_per_dept_array)->sum('closed') }}</b></td>
 
                                     @php
