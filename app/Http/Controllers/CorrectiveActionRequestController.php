@@ -22,15 +22,38 @@ class CorrectiveActionRequestController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $users = User::whereNull('status')->get();
         $departments = Department::whereNull('status')->get();
-        $corrective_action_requests = CorrectiveActionRequest::with('auditor','auditee','department','correctiveAction.remarks_history','approver','verify')->get();
-        if(auth()->user()->role->name == 'Auditee')
-        {
-            $corrective_action_requests = CorrectiveActionRequest::with('auditor','auditee','department','correctiveAction.remarks_history','approver','verify')->where('auditee_id', auth()->user()->id)->get();
+
+        $query = CorrectiveActionRequest::with(
+            'auditor',
+            'auditee',
+            'department',
+            'correctiveAction.remarks_history',
+            'approver',
+            'verify'
+        );
+
+        if (auth()->user()->role->name == 'Auditee') {
+            $query->where('auditee_id', auth()->user()->id);
         }
+
+        if ($request->filled('year')) {
+            $query->whereYear('created_at', $request->year);
+        }
+        if ($request->filled('department_filter')) {
+            $query->where('department_id', $request->department_filter);
+        }
+
+        $corrective_action_requests = $query->get();
+
+        // $corrective_action_requests = CorrectiveActionRequest::with('auditor','auditee','department','correctiveAction.remarks_history','approver','verify')->get();
+        // if(auth()->user()->role->name == 'Auditee')
+        // {
+        //     $corrective_action_requests = CorrectiveActionRequest::with('auditor','auditee','department','correctiveAction.remarks_history','approver','verify')->where('auditee_id', auth()->user()->id)->get();
+        // }
 
         return view('car.index', compact('users', 'corrective_action_requests', 'departments'));
     }
@@ -53,8 +76,21 @@ class CorrectiveActionRequestController extends Controller
      */
     public function store(Request $request)
     {
+        $year = date('y');
+        $latestCar = CorrectiveActionRequest::where('car_no', 'like', 'CAR-' . $year . '-%')
+                    ->orderBy('id', 'desc')
+                    ->first();
+        if ($latestCar) {
+            $lastSequence = (int) substr($latestCar->car_no, -3);
+            $nextSequence = str_pad($lastSequence + 1, 3, '0', STR_PAD_LEFT);
+        } else {
+            $nextSequence = '001';
+        }
+
+        $carNumber = 'CAR-' . $year . '-' . $nextSequence;
         // dd($request->all());
         $car = new CorrectiveActionRequest;
+        $car->car_no = $carNumber;
         $car->standard_and_clause = $request->standard_and_clause;
         $car->department_id = $request->department;
         $car->classification_of_nonconformity = $request->classification_of_nonconformity;

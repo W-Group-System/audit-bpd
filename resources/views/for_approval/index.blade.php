@@ -41,6 +41,34 @@
                 </div>
             </div>
         </div>
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Filter by Year</h5>
+                </div>
+                <div class="ibox-content">
+                    <form method="GET" action="{{ request()->url() }}">
+                        <div class="input-group">
+                            <input type="text"
+                                id="filter_year"
+                                name="year"
+                                class="form-control"
+                                placeholder="Select Year"
+                                value="{{ request('year') }}"
+                                readonly>
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                        @if(request('year'))
+                            <a href="{{ request()->url() }}" class="btn btn-sm btn-default btn-block m-t-sm">
+                                <i class="fa fa-times"></i> Clear
+                            </a>
+                        @endif
+                    </form>
+                </div>
+            </div>
+        </div>
         
     </div>
     <div class='row'>
@@ -70,7 +98,13 @@
                                                 <i class="fa fa-eye"></i>
                                             </button>
                                         </td>
-                                        <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
+                                        <td>
+                                            @if (!empty($car->car_no))
+                                                {{ $car->car_no }}
+                                            @else
+                                                CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}
+                                            @endif
+                                        </td>
                                         <td>{!! nl2br(e($car->description_of_nonconformity)) !!}</td>
                                     </tr>
                                 @endforeach
@@ -107,7 +141,13 @@
                                             <i class="fa fa-eye"></i>
                                         </a>
                                     </td>
-                                    <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
+                                    <td>
+                                        @if (!empty($car->car_no))
+                                            {{ $car->car_no }}
+                                        @else
+                                            CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}
+                                        @endif
+                                    </td>
                                     <td>{!! nl2br(e($car->description_of_nonconformity)) !!}</td>
                                 </tr>
                             @endforeach
@@ -203,6 +243,15 @@
                 }
                 }
             ]
+        });
+
+        $('#filter_year').datepicker({
+            format: 'yyyy',
+            viewMode: 'years',
+            minViewMode: 'years',
+            autoclose: true,
+        }).on('changeDate', function () {
+            $(this).closest('form').submit();
         });
     });
 

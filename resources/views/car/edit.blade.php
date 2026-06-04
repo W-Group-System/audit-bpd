@@ -11,10 +11,14 @@
             Correction / Immediate Action :
             <button type="button" class="btn btn-xs btn-primary" onclick="addCorrectionBtn({{ $car->id }})"><i class="fa fa-plus"></i></button>
             <button type="button" class="btn btn-xs btn-danger" onclick="removeCorrectionBtn({{ $car->id }})"><i class="fa fa-minus"></i></button>
-
+            
             @if(count($car->correctionImmediateAction) > 0)
                 <div id="correctionImmediateAction{{ $car->id }}">
                     @foreach ($car->correctionImmediateAction as $key=>$correctionImmediateAction)
+                    @php
+                        $hasReturnedApprover = collect($car->approver)
+                            ->contains('status', 'Returned');
+                    @endphp
                     <div class="row" id="caNum_{{ $key+1 }}">
                         <div class="col-md-1">
                             {{ $key+1 }}
@@ -23,7 +27,8 @@
                             <textarea name="correction_immediate_action[]" class="form-control" cols="30" required>{{ $correctionImmediateAction->correction_immediate_action }}</textarea>
                         </div>
                         <div class="col-md-5">
-                            <input type="date" name="correction_action_date[]" class="form-control input-sm" min="{{ date('Y-m-d') }}" value="{{ $correctionImmediateAction->correction_action_date }}" required>
+                            Implementation Date :
+                            <input type="date" name="correction_action_date[]" class="form-control input-sm" min="{{ date('Y-m-d') }}" value="{{ $correctionImmediateAction->correction_action_date }}" {{ $hasReturnedApprover ? 'readonly' : '' }} required>
                         </div>
                     </div>
                     @endforeach

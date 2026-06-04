@@ -38,7 +38,13 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     @php
-                        $closed_car = (intval((count($cars->where('status','Closed')))) / intval((count($cars)))) * 100;
+                        // $closed_car = (intval((count($cars->where('status','Closed')))) / intval((count($cars)))) * 100;
+                        $totalCars = count($cars);
+                        $closedCount = count($cars->where('status','Closed'));
+
+                        $closed_car = $totalCars > 0
+                            ? ($closedCount / $totalCars) * 100
+                            : 0;
                     @endphp
                     <h5>Total Closed CAR</h5>
                     <div class="pull-right">
@@ -46,7 +52,36 @@
                     </div>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{ count($cars->where('status','Closed')) }} ({{ round($closed_car, 2) }}%)</h1>
+                    {{-- <h1 class="no-margins">{{ count($cars->where('status','Closed')) }} ({{ round($closed_car, 2) }}%)</h1> --}}
+                    <h1 class="no-margins">{{ $closedCount }} ({{ round($closed_car, 2) }}%)</h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Filter by Year</h5>
+                </div>
+                <div class="ibox-content">
+                    <form method="GET" action="{{ request()->url() }}">
+                        <div class="input-group">
+                            <input type="text"
+                                id="filter_year"
+                                name="year"
+                                class="form-control"
+                                placeholder="Select Year"
+                                value="{{ request('year') }}"
+                                readonly>
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                        @if(request('year'))
+                            <a href="{{ request()->url() }}" class="btn btn-sm btn-default btn-block m-t-sm">
+                                <i class="fa fa-times"></i> Clear
+                            </a>
+                        @endif
+                    </form>
                 </div>
             </div>
         </div>
@@ -172,7 +207,7 @@
                             <table class="table">
                                 <tr>
                                     <th class="text-center">MAN</th>
-                                    <th class="text-center">METHOD</th>
+                                    <th class="text-center">ME`THOD</th>
                                     <th class="text-center">MACHINE</th>
                                     <th class="text-center">MEASUREMENT</th>
                                     <th class="text-center">MOTHER NATURE</th>
@@ -189,7 +224,14 @@
                                         @endphp
                                         @foreach ($man_analysis->sortBy('corrective_action_request_id') as $man)
                                             <div class="text-center">
-                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $man->corrective_action_request->id }}">CAR-{{ str_pad($man->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $man->corrective_action_request->id }}">
+                                                    
+                                                    @if (!empty($man->corrective_action_request->car_no))
+                                                        {{ $man->corrective_action_request->car_no }}
+                                                    @else
+                                                        CAR-{{ str_pad($man->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}
+                                                    @endif
+                                                </a> <br>
                                             </div>
 
                                             @php
@@ -205,7 +247,13 @@
                                         @endphp
                                         @foreach ($method_analysis->sortBy('corrective_action_request_id') as $method)
                                             <div class="text-center">
-                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $method->corrective_action_request->id }}">CAR-{{ str_pad($method->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $method->corrective_action_request->id }}">
+                                                    @if (!empty($method->corrective_action_request->car_no))
+                                                        {{ $method->corrective_action_request->car_no }}
+                                                    @else
+                                                        CAR-{{ str_pad($method->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}
+                                                    @endif
+                                                </a> <br>
                                             </div>
 
                                             @php
@@ -221,7 +269,13 @@
                                         @endphp
                                         @foreach ($machine_analysis->sortBy('corrective_action_request_id') as $machine)
                                             <div class="text-center">
-                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $machine->corrective_action_request->id }}">CAR-{{ str_pad($machine->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view
+                                                {{ $machine->corrective_action_request->id }}">
+                                                @if (!empty($machine->corrective_action_request->car_no))
+                                                    {{ $machine->corrective_action_request->car_no }}
+                                                @else
+                                                    CAR-{{ str_pad($machine->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}
+                                                @endif </a> <br>
                                             </div>
 
                                             @php
@@ -237,7 +291,13 @@
                                         @endphp
                                         @foreach ($measurement_analysis->sortBy('corrective_action_request_id') as $measurement)
                                             <div class="text-center">
-                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $measurement->corrective_action_request->id }}">CAR-{{ str_pad($measurement->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $measurement->corrective_action_request->id }}">
+                                                    @if (!empty($measurement->corrective_action_request->car_no))
+                                                        {{ $measurement->corrective_action_request->car_no }}
+                                                    @else
+                                                        CAR-{{ str_pad($measurement->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}
+                                                    @endif
+                                                </a> <br>
                                             </div>
 
                                             @php
@@ -253,7 +313,14 @@
                                         @endphp
                                         @foreach ($mother_nature_analysis->sortBy('corrective_action_request_id') as $mother_nature)
                                             <div class="text-centet">
-                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $mother_nature->corrective_action_request->id }}">CAR-{{ str_pad($mother_nature->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $mother_nature->corrective_action_request->id }}">
+                                                    
+                                                    @if (!empty($mother_nature->corrective_action_request->car_no))
+                                                        {{ $mother_nature->corrective_action_request->car_no }}
+                                                    @else
+                                                        CAR-{{ str_pad($mother_nature->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}
+                                                    @endif
+                                                </a> <br>
                                             </div>
 
                                             @php
@@ -265,7 +332,14 @@
                                     <td>
                                         @foreach ($combined->sortBy('corrective_action_request_id') as $combine)
                                             <div class="text-center">
-                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $combine->corrective_action_request->id }}">CAR-{{ str_pad($combine->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}</a> <br>
+                                                {{ $num+=1 }}. <a href="javascript:void(0)" data-toggle="modal" data-target="#view{{ $combine->corrective_action_request->id }}">
+                                                    
+                                                    @if (!empty($combine->corrective_action_request->car_no))
+                                                        {{ $combine->corrective_action_request->car_no }}
+                                                    @else
+                                                        CAR-{{ str_pad($combine->corrective_action_request->id,3,'0',STR_PAD_LEFT) }}
+                                                    @endif
+                                                </a> <br>
                                             </div>
 
                                             @php
@@ -302,6 +376,7 @@
                                     <th>Department</th>
                                     <th>Open CARs</th>
                                     {{-- <th>In Progress CARs</th> --}}
+                                    <th>Delayed CARs</th>
                                     <th>Closed CARs</th>
                                     <th>Rating %</th>
                                 </tr>
@@ -314,6 +389,10 @@
                                     <td>
                                         <a href="" data-toggle="modal" data-target="#viewStatus{{ $car->dept_id }}">{{
                                             $car->open }}</a>
+                                    </td>
+                                    <td>
+                                        <a href="" data-toggle="modal" data-target="#viewDelayedStatus{{ $car->dept_id }}">{{
+                                            $car->delayed }}</a>
                                     </td>
                                     {{-- <td>{{ $car->in_progress }}</td> --}}
                                     <td>
@@ -342,6 +421,7 @@
                                 <tr>
                                     <td colspan="2"><p style="margin:0; padding:0; font-weight:bold;">Total :</p></td>
                                     <td><b>{{ collect($car_per_dept_array)->sum('open') }}</b></td>
+                                    <td><b>{{ collect($car_per_dept_array)->sum('delayed') }}</b></td>
                                     <td><b>{{ collect($car_per_dept_array)->sum('closed') }}</b></td>
 
                                     @php
@@ -353,7 +433,11 @@
                                         // {
                                         //     $overall_percentage = $total_closed / ($total_open + $total_closed);
                                         // }
-                                        $overall_percentage = (collect($car_per_dept_array)->sum('closed') / intval((count($cars)))) * 100;
+                                        // $overall_percentage = (collect($car_per_dept_array)->sum('closed') / intval((count($cars)))) * 100;
+                                        $totalCars = count($cars);
+                                        $overall_percentage = $totalCars > 0
+                                            ? (collect($car_per_dept_array)->sum('closed') / $totalCars) * 100
+                                            : 0;
                                     @endphp
                                     <td><b>{{ round($overall_percentage, 2) }}%</b></td>
                                 </tr>
@@ -385,7 +469,13 @@
                             <tbody>
                                 @foreach ($cars as $car)
                                 <tr>
-                                    <td>CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</td>
+                                    <td>
+                                        @if (!empty($car->car_no))
+                                            {{ $car->car_no }}
+                                        @else
+                                            CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}
+                                        @endif
+                                    </td>
                                     <td>{{ $car->description_of_nonconformity }}</td>
                                     <td>
                                         {{-- @if($car->status == 'Open')
@@ -436,6 +526,7 @@
 @foreach ($car_per_dept_array as $car)
 @include('view_open_car_status')
 @include('view_closed_car_status')
+@include('view_delayed_car_status')
 @endforeach
 @endsection
 
@@ -466,6 +557,15 @@
                     }
                 }
             ]
+        });
+
+         $('#filter_year').datepicker({
+            format: 'yyyy',
+            viewMode: 'years',
+            minViewMode: 'years',
+            autoclose: true,
+        }).on('changeDate', function () {
+            $(this).closest('form').submit();
         });
     })
 </script>

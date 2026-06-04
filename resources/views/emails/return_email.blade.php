@@ -78,7 +78,11 @@
                                                     style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;"
                                                     valign="top">
 
-                                                    <p><b>CAR# :</b> CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}</p> 
+                                                    <p><b>CAR# :</b> @if (!empty($car->car_no))
+                                                            {{ $car->car_no }}
+                                                        @else
+                                                            CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}
+                                                        @endif</p> 
                                                     <p><b>Remarks :</b> {!! nl2br(e($remarks)) !!}</p>
                                                     <hr>
                                                     {{-- <a href="#" class="btn-primary" itemprop="url"

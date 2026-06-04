@@ -16,6 +16,8 @@
 
     <link href="{{ asset('login_css/css/animate.css') }}" rel="stylesheet">
     <link href="{{ asset('login_css/css/style.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.min.css">
+
     @yield('css')
     <style>
       
@@ -166,6 +168,8 @@
     <!-- d3 and c3 charts -->
     <script src="{{ asset('login_css/js/plugins/d3/d3.min.js') }}"></script>
     <script src="{{ asset('login_css/js/plugins/c3/c3.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"></script>
+
 
     <script>
         function show() {
