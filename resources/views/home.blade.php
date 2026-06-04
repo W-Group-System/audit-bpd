@@ -207,7 +207,7 @@
                             <table class="table">
                                 <tr>
                                     <th class="text-center">MAN</th>
-                                    <th class="text-center">ME`THOD</th>
+                                    <th class="text-center">METHOD</th>
                                     <th class="text-center">MACHINE</th>
                                     <th class="text-center">MEASUREMENT</th>
                                     <th class="text-center">MOTHER NATURE</th>
