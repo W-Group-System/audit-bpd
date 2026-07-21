@@ -56,12 +56,20 @@ Route::group(['middleware' => 'auth'], function() {
     // For Review
     Route::get('for-approval', 'ForReviewController@index');
     Route::post('car_action', 'ForReviewController@store');
+    Route::post('ofi_store', 'ForReviewController@ofiStore');
     Route::get('show_verification/{id}', 'ForReviewController@show');
+    Route::get('show_ofi_verification/{id}', 'ForReviewController@showofi');
     Route::post('verify_action', 'ForReviewController@verifyAction');
     Route::post('ofi_action', 'ForReviewController@ofiAction');
+    Route::post('ofi_verify_action', 'ForReviewController@verifyActionOfi');
+
+    
 
     // OFI
     Route::get('ofi', 'OfiController@index');
+    Route::post('ofi_verifiers/{id}', 'OfiController@verify');
+    Route::post('update_ofi_verify/{id}','OfiController@updateOfiVerify');
+
     Route::prefix('ofi')->group(function() {
         Route::post('/store','OfiController@store');
         Route::post('/update/{id}','OfiController@update');

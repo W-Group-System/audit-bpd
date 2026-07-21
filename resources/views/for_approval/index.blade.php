@@ -72,7 +72,7 @@
         
     </div>
     <div class='row'>
-        <div class="col-lg-4">
+        <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Acceptance of CAR</h5>
@@ -115,7 +115,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Verification of CAR</h5>
@@ -157,7 +157,48 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Acceptance of OFI</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover tables" >
+                            <thead>
+                                <tr>
+                                    <th>Action</th>
+                                    <th>OFI #</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($ofi_approvers->where('status', 'Pending') as $approver)
+                                    @php
+                                        $ofi = $approver->ofi;
+                                    @endphp
+                                    <tr>
+                                        <td>
+                                            <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#view_ofi{{ $ofi->id }}">
+                                                <i class="fa fa-eye"></i>
+                                            </button>
+                                        </td>
+                                        <td>
+                                            @if (!empty($ofi->ofi_no))
+                                                {{ $ofi->ofi_no }}
+                                            @endif
+                                        </td>
+                                        <td>{!! nl2br(e($ofi->description)) !!}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Verification of OFI</h5>
@@ -173,7 +214,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($ofi_verifiers->where('status', 'Pending') as $verify)
+                                {{-- @foreach ($ofi_verifiers->where('status', 'Pending') as $verify)
                                     @php
                                         $ofi = $verify->ofi;
                                     @endphp
@@ -183,8 +224,28 @@
                                                 <i class="fa fa-eye"></i>
                                             </button>
                                         </td>
-                                        <td>OFI-{{ str_pad($ofi->id,3,'0',STR_PAD_LEFT) }}</td>
+                                        <td>{{ $ofi->ofi_no }}</td>
                                         <td>{!! nl2br(e($ofi->recommendation)) !!}</td>
+                                    </tr>
+                                @endforeach --}}
+                                @foreach ($ofi_verifiers->where('status', 'Pending') as $verify)
+                                    @php
+                                        $ofi = $verify->ofi;
+                                    @endphp
+                                    <tr>
+                                        <td>
+                                            <a href="{{ url('show_ofi_verification/'.$ofi->id) }}" class="btn btn-info btn-sm">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            @if (!empty($ofi->ofi_no))
+                                                {{ $ofi->ofi_no }}
+                                            @else
+                                                CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}
+                                            @endif
+                                        </td>
+                                        <td>{!! nl2br(e($car->description_of_nonconformity)) !!}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -201,6 +262,13 @@
     $car = $approver->correctiveActionRequest;
 @endphp
 @include('for_approval.for_approval')
+@endforeach
+
+@foreach ($ofi_approvers as $ofiapprover)
+@php
+    $ofi = $ofiapprover->ofi;
+@endphp
+@include('for_approval.ofi_for_approval')
 @endforeach
 
 @foreach ($ofi_verifiers->where('status', 'Pending') as $verify)

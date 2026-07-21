@@ -1,7 +1,7 @@
 @component('components.modal', [
     'id' => 'new',
     'size' => 'modal-lg',
-    'title' => 'Add new CAR',
+    'title' => 'Add new OFI',
     'url' => url('/ofi/store'),
     'has_enctype' => false
 ])
@@ -34,8 +34,12 @@
             </select>
         </div>
         <div class="col-md-12">
+            Description :
+            <textarea name="description" class="form-control" cols="30" rows="8" required></textarea>
+        </div>
+        <div class="col-md-12">
             Recommendation :
-            <textarea name="recommendation" class="form-control" cols="30" rows="10" required></textarea>
+            <textarea name="recommendation" class="form-control" cols="30" rows="8" required></textarea>
         </div>
     </div>
 @endcomponent
