@@ -50,7 +50,7 @@
         </div>
     </div>
 
-    @if($car->status != 'Fill-Out')
+    @if($ofi->status != 'Fill-Out')
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-primary">
