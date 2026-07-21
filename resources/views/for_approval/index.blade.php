@@ -242,10 +242,10 @@
                                             @if (!empty($ofi->ofi_no))
                                                 {{ $ofi->ofi_no }}
                                             @else
-                                                CAR-{{ str_pad($car->id,3,'0',STR_PAD_LEFT) }}
+                                                OFI-{{ str_pad($ofi->id,3,'0',STR_PAD_LEFT) }}
                                             @endif
                                         </td>
-                                        <td>{!! nl2br(e($car->description_of_nonconformity)) !!}</td>
+                                        <td>{!! nl2br(e($ofi->description)) !!}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
