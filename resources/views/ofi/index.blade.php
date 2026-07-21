@@ -192,7 +192,7 @@
                                                     </button>
 
                                                     @if(($approver_data) && (auth()->user()->role->name == 'Auditee' || auth()->user()->role->name == 'Audit Head') && ($ofi->status != 'Closed'))
-                                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#verify{{ $ofi->id }}">
+                                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#ofi_verifiers{{ $ofi->id }}">
                                                             <i class="fa fa-check"></i>
                                                         </button>
                                                     @endif
@@ -216,6 +216,7 @@
                                                 <td>{{ $ofi->issuedTo->name }}</td>
                                                 <td>{{ date('M d Y', strtotime($ofi->created_at)) }}</td>
                                             </tr>
+                                            @include('ofi.verify_ofi')
 
                                             {{-- @include('car.verify_car') --}}
                                         @endforeach
