@@ -113,6 +113,7 @@
                                         <th>Issued By</th>
                                         <th>Issued To</th>
                                         <th>Date Issued</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -133,6 +134,7 @@
                                             <td>{{ $ofi->issuedBy->name }}</td>
                                             <td>{{ $ofi->issuedTo->name }}</td>
                                             <td>{{ date('M d Y', strtotime($ofi->created_at)) }}</td>
+                                            <td>{{ $ofi->status }}</td>
                                         </tr>
 
                                         {{-- @include('ofi.view')
@@ -163,6 +165,7 @@
                                             <th>Issued By</th>
                                             <th>Issued To</th>
                                             <th>Date Issued</th>
+                                            <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -215,6 +218,7 @@
                                                 <td>{{ $ofi->issuedBy->name }}</td>
                                                 <td>{{ $ofi->issuedTo->name }}</td>
                                                 <td>{{ date('M d Y', strtotime($ofi->created_at)) }}</td>
+                                                <td>{{ $ofi->status }}</td>
                                             </tr>
                                             @include('ofi.verify_ofi')
 
@@ -248,6 +252,7 @@
                                         <th>Issued By</th>
                                         <th>Issued To</th>
                                         <th>Date Issued</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -306,6 +311,7 @@
                                             <td>{{ $ofi->issuedBy->name }}</td>
                                             <td>{{ $ofi->issuedTo->name }}</td>
                                             <td>{{ date('M d Y', strtotime($ofi->created_at)) }}</td>
+                                            <td>{{ $ofi->status }}</td>
                                         </tr>
 
                                         @include('ofi.verify_ofi')
@@ -319,6 +325,8 @@
         @endif
     </div>
 </div>
+
+
 
 @include('ofi.create')
 @foreach ($ofis as $ofi)

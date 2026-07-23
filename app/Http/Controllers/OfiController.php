@@ -12,6 +12,8 @@ use App\OfiRemarksHistory;
 use App\OfiVerifier;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OfiCreatedMail;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class OfiController extends Controller
@@ -95,6 +97,13 @@ class OfiController extends Controller
         $ofi->description = $request->description;
         $ofi->status = "Pending";
         $ofi->save();
+
+        $auditee = User::find($request->auditee);
+
+        if ($auditee && !empty($auditee->email)) {
+            Mail::to($auditee->email)->send(new OfiCreatedMail($ofi));
+        }
+
 
         Alert::success('Successfully Saved')->persistent('Dismiss');
         return back();

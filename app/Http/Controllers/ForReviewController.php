@@ -7,8 +7,11 @@ use App\CorrectiveActionRequest;
 use App\CorrectiveActionRequestApprover;
 use App\CorrectiveActionRequestVerifier;
 use App\Mail\ReturnEmail;
+use App\Mail\ReturnOfi;
 use App\Notifications\ClosedCarNotification;
+use App\Notifications\ClosedOfiNotification;
 use App\Notifications\ForApprovedCorrection;
+use App\Notifications\ForApprovedOfi;
 use App\Ofi;
 use App\OfiApprover;
 use App\OfiVerifier;
@@ -368,8 +371,8 @@ class ForReviewController extends Controller
                 $corrective_action->status = 'Closed';
                 $corrective_action->save();
 
-                // $ofi->auditee->notify(new ClosedCarNotification($ofi));
-                // $ofi->auditor->notify(new ClosedCarNotification($ofi));
+                $ofi->issuedTo->notify(new ClosedOfiNotification($ofi));
+                $ofi->issuedBy->notify(new ClosedOfiNotification($ofi));
             }
 
             Alert::success('Successfully Approved')->persistent('Dismiss');
@@ -501,14 +504,13 @@ class ForReviewController extends Controller
                 $approver->save();
             }
 
-            // if (count($approvers) == 0)
-            // {
-            //     $correction_action_date = ($corrective_action_request->correctionImmediateAction)->pluck('correction_action_date')->toArray();
-            //     $corrective_action_date = ($corrective_action_request->correctiveAction)->pluck('action_date')->toArray();
+            if (count($approvers) == 0)
+            {
+                $correction_action_date = ($ofi_request->ofiImmediateAction)->pluck('implementation_date')->toArray();
 
-            //     $corrective_action_request->auditee->notify(new ForApprovedCorrection($corrective_action_request,$correction_action_date,$corrective_action_date));
-            //     $corrective_action_request->auditor->notify(new ForApprovedCorrection($corrective_action_request,$correction_action_date,$corrective_action_date));
-            // }
+                $ofi_request->issuedTo->notify(new ForApprovedOfi($ofi_request,$correction_action_date));
+                $ofi_request->issuedBy->notify(new ForApprovedOfi($ofi_request,$correction_action_date));
+            }
 
             Alert::success('Successfully Approved')->persistent('Dismiss');
         }
@@ -542,7 +544,7 @@ class ForReviewController extends Controller
                 $approver->save();
             }
 
-            Mail::to($approver_data->ofi->issuedTo->email)->send(new ReturnEmail($ofi_request, $request->remarks));
+            Mail::to($approver_data->ofi->issuedTo->email)->send(new ReturnOfi($ofi_request, $request->remarks));
 
             Alert::success('Successfully Returned')->persistent('Dismiss');
         }

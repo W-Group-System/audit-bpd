@@ -102,4 +102,93 @@
             </form>
         </div>
     </div>
+
+    @if($ofi->approver->isNotEmpty())
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        Approvers
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                <b>Name</b>
+                            </div>
+                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                <b>Status</b>
+                            </div>
+                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                <b>Action Date</b>
+                            </div>
+                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                <b>Remarks</b>
+                            </div>
+                        </div>
+                        @foreach ($ofi->approver as $approver)
+                            <div class="row">
+                                <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                    {{ $approver->user->name }}
+                                </div>
+                                <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                    {{ $approver->status }}
+                                </div>
+                                <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                    {{ date('M d Y', strtotime($approver->updated_at )) }}
+                                </div>
+                                <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                    {{ $approver->remarks }}
+                                </div>
+                            </div>
+                        @endforeach
+                        {{-- @dd($car->correctiveAction) --}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+    @if($ofi->verify->isNotEmpty())
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        Verifiers
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                <b>Name</b>
+                            </div>
+                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                <b>Status</b>
+                            </div>
+                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                <b>Action Date</b>
+                            </div>
+                            <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                <b>Remarks</b>
+                            </div>
+                        </div>
+                        @foreach ($ofi->verify as $verify)
+                            <div class="row">
+                                <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                    {{ $verify->user->name }}
+                                </div>
+                                <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                    {{ $verify->status }}
+                                </div>
+                                <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                    {{ date('M d Y', strtotime($verify->updated_at )) }}
+                                </div>
+                                <div class="col-md-3 border border-1 border-top-bottom border-left-right">
+                                    {{ $verify->remarks }}
+                                </div>
+                            </div>
+                        @endforeach
+                        {{-- @dd($car->correctiveAction) --}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 @endcomponent
