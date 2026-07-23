@@ -26,4 +26,20 @@ class Ofi extends Model
     {
         return $this->hasMany(OfiAttachment::class);
     }
+    public function ofiImmediateAction()
+    {
+        return $this->hasMany(OfiImmediateAction::class);
+    }
+    public function verify()
+    {
+        return $this->hasMany(OfiVerifier::class);
+    }
+    public function approver()
+    {
+        return $this->hasMany(OfiApprover::class);
+    }
+    public function remarksHistory()
+    {
+        return $this->hasMany(OfiRemarksHistory::class);
+    }
 }

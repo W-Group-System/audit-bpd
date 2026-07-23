@@ -7,9 +7,13 @@ use App\CorrectiveActionRequest;
 use App\CorrectiveActionRequestApprover;
 use App\CorrectiveActionRequestVerifier;
 use App\Mail\ReturnEmail;
+use App\Mail\ReturnOfi;
 use App\Notifications\ClosedCarNotification;
+use App\Notifications\ClosedOfiNotification;
 use App\Notifications\ForApprovedCorrection;
+use App\Notifications\ForApprovedOfi;
 use App\Ofi;
+use App\OfiApprover;
 use App\OfiVerifier;
 use App\RemarksHistory;
 use Illuminate\Http\Request;
@@ -35,6 +39,10 @@ class ForReviewController extends Controller
         ->when($year, function ($query) use ($year) {
             $query->whereYear('created_at', $year);
         })->get();
+        $ofi_approvers = OfiApprover::where('user_id', auth()->user()->id)
+        ->when($year, function ($query) use ($year) {
+            $query->whereYear('created_at', $year);
+        })->get();
         $ofi_verifiers = OfiVerifier::with('ofi','user')->where('user_id', auth()->user()->id)
         ->when($year, function ($query) use ($year) {
             $query->whereYear('created_at', $year);
@@ -57,6 +65,10 @@ class ForReviewController extends Controller
             ->when($year, function ($query) use ($year) {
             $query->whereYear('created_at', $year);
         })->get();
+        $ofi_approvers = OfiApprover::where('status', 'Pending')
+            ->when($year, function ($query) use ($year) {
+            $query->whereYear('created_at', $year);
+        })->get();
             $verifiers = CorrectiveActionRequestVerifier::with('correctiveActionRequest')->where('status','Pending')
             ->when($year, function ($query) use ($year) {
             $query->whereYear('created_at', $year);
@@ -67,7 +79,7 @@ class ForReviewController extends Controller
         })->get();
         }
         
-        return view('for_approval.index', compact('approvers', 'verifiers','car_count','ofi_verifiers'));
+        return view('for_approval.index', compact('approvers', 'verifiers','car_count','ofi_verifiers', 'ofi_approvers'));
     }
 
     /**
@@ -193,6 +205,13 @@ class ForReviewController extends Controller
         return view('for_approval.show', compact('car'));
     }
 
+    public function showofi($id)
+    {
+        $ofi = Ofi::findOrFail($id);
+
+        return view('for_approval.show_ofi', compact('ofi'));
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -305,6 +324,85 @@ class ForReviewController extends Controller
         return redirect('for-approval');
     }
 
+    public function verifyActionOfi(Request $request)
+    {
+        // dd($request->all());
+        $verifier = OfiVerifier::where('status', 'Pending')->where('ofi_id', $request->ofi_id)->first();
+        $verifier->status = $request->action;
+        $verifier->remarks = $request->remarks;
+        $verifier->save();
+
+        if ($request->action == 'Approved')
+        {
+            $ofi = Ofi::findOrFail($request->ofi_id);
+            if (auth()->user()->role->name == 'Auditor')
+            {
+                $ofi->status = 'For Closing';
+            }
+            // elseif(auth()->user()->role->name == 'Auditee')
+            // {
+            //     $ofi->status = 'For Verification';
+            // }
+            $ofi->save();
+
+            $verifiers = OfiVerifier::where('ofi_id', $request->ofi_id)->where('status', 'Waiting')->orderBy('level','asc')->get();
+            if ($verifiers->isNotEmpty())
+            {
+                foreach($verifiers as $key => $verifier)
+                {
+                    if ($key == 0)
+                    {
+                        $verifier->status = 'Pending';
+                    }
+                    else
+                    {
+                        $verifier->status = 'Waiting';
+                    }
+                    $verifier->save();
+                }
+            }
+            else
+            {
+                $verifiers = OfiVerifier::where('ofi_id', $request->ofi_id)->where('user_id', auth()->user()->id)->first();
+                $verifiers->status = "Approved";
+                $verifiers->save();
+
+                $corrective_action = Ofi::findOrFail($request->ofi_id);
+                $corrective_action->status = 'Closed';
+                $corrective_action->save();
+
+                $ofi->issuedTo->notify(new ClosedOfiNotification($ofi));
+                $ofi->issuedBy->notify(new ClosedOfiNotification($ofi));
+            }
+
+            Alert::success('Successfully Approved')->persistent('Dismiss');
+        }
+        else
+        {
+            $ofi = ofi::findOrFail($request->ofi_id);
+            $ofi->status = 'For Implementation';
+            $ofi->save();
+
+            $verifiers = OfiVerifier::where('ofi_id', $request->ofi_id)->orderBy('level','asc')->get();
+            foreach($verifiers as $key => $verifier)
+            {
+                if ($key == 0)
+                {
+                    $verifier->status = 'Pending';
+                }
+                else
+                {
+                    $verifier->status = 'Waiting';
+                }
+                $verifier->save();
+            }
+
+            Alert::success('Successfully Returned')->persistent('Dismiss');
+        }
+
+        return redirect('for-approval');
+    }
+
     public function ofiAction(Request $request)
     {
         // dd($request->all());
@@ -358,6 +456,99 @@ class ForReviewController extends Controller
             Alert::success('Successfully Approved')->persistent('Dismiss');
         }
 
+        return back();
+    }
+
+    public function ofiStore(Request $request)
+    {
+        // dd($request->all());
+        
+        if($request->action == 'Approved')
+        {
+            $approver_data = OfiApprover::where('ofi_id', $request->ofi_id)
+                ->where('status', 'Pending')
+                ->where('user_id', auth()->user()->id)
+                ->orderBy('level', 'asc')
+                ->first();
+            $approver_data->status = 'Approved';
+            $approver_data->remarks = $request->remarks;
+            $approver_data->save();
+
+            $ofi_request = Ofi::findOrFail($request->ofi_id);
+            if (auth()->user()->role->name == 'Auditor')
+            {
+                $ofi_request->status = 'Approval OFI';
+            }
+            elseif(auth()->user()->role->name == 'Audit Head')
+            {
+                $ofi_request->status = 'For Implementation';
+            }
+            else
+            {
+                $ofi_request->status = 'For Review OFI';
+            }
+            $ofi_request->save();
+
+            $approvers = OfiApprover::where('ofi_id', $request->ofi_id)->where('status', 'Waiting')->orderBy('level', 'asc')->get();
+            foreach($approvers as $key=>$approver)
+            {
+                if ($key == 0)
+                {
+                    $approver->status = 'Pending';
+                }
+                else
+                {
+                    $approver->status = 'Waiting';
+                }
+
+                $approver->save();
+            }
+
+            if (count($approvers) == 0)
+            {
+                $correction_action_date = ($ofi_request->ofiImmediateAction)->pluck('implementation_date')->toArray();
+
+                $ofi_request->issuedTo->notify(new ForApprovedOfi($ofi_request,$correction_action_date));
+                $ofi_request->issuedBy->notify(new ForApprovedOfi($ofi_request,$correction_action_date));
+            }
+
+            Alert::success('Successfully Approved')->persistent('Dismiss');
+        }
+        elseif($request->action == 'Returned')
+        {
+            $approver_data = OfiApprover::where('ofi_id', $request->ofi_id)
+                ->where('status', 'Pending')
+                ->where('user_id', auth()->user()->id)
+                ->orderBy('level', 'asc')
+                ->first();
+
+            $approver_data->status = 'Returned';
+            $approver_data->remarks = $request->remarks;
+            $approver_data->save();
+
+            $ofi_request = Ofi::findOrFail($request->ofi_id);
+            $ofi_request->status = 'Fill-Out';
+            $ofi_request->save();
+
+            $approvers = OfiApprover::where('ofi_id', $request->ofi_id)->orderBy('level', 'asc')->get();
+            foreach($approvers as $key=>$approver)
+            {
+                if ($key == 0)
+                {
+                    $approver->status = 'Pending';
+                }
+                else
+                {
+                    $approver->status = 'Waiting';
+                }
+                $approver->save();
+            }
+
+            Mail::to($approver_data->ofi->issuedTo->email)->send(new ReturnOfi($ofi_request, $request->remarks));
+
+            Alert::success('Successfully Returned')->persistent('Dismiss');
+        }
+        
         return back();
     }
 }
