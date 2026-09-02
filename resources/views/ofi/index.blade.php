@@ -297,7 +297,7 @@
                                                 @endif
 
                                                 @if(auth()->user()->role->name == 'Administrator')
-                                                <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#edit{{ $ofi->id }}">
+                                                <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#admin_edit{{ $ofi->id }}">
                                                     <i class="fa fa-pencil-square-o"></i>
                                                 </button>
                                                 @endif
@@ -313,7 +313,7 @@
                                             <td>{{ date('M d Y', strtotime($ofi->created_at)) }}</td>
                                             <td>{{ $ofi->status }}</td>
                                         </tr>
-                                        @include('ofi.edit')
+                                        @include('ofi.edit_admin')
                                         @include('ofi.verify_ofi')
                                     @endforeach
                                 </tbody>
@@ -330,6 +330,7 @@
 
 @include('ofi.create')
 @foreach ($ofis as $ofi)
+{{-- @include('ofi.edit_admin') --}}
 @include('ofi.view')
 @include('ofi.edit')
 @endforeach

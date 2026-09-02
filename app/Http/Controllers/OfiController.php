@@ -109,6 +109,28 @@ class OfiController extends Controller
         return back();
     }
 
+    public function updateAdmin(Request $request,$id)
+    {
+        $ofi = Ofi::with('approver')->findOrFail($id);
+        if (count($ofi->approver) > 0)
+        {
+            $approver = ($ofi->approver)->where('user_id', $ofi->issued_by)->first();
+            $approver->user_id = $request->auditor;
+            $approver->save();
+        }
+
+        $ofi->department_id = $request->department;
+        $ofi->issued_by = $request->auditor;
+        $ofi->issued_to = $request->auditee;
+        $ofi->recommendation = $request->recommendation;
+        $ofi->description = $request->description;
+        
+       
+        $ofi->save();
+
+        Alert::success('Successfully Saved')->persistent('Dismiss');
+        return back();
+    }
     /**
      * Display the specified resource.
      *

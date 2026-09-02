@@ -71,6 +71,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('update_ofi_verify/{id}','OfiController@updateOfiVerify');
 
     Route::prefix('ofi')->group(function() {
+        Route::post('update_admin/{id}','OfiController@updateAdmin');
         Route::post('/store','OfiController@store');
         Route::post('/update/{id}','OfiController@update');
     });
