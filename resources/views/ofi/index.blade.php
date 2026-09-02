@@ -236,7 +236,7 @@
                     <div class="ibox-title">
                         <h5>Opportunities for Improvements 
                             @if(auth()->user()->role->name == 'Auditor' || auth()->user()->role->name == 'Administrator')
-                                <button class="btn btn-success" data-target="#new" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New CAR</button>
+                                <button class="btn btn-success" data-target="#new" data-toggle="modal" type="button"><i class="fa fa-plus"></i>&nbsp;New OFI</button>
                             @endif
                         </h5>
                     </div>
@@ -297,7 +297,7 @@
                                                 @endif
 
                                                 @if(auth()->user()->role->name == 'Administrator')
-                                                <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editAdmin{{ $ofi->id }}">
+                                                <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#edit{{ $ofi->id }}">
                                                     <i class="fa fa-pencil-square-o"></i>
                                                 </button>
                                                 @endif
@@ -313,7 +313,7 @@
                                             <td>{{ date('M d Y', strtotime($ofi->created_at)) }}</td>
                                             <td>{{ $ofi->status }}</td>
                                         </tr>
-
+                                        @include('ofi.edit')
                                         @include('ofi.verify_ofi')
                                     @endforeach
                                 </tbody>
