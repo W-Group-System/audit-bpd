@@ -98,99 +98,195 @@ class ForReviewController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function store(Request $request)
     {
-        // dd($request->all());
-        
-        if($request->action == 'Approved')
-        {
-            $approver_data = CorrectiveActionRequestApprover::where('corrective_action_request_id', $request->car_id)
+
+        if ($request->action == 'Approved') {
+
+            $approver_data = CorrectiveActionRequestApprover::where(
+                    'corrective_action_request_id',
+                    $request->car_id
+                )
                 ->where('status', 'Pending')
                 ->where('user_id', auth()->user()->id)
                 ->orderBy('level', 'asc')
                 ->first();
+
+            // Condition for "Creating default object from empty value"
+            if (!$approver_data) {
+                Alert::error(
+                    'Approval Error',
+                    'You are not the current pending approver for this CAR.'
+                )->persistent('Dismiss');
+
+                return back();
+            }
+
             $approver_data->status = 'Approved';
             $approver_data->remarks = $request->remarks;
             $approver_data->save();
 
-            $corrective_action_request = CorrectiveActionRequest::with('correctiveAction','correctionImmediateAction')->findOrFail($request->car_id);
-            if (auth()->user()->role->name == 'Auditor')
-            {
+
+          
+            $corrective_action_request = CorrectiveActionRequest::with(
+                'correctiveAction',
+                'correctionImmediateAction'
+            )->findOrFail($request->car_id);
+
+
+            if (auth()->user()->role->name == 'Auditor') {
                 $corrective_action_request->status = 'Approval CAR';
-            }
-            elseif(auth()->user()->role->name == 'Audit Head')
-            {
+            } elseif (auth()->user()->role->name == 'Audit Head') {
                 $corrective_action_request->status = 'For Implementation';
-            }
-            else
-            {
+            } else {
                 $corrective_action_request->status = 'For Review CAR';
             }
+
             $corrective_action_request->save();
 
-            $approvers = CorrectiveActionRequestApprover::where('corrective_action_request_id', $request->car_id)->where('status', 'Waiting')->orderBy('level', 'asc')->get();
-            foreach($approvers as $key=>$approver)
-            {
-                if ($key == 0)
-                {
+
+            $approvers = CorrectiveActionRequestApprover::where(
+                    'corrective_action_request_id',
+                    $request->car_id
+                )
+                ->where('status', 'Waiting')
+                ->orderBy('level', 'asc')
+                ->get();
+
+
+            foreach ($approvers as $key => $approver) {
+
+                if ($key == 0) {
                     $approver->status = 'Pending';
-                }
-                else
-                {
+                } else {
                     $approver->status = 'Waiting';
                 }
 
                 $approver->save();
             }
 
-            if (count($approvers) == 0)
-            {
-                $correction_action_date = ($corrective_action_request->correctionImmediateAction)->pluck('correction_action_date')->toArray();
-                $corrective_action_date = ($corrective_action_request->correctiveAction)->pluck('action_date')->toArray();
 
-                $corrective_action_request->auditee->notify(new ForApprovedCorrection($corrective_action_request,$correction_action_date,$corrective_action_date));
-                $corrective_action_request->auditor->notify(new ForApprovedCorrection($corrective_action_request,$correction_action_date,$corrective_action_date));
+            if (count($approvers) == 0) {
+
+                $correction_action_date = $corrective_action_request
+                    ->correctionImmediateAction
+                    ->pluck('correction_action_date')
+                    ->toArray();
+
+                $corrective_action_date = $corrective_action_request
+                    ->correctiveAction
+                    ->pluck('action_date')
+                    ->toArray();
+
+
+              
+                if ($corrective_action_request->auditee) {
+                    $corrective_action_request->auditee->notify(
+                        new ForApprovedCorrection(
+                            $corrective_action_request,
+                            $correction_action_date,
+                            $corrective_action_date
+                        )
+                    );
+                }
+
+                if ($corrective_action_request->auditor) {
+                    $corrective_action_request->auditor->notify(
+                        new ForApprovedCorrection(
+                            $corrective_action_request,
+                            $correction_action_date,
+                            $corrective_action_date
+                        )
+                    );
+                }
             }
 
             Alert::success('Successfully Approved')->persistent('Dismiss');
         }
-        elseif($request->action == 'Returned')
-        {
-            $approver_data = CorrectiveActionRequestApprover::with('correctiveActionRequest.auditee')->where('corrective_action_request_id', $request->car_id)
+
+        // Returned
+        elseif ($request->action == 'Returned') {
+
+            $approver_data = CorrectiveActionRequestApprover::with(
+                    'correctiveActionRequest.auditee'
+                )
+                ->where('corrective_action_request_id', $request->car_id)
                 ->where('status', 'Pending')
                 ->where('user_id', auth()->user()->id)
                 ->orderBy('level', 'asc')
                 ->first();
+
+
+            // 
+            if (!$approver_data) {
+                Alert::error(
+                    'Return Error',
+                    'You are not the current pending approver for this CAR.'
+                )->persistent('Dismiss');
+
+                return back();
+            }
+
 
             $approver_data->status = 'Returned';
             $approver_data->remarks = $request->remarks;
             $approver_data->save();
 
-            $corrective_action_request = CorrectiveActionRequest::findOrFail($request->car_id);
+
+            $corrective_action_request = CorrectiveActionRequest::findOrFail(
+                $request->car_id
+            );
+
+
             $corrective_action_request->status = 'Fill-Out';
             $corrective_action_request->save();
 
-            $approvers = CorrectiveActionRequestApprover::where('corrective_action_request_id', $request->car_id)->orderBy('level', 'asc')->get();
-            foreach($approvers as $key=>$approver)
-            {
-                if ($key == 0)
-                {
+
+            $approvers = CorrectiveActionRequestApprover::where(
+                    'corrective_action_request_id',
+                    $request->car_id
+                )
+                ->orderBy('level', 'asc')
+                ->get();
+
+
+            foreach ($approvers as $key => $approver) {
+
+                if ($key == 0) {
                     $approver->status = 'Pending';
-                }
-                else
-                {
+                } else {
                     $approver->status = 'Waiting';
                 }
+
                 $approver->save();
             }
 
-            Mail::to($approver_data->correctiveActionRequest->auditee->email)->send(new ReturnEmail($corrective_action_request, $request->remarks));
+
+            // Send return email
+            if (
+                $approver_data->correctiveActionRequest &&
+                $approver_data->correctiveActionRequest->auditee &&
+                $approver_data->correctiveActionRequest->auditee->email
+            ) {
+                Mail::to(
+                    $approver_data->correctiveActionRequest->auditee->email
+                )->send(
+                    new ReturnEmail(
+                        $corrective_action_request,
+                        $request->remarks
+                    )
+                );
+            }
+
 
             Alert::success('Successfully Returned')->persistent('Dismiss');
         }
-        
+
+
         return back();
     }
+
 
     /**
      * Display the specified resource.
