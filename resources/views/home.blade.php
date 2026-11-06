@@ -7,37 +7,58 @@
 
 @section('content')
 <div class="wrapper wrapper-content">
-    <div class="row">
-        <div class="col-lg-3">
+    @php
+        $category = request('category', 'all');
+
+        $records = collect();
+
+        if ($category == 'car') {
+            $records = collect($cars);
+        } elseif ($category == 'ofi') {
+            $records = collect($ofis);
+        } else {
+            $records = collect($cars)->concat(collect($ofis));
+        }
+
+        $totalCount = $records->count();
+        $openCount = $records->where('status', '!=', 'Closed')->count();
+        $closedCount = $records->where('status', 'Closed')->count();
+
+        $closedPercentage = $totalCount > 0
+            ? ($closedCount / $totalCount) * 100
+            : 0;
+    @endphp
+    <div class="row" style="display: flex; flex-wrap: wrap;">
+         <div style="flex: 1; min-width: 0; padding: 0 10px;">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Total CAR </h5>
+                    <h5>Total {{ $category == 'all' ? 'CAR / OFI' : strtoupper($category) }}</h5>
                     <div class="pull-right">
                         <span class="label label-success">as of {{ date('Y-m-d') }}</span>
                     </div>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{ count($cars) }}</h1>
+                   <h1 class="no-margins">{{ $totalCount }}</h1>
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+         <div style="flex: 1; min-width: 0; padding: 0 10px;">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Total Open CAR</h5>
+                    <h5>Total Open {{ $category == 'all' ? 'CAR / OFI' : strtoupper($category) }}</h5>
                     <div class="pull-right">
                         <span class="label label-primary">as of {{ date('Y-m-d') }}</span>
                     </div>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{ count($cars->where('status','!=','Closed')) }}</h1>
+                    <h1 class="no-margins">{{ $openCount }}</h1>
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+         <div style="flex: 1; min-width: 0; padding: 0 10px;">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    @php
+                    {{-- @php
                         // $closed_car = (intval((count($cars->where('status','Closed')))) / intval((count($cars)))) * 100;
                         $totalCars = count($cars);
                         $closedCount = count($cars->where('status','Closed'));
@@ -45,7 +66,7 @@
                         $closed_car = $totalCars > 0
                             ? ($closedCount / $totalCars) * 100
                             : 0;
-                    @endphp
+                    @endphp --}}
                     <h5>Total Closed CAR</h5>
                     <div class="pull-right">
                         <span class="label label-danger">as of {{ date('Y-m-d') }}</span>
@@ -53,11 +74,11 @@
                 </div>
                 <div class="ibox-content">
                     {{-- <h1 class="no-margins">{{ count($cars->where('status','Closed')) }} ({{ round($closed_car, 2) }}%)</h1> --}}
-                    <h1 class="no-margins">{{ $closedCount }} ({{ round($closed_car, 2) }}%)</h1>
+                    <h1 class="no-margins">{{ $closedCount }} ({{ round($closedPercentage, 2) }}%)</h1>
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+         <div style="flex: 1; min-width: 0; padding: 0 10px;">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Filter by Year</h5>
@@ -80,6 +101,34 @@
                             <a href="{{ request()->url() }}" class="btn btn-sm btn-default btn-block m-t-sm">
                                 <i class="fa fa-times"></i> Clear
                             </a>
+                        @endif
+                    </form>
+                </div>
+            </div>
+        </div>
+         <div style="flex: 1; min-width: 0; padding: 0 10px;">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Filter by Category</h5>
+                </div>
+                <div class="ibox-content">
+                    <form method="GET" action="{{ request()->url() }}">
+                        <div style="width: 100%;">
+                            <select name="category" class="cat form-control" onchange="this.form.submit()">
+                                <option value="all" {{ request('category', 'all') == 'all' ? 'selected' : '' }}>
+                                    All
+                                </option>
+                                <option value="car" {{ request('category') == 'car' ? 'selected' : '' }}>
+                                    CAR
+                                </option>
+                                <option value="ofi" {{ request('category') == 'ofi' ? 'selected' : '' }}>
+                                    OFI
+                                </option>
+                            </select>
+                        </div>
+
+                        @if(request('year'))
+                            <input type="hidden" name="year" value="{{ request('year') }}">
                         @endif
                     </form>
                 </div>
@@ -362,9 +411,25 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     @if(auth()->user()->role->name == 'Auditor' || auth()->user()->role->name == 'Administrator')
-                    <h5>Status of CAR per Department</h5>
+                    <h5>
+                        @if($category == 'all')
+                            Status of CAR and OFI per Department
+                        @elseif($category == 'car')
+                            Status of CAR per Department
+                        @else
+                            Status of OFI per Department
+                        @endif
+                    </h5>
                     @else
-                    <h5>Status of CAR</h5>
+                     <h5>
+                        @if($category == 'all')
+                            Status of CAR and OFI
+                        @elseif($category == 'car')
+                            Status of CAR
+                        @else
+                            Status of OFI
+                        @endif
+                    </h5>
                     @endif
                 </div>
                 <div class="ibox-content">
@@ -374,40 +439,78 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Department</th>
-                                    <th>Open CARs</th>
+                                    @if($category == 'all')
+                                        <th>Open CARs / OFIs</th>
+                                    @elseif($category == 'car')
+                                        <th>Open CARs</th>
+                                    @elseif($category == 'ofi')
+                                        <th>Open OFIs</th>
+                                    @endif
                                     {{-- <th>In Progress CARs</th> --}}
-                                    <th>Delayed CARs</th>
-                                    <th>Closed CARs</th>
+                                    @if($category == 'all')
+                                        <th>Delayed CARs / OFIs</th>
+                                    @elseif($category == 'car')
+                                        <th>Delayed CARs</th>
+                                    @elseif($category == 'ofi')
+                                        <th>Delayed OFIs</th>
+                                    @endif
+                                    @if($category == 'all')
+                                        <th>Closed CARs / OFIs</th>
+                                    @elseif($category == 'car')
+                                        <th>Closed CARs</th>
+                                    @elseif($category == 'ofi')
+                                        <th>Closed OFIs</th>
+                                    @endif
                                     <th>Rating %</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($car_per_dept_array as $key=>$car)
+                                @php
+                                    if ($category == 'car') {
+                                        $open = $car->open;
+                                        $closed = $car->closed;
+                                        $delayed = $car->delayed;
+                                    } elseif ($category == 'ofi') {
+                                        $open = $car->ofi_open;
+                                        $closed = $car->ofi_closed;
+                                        $delayed = 0;
+                                    } else {
+                                        $open = $car->open + $car->ofi_open;
+                                        $closed = $car->closed + $car->ofi_closed;
+                                        $delayed = $car->delayed;
+                                    }
+
+                                    $total = $open + $closed;
+                                    $percentage = $total > 0
+                                        ? ($closed / $total) * 100
+                                        : 100;
+                                @endphp
                                 <tr>
                                     <td>{{ $key+1 }}.</td>
                                     <td>{{ $car->department }}</td>
                                     <td>
                                         <a href="" data-toggle="modal" data-target="#viewStatus{{ $car->dept_id }}">{{
-                                            $car->open }}</a>
+                                            $open }}</a>
                                     </td>
                                     <td>
                                         <a href="" data-toggle="modal" data-target="#viewDelayedStatus{{ $car->dept_id }}">{{
-                                            $car->delayed }}</a>
+                                            $delayed }}</a>
                                     </td>
                                     {{-- <td>{{ $car->in_progress }}</td> --}}
                                     <td>
                                         <a href="" data-toggle="modal"
-                                            data-target="#viewCloseStatus{{ $car->dept_id }}">{{ $car->closed }}</a>
+                                            data-target="#viewCloseStatus{{ $car->dept_id }}">{{ $closed }}</a>
                                     </td>
                                     <td>
-                                        @if($car->open == 0 && $car->closed == 0) 
+                                        @if($open == 0 && $closed == 0) 
                                             100%
                                         @else
                                             @php
                                             $percentage = 0;
-                                            if($car->closed != 0)
+                                            if($closed != 0)
                                             {
-                                            $percentage = $car->closed / ($car->open + $car->closed);
+                                            $percentage = $closed / ($open + $closed);
                                             }
                                             @endphp
 
@@ -418,13 +521,39 @@
                                 @endforeach
                             </tbody>
                             <tfoot>
-                                <tr>
-                                    <td colspan="2"><p style="margin:0; padding:0; font-weight:bold;">Total :</p></td>
-                                    <td><b>{{ collect($car_per_dept_array)->sum('open') }}</b></td>
-                                    <td><b>{{ collect($car_per_dept_array)->sum('delayed') }}</b></td>
-                                    <td><b>{{ collect($car_per_dept_array)->sum('closed') }}</b></td>
+                                @php
+                                    $sumOpenCAR = collect($car_per_dept_array)->sum('open');
+                                    $sumClosedCAR = collect($car_per_dept_array)->sum('closed');
+                                    $sumOpenOFI = collect($car_per_dept_array)->sum('ofi_open');
+                                    $sumClosedOFI = collect($car_per_dept_array)->sum('ofi_closed');
+                                    $sumDelayedCAR = collect($car_per_dept_array)->sum('delayed');
 
-                                    @php
+                                    if ($category == 'car') {
+                                        $totalOpen = $sumOpenCAR;
+                                        $totalClosed = $sumClosedCAR;
+                                        $totalDelayed = $sumDelayedCAR;
+                                    } elseif ($category == 'ofi') {
+                                        $totalOpen = $sumOpenOFI;
+                                        $totalClosed = $sumClosedOFI;
+                                        $totalDelayed = 0;
+                                    } else {
+                                        $totalOpen = $sumOpenCAR + $sumOpenOFI;
+                                        $totalClosed = $sumClosedCAR + $sumClosedOFI;
+                                        $totalDelayed = $sumDelayedCAR;
+                                    }
+
+                                    $totalRecords = $totalOpen + $totalClosed;
+                                    $overallPercentage = $totalRecords > 0
+                                        ? ($totalClosed / $totalRecords) * 100
+                                        : 100;
+                                @endphp
+                                <tr>
+                                    <td colspan="2"><strong>Total:</strong></td>
+                                    <td><strong>{{ $totalOpen }}</strong></td>
+                                    <td><strong>{{ $totalDelayed }}</strong></td>
+                                    <td><strong>{{ $totalClosed }}</strong></td>
+
+                                    {{-- @php
                                         // $total_open = collect($car_per_dept_array)->sum('open');
                                         // $total_closed = collect($car_per_dept_array)->sum('closed');
                                         // $overall_percentage = 0;
@@ -438,8 +567,8 @@
                                         $overall_percentage = $totalCars > 0
                                             ? (collect($car_per_dept_array)->sum('closed') / $totalCars) * 100
                                             : 0;
-                                    @endphp
-                                    <td><b>{{ round($overall_percentage, 2) }}%</b></td>
+                                    @endphp --}}
+                                    <td><strong>{{ round($overallPercentage, 2) }}%</strong></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -520,6 +649,64 @@
                 </div>
             </div>
         </div>
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5> List of OFI</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover tables">
+                            <thead>
+                                <tr>
+                                    <th>OFI ID</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                    <th>Responsible Person</th>
+                                    <th>Target Completion Date</th>
+                                    <th>Proof / Evidence</th>
+                                    <th>Implementation Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($ofis as $ofi)
+                                <tr>
+                                    <td> {{$ofi->ofi_no }}</td>
+                                    <td>{{ $ofi->description }}</td>
+                                    <td>{{ $ofi->status }}</td>
+                                    <td>{{ $ofi->issuedTo->name }}</td>
+                                    <td>
+                                        @foreach ($ofi->ofiImmediateAction as $key => $ofiImmediateAction)
+                                            @if (!empty($ofiImmediateAction->implementation_date))
+                                                {{ date('M d Y', strtotime($ofiImmediateAction->implementation_date)) }} - 
+                                                {{ $ofiImmediateAction->status }} <br>
+                                            @endif
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach ($ofi->ofiImmediateAction as $key => $ofiImmediateAction)
+                                        @if($ofiImmediateAction->attachments)
+                                        <a href="{{ url($ofiImmediateAction->attachments) }}" target="_blank">
+                                            <i class="fa fa-file"></i>
+                                        </a> <br>
+                                        @endif
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach ($ofi->ofiImmediateAction as $key => $ofiImmediateAction)
+                                        @if($ofiImmediateAction->immediate_action)
+                                        {!! nl2br(e($ofiImmediateAction->immediate_action)) !!} <br>
+                                        @endif
+                                        @endforeach
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -532,11 +719,14 @@
 
 @section('js')
 <script src="{{ asset('login_css/js/plugins/dataTables/datatables.min.js')}}"></script>
+<script src="{{ asset('login_css/js/plugins/chosen/chosen.jquery.js') }}"></script>
+
 <script>
     $(document).ready(function() {
+        $('.cat').chosen({width:"100%"});
         $('.tables').DataTable({
             pageLength: 25,
-            paging: false,
+            paging: true,
             responsive: true,
             stateSave: true,
             dom: '<"html5buttons"B>lTfgitp',
